@@ -15,6 +15,13 @@ class Url extends \Phalcon\Mvc\Model
     /**
      *
      * @var string
+     * @Column(type="string", length=30, nullable=true)
+     */
+    protected $icon;
+
+    /**
+     *
+     * @var string
      * @Column(type="string", length=100, nullable=true)
      */
     protected $title;
@@ -55,6 +62,13 @@ class Url extends \Phalcon\Mvc\Model
     protected $tools;
 
     /**
+     *
+     * @var string
+     * @Column(type="string", length=255, nullable=true)
+     */
+    protected $roles;
+
+    /**
      * Method to set the value of field id
      *
      * @param integer $id
@@ -63,6 +77,19 @@ class Url extends \Phalcon\Mvc\Model
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field icon
+     *
+     * @param string $icon
+     * @return $this
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
 
         return $this;
     }
@@ -146,6 +173,19 @@ class Url extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field roles
+     *
+     * @param string $roles
+     * @return $this
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field id
      *
      * @return integer
@@ -153,6 +193,16 @@ class Url extends \Phalcon\Mvc\Model
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Returns the value of field icon
+     *
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
     }
 
     /**
@@ -213,6 +263,16 @@ class Url extends \Phalcon\Mvc\Model
     public function getTools()
     {
         return $this->tools;
+    }
+
+    /**
+     * Returns the value of field roles
+     *
+     * @return string
+     */
+    public function getRoles()
+    {
+        return $this->roles;
     }
 
     /**

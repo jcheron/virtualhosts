@@ -33,6 +33,10 @@ class ControllerBase extends Controller{
 					$item=new HtmlButton("tool-".$url->getId());
 					$item->setTagName("a");
 					$item->setContent($libelle);
+					$icon=$url->getIcon();
+					if(isset($icon)){
+						$item->addIcon($icon);
+					}
 					$path=$url->getController()."/".$url->getAction();
 					$item->setProperty("href",$this->url->get($path));
 					$item->getOnClick($path,"#content-container");
