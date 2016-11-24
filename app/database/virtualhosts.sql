@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 24 Novembre 2016 à 02:44
+-- Généré le :  Jeu 24 Novembre 2016 à 07:39
 -- Version du serveur :  10.1.16-MariaDB
 -- Version de PHP :  7.0.9
 
@@ -157,25 +157,27 @@ INSERT INTO `stypeproperty` (`idStype`, `idProperty`, `name`, `template`) VALUES
 
 CREATE TABLE `url` (
   `id` int(11) NOT NULL,
+  `icon` varchar(30) DEFAULT NULL,
   `title` varchar(100) DEFAULT NULL,
   `controller` varchar(45) DEFAULT NULL,
   `action` varchar(45) DEFAULT NULL,
   `subMenu` tinyint(1) DEFAULT NULL,
   `children` varchar(255) DEFAULT NULL,
-  `tools` varchar(255) DEFAULT NULL
+  `tools` varchar(255) DEFAULT NULL,
+  `roles` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `url`
 --
 
-INSERT INTO `url` (`id`, `title`, `controller`, `action`, `subMenu`, `children`, `tools`) VALUES
-(1, 'Accueil', 'Index', 'index', 0, '1,2,3', NULL),
-(2, 'Hosts', 'Index', 'hosts', 0, '1,2', '5,6'),
-(3, 'Virtualhosts', 'Index', 'virtualhosts', 0, '1,2,3,4', '4'),
-(4, 'Nouveau virtualhost...', 'Index', 'newVirtualhost', 0, NULL, NULL),
-(5, 'Ajouter', 'Index', 'index', 0, '1', NULL),
-(6, 'Supprimer', 'Index', 'index', 0, '1', NULL);
+INSERT INTO `url` (`id`, `icon`, `title`, `controller`, `action`, `subMenu`, `children`, `tools`, `roles`) VALUES
+(1, NULL, 'Accueil', 'Index', 'index', 0, '1,2,3', NULL, NULL),
+(2, NULL, 'Hosts', 'Index', 'hosts', 0, '1,2', '5,6', NULL),
+(3, NULL, 'Virtualhosts', 'Index', 'virtualhosts', 0, '1,2,3,4', '4', NULL),
+(4, 'add square', 'Nouveau virtualhost...', 'Index', 'newVirtualhost', 0, NULL, NULL, NULL),
+(5, NULL, 'Ajouter', 'Index', 'index', 0, '1', NULL, NULL),
+(6, NULL, 'Supprimer', 'Index', 'index', 0, '1', NULL, NULL);
 
 -- --------------------------------------------------------
 
