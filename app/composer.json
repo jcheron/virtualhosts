@@ -1,0 +1,5 @@
+{
+    "require": {
+        "phpmv/php-mv-ui": "~2.0"
+    }
+}
