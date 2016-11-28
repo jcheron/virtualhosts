@@ -6,5 +6,7 @@
 
 <p>This page is located at <code>views/index/index.volt</code></p>
 
-{{ q["btAfficher"] }}
+<div id="file"></div>
+
+{{ q["btAfficher"] }} {{ q["btApache"] }} {{ q["btNginx"] }}
 {{ q["message1"] }}
