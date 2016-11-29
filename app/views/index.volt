@@ -15,8 +15,9 @@
 		role="banner">
 		<div class="ui container">
 			<div class="ui menu secondary">
-				<div class="item">
-					<i class="world big link icon"></i>
+				<div class="header item">
+					<i class="snapchat ghost big link icon"></i>
+					Virtualhosts
 				</div>
 				<a class="item">Features</a> <a class="item">Testimonials</a> <a
 					class="item">Sign-in</a>
