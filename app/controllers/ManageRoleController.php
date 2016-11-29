@@ -11,12 +11,12 @@ class ManageRoleController extends ControllerBase
     	$roles=Role::find();
     
 		$table=$this->semantic->htmlTable("dd",0,4);
-		$table->setHeaderValues(["Rôles","Modifier","Ajouter","Supprimer"]);
+		$table->setHeaderValues(["Rôles","","",""]);
 		foreach ($roles as $Role)
 		{
 			$roleName=$Role->getName();
 			
-			$table->addRow([$Role->getName(),"","",""]);
+			$table->addRow([$Role->getName(),$edit=$this->semantic->htmlButton("editButton","Modifier"),$add=$this->semantic->htmlButton("addButton","Ajouter"),$delete=$this->semantic->htmlButton("deleteButton","Supprimer")]);
 			
 		}
 		
