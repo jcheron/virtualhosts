@@ -4,23 +4,24 @@ use Ajax\semantic\html\elements\HtmlButtonGroups;
 use Ajax\semantic\html\elements\HtmlButton;
 class TmpController extends ControllerBase{
 
-	
-	
+
+
 	public function indexAction(){
 		$this->loadMenus();
 		$semantic=$this->semantic;
 		$grid=$semantic->htmlGrid("grid");
+		$grid->setStretched()->setCelled(true);
 		$grid->addRow(2)->setValues(["Vincent",$this->createBts("vincent",["Serveurs"=>"/serveur/hosts"],"red")]);
 		$grid->addRow(2)->setValues(["Yann",$this->createBts("yann",["Connexion"=>"Accueil/connect","Reload config"=>"Config/index"])]);
 		$grid->addRow(2)->setValues(["Thomas",$this->createBts("thomas",["Config virtualhost"=>"VirtualHosts/config"])]);
 		$grid->addRow(2)->setValues(["Edouard",$this->createBts("ed",["Gest. rôles"=>"ManageRole/index","Gest. utilisateurs"=>"ManageUsers/index"])]);
 		$grid->addRow(2)->setValues(["Romain",$this->createBts("romain",["Infos compte"=>"InfoCompte/ModifInfo"])]);
-		$grid->addRow(2)->setValues(["Anthony",$this->createBts("anthony",["Liste hosts & virtualhost"=>"Listhostvirtual/listhv"])]);
+		$grid->addRow(2)->setValues(["Anthony",$this->createBts("anthony",["S'enregistrer"=>"Sign/Signin","Liste hosts & virtualhost"=>"Listhostvirtual/listhv"])]);
 		$grid->addRow(2)->setValues(["Aboudou",$this->createBts("aboudou",["Gest. types servers"=>"TypeServers/index"])]);
 		$this->jquery->getOnClick(".clickable", "","#content-container",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
 	}
-	
+
 	private function createBts($name,$actions,$color=""){
 		$bts=new HtmlButtonGroups("bg-".$name);
 		foreach ($actions as $k=>$action){
@@ -31,11 +32,11 @@ class TmpController extends ControllerBase{
 				$bt->setColor($color);
 				$bts->addElement($bt);
 		}
-		
+
 		return $bts;
-		
+
 	}
-	
+
 	public function diversAction(){
 		$this->loadMenus();
 		$dd=$this->semantic->htmlDropdown("dd");
@@ -44,8 +45,8 @@ class TmpController extends ControllerBase{
 		$dd->fromDatabaseObjects($virtualhosts, function($vh){
 			return $vh->getName();
 		});
-		
-		
+
+
 			$table=$this->semantic->htmlTable("table", 0, 2);
 			$table->setHeaderValues(["id","Nom"]);
 			$sTypes=Stype::find();
@@ -53,7 +54,7 @@ class TmpController extends ControllerBase{
 				$table->addRow([$sType->getId(),$sType->getName()]);
 			}
 	}
-	
+
 	public function hostsAction($user=NULL){
 		$this->loadMenus();
 		$hosts=Host::find();
@@ -65,9 +66,9 @@ class TmpController extends ControllerBase{
 		$list->setHorizontal()->setSelection();
 		$this->jquery->getOnClick("#lst-hosts .item","Tmp/servers","#servers",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
-		
+
 	}
-	
+
 	public function serversAction($idHost=NULL){
 		$servers=Server::find("idHost=".$idHost);
 		$list=$this->semantic->htmlList("lst-hosts");
@@ -77,8 +78,8 @@ class TmpController extends ControllerBase{
 		$list->setInverted()->setDivided()->setRelaxed();
 		echo $list->compile();
 	}
-	
-	
+
+
 	public function hostAction(){
 		$this->loadMenus();
 		$host=Host::findFirst();
