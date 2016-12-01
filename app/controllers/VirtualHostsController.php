@@ -7,6 +7,7 @@ class VirtualHostsController extends ControllerBase
 	{
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
+		
 		$this->jquery->compile($this->view);
 	}
 	
@@ -42,6 +43,15 @@ class VirtualHostsController extends ControllerBase
 		$this->tools($this->controller,$this->action);
 		
 		$semantic=$this->semantic;
+		
+		$virtualHosts = Virtualhost::findFirst();
+		$takeProperty=Virtualhostproperty::findFirst("idVirtualhost=2");	
+		$property=$takeProperty->getProperty();
+		
+		$this->view->setVar("property", $property);
+		$this->view->disable();
+		
+		var_dump($property);
 		
 		$form=$semantic->htmlForm("frm");
 		$form->addMessage("",new HtmlList("",array("Property1","Property2")),"Property","settings");
