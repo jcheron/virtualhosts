@@ -13,7 +13,7 @@ class InfoCompteController extends ControllerBase{
 		$user=User::findFirst();
 		$this->loadMenus();
 		$message=$semantic->htmlMessage("messageInfo","<b> Bienvenue ".$user->getName());
-		$message2=$semantic->htmlMessage("messageInfomodif","Votre Login :   <input type='textarea' placeholder='".$user->getLogin()."'><br></br> Votre mot de passe :  <input type='password' placeholder='".$user->getPassword()."'><br></br> Votre nom :  <input type='textarea' placeholder='".$user->getName()."'><br></br> Votre e-mail :  <input type='textarea' placeholder='".$user->getEmail()."'");
+		$message2=$semantic->htmlMessage("messageInfomodif","Votre Login :   <input type='text' placeholder='".$user->getLogin()."'><br></br> Votre mot de passe :  <input type='password' placeholder='".$user->getPassword()."'><br></br> Votre nom :  <input type='text' placeholder='".$user->getName()."'><br></br> Votre e-mail :  <input type='text' placeholder='".$user->getEmail()."'");
 		$button=$semantic->htmlButton("btValider","Validez")->setColor("green");
 		$button->onClick();
 		$this->jquery->compile($this->view);
