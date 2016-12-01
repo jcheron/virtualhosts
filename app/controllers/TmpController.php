@@ -10,7 +10,7 @@ class TmpController extends ControllerBase{
 		$this->loadMenus();
 		$semantic=$this->semantic;
 		$grid=$semantic->htmlGrid("grid");
-		$grid->addRow(2)->setValues(["Vincent",$this->createBts("vincent",["Serveurs"=>"Accueil/Serveur"],"red")]);
+		$grid->addRow(2)->setValues(["Vincent",$this->createBts("vincent",["Serveurs"=>"serveur/hosts"],"red")]);
 		$grid->addRow(2)->setValues(["Yann",$this->createBts("yann",["Connexion"=>"Accueil/connect","Reload config"=>"Config/index"])]);
 		$grid->addRow(2)->setValues(["Thomas",$this->createBts("thomas",["Config virtualhost"=>"VirtualHosts/config"])]);
 		$grid->addRow(2)->setValues(["Edouard",$this->createBts("ed",["Gest. rôles"=>"ManageRole/index","Gest. utilisateurs"=>"ManageUsers/index"])]);
