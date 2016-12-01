@@ -77,5 +77,19 @@ class TmpController extends ControllerBase{
 		$list->setInverted()->setDivided()->setRelaxed();
 		echo $list->compile();
 	}
+	
+	
+	public function hostAction(){
+		$this->loadMenus();
+		$host=Host::findFirst();
+		echo $host->getName();
+		echo $host->getUser()->getLogin();
+		$servers=$host->getServers();
+		echo "<ul>";
+		foreach ($servers as $server){
+			echo "<li>".$server->getName()."</li>";
+		}
+		echo "</ul>";
+	}
 }
 

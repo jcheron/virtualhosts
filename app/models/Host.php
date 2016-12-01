@@ -160,7 +160,7 @@ class Host extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Server', 'idHost', ['alias' => 'Server']);
+        $this->hasMany('id', 'Server', 'idHost', ['alias' => 'Servers']);
         $this->belongsTo('idUser', 'User', 'id', ['alias' => 'User']);
     }
 
