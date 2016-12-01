@@ -1,0 +1,1 @@
+<h1>Bienvenu sur la page d'information de compte</h1>
