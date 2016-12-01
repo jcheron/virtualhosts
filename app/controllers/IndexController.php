@@ -14,6 +14,8 @@ class IndexController extends ControllerBase{
     	$button->onClick($message->jsHtml("Click sur bouton"));
 		$semantic->htmlButton("btApache","Apache file","green")->getOnClick("Index/readApache","#file");
 		$semantic->htmlButton("btNginx","NginX file","black")->getOnClick("Index/readNginX","#file");
+		$semantic->htmlButton("btTmp","Accès aux US","purple")->getOnClick("Tmp/index","#file");
+		
 		$this->jquery->compile($this->view);
     }
 

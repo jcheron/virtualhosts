@@ -8,5 +8,5 @@
 
 <div id="file"></div>
 
-{{ q["btAfficher"] }} {{ q["btApache"] }} {{ q["btNginx"] }}
+{{ q["btAfficher"] }} {{ q["btApache"] }} {{ q["btNginx"] }} {{ q["btTmp"] }}
 {{ q["message1"] }}
