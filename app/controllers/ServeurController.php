@@ -13,7 +13,6 @@ class ServeurController extends ControllerBase{
 		$this->jquery->getOnClick(".clickable", "","#content-container",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
 	}
-	
 	private function createBts($name,$actions){
 		$bts=new HtmlButtonGroups("bg-".$name);
 		foreach ($actions as $k=>$action){
