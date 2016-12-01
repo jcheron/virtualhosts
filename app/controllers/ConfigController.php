@@ -23,5 +23,8 @@ class ConfigController extends ControllerBase
 		
 		//
 	}
+	public function testAction(){
+		var_dump($_SESSION);
+	}
 	
 }

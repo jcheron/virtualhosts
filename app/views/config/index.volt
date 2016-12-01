@@ -6,9 +6,9 @@
 
 <label>Utilisateur : </label> </br>
 <div class="ui  disabled dropdown">
- UtilisateurConnecté@gmail.com <i class="dropdown icon"></i>
+yann.aubry@sts-sio-caen.info <i class="dropdown icon"></i>
   <div class="menu">
-    <div class="item">UtilisateurConnecté@gmail.com</div>
+    <div class="item">yann.aubry@sts-sio-caen.info</div>
 
   </div>
 </div>
@@ -18,7 +18,9 @@
         <label>Machine :</label>       
           <select class="ui fluid search dropdown" name=server">
           {% for host in hosts %}
+          {% if host.getIdUser() == 3 %}
             <option value="{{ host.getId() }}">{{ host.getName() }}</option>
+            {% endif %}
 		{% endfor %}
           </select>
 	</div>	
