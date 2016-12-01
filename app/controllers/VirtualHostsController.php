@@ -44,18 +44,13 @@ class VirtualHostsController extends ControllerBase
 		
 		$semantic=$this->semantic;
 		
-		$virtualHosts = Virtualhost::findFirst();
-		$takeProperty=Virtualhostproperty::findFirst("idVirtualhost=2");	
-		$property=$takeProperty->getProperty();
-		
-		$this->view->setVar("property", $property);
-		$this->view->disable();
-		
-		var_dump($property);
+		$virtualHostProperty=Virtualhostproperty::findFirst("idVirtualhost=2");
+		$property=$virtualHostProperty->getProperty();
+		$value=$virtualHostProperty->getValue();
 		
 		$form=$semantic->htmlForm("frm");
-		$form->addMessage("",new HtmlList("",array("Property1","Property2")),"Property","settings");
-		$form->addInputs(array(["identifier"=>"property1","label"=>"property1","placeholder"=>"Nouvelle valeur"]));
+		$form->addMessage("",new HtmlList("",array("<i>Description : </i>" . $property->getDescription(),"<i>Valeur : </i>" . $value)),$property->getName(),"settings");
+		$form->addInputs(array(["identifier"=>"property	","label"=>"Changer attribut de : " . $property->getName(),"placeholder"=>"Nouvelle valeur"]));
 		
 		$this->jquery->compile($this->view);
 	}
