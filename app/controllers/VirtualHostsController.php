@@ -1,5 +1,6 @@
 <?php
-
+use Ajax\semantic\html\collections\form\HtmlFormInput;
+use Ajax\semantic\html\elements\HtmlList;
 class VirtualHostsController extends ControllerBase
 {
 	public function indexAction()
@@ -13,6 +14,8 @@ class VirtualHostsController extends ControllerBase
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		
+		$semantic=$this->semantic;
+		
 		$virtualHosts = Virtualhost::findFirst();
 		$server=$virtualHosts->getServer();
 		$host=$server->getHost();
@@ -23,10 +26,8 @@ class VirtualHostsController extends ControllerBase
 		$table=$this->semantic->htmlTable("infos",0,4);
 		$table->setHeaderValues(["Machine","Serveur","Adresse IPv6","Adresse IPv6"]);
 		$table->addRow([$host->getName(),$server->getName(),$host->getIpv4(),$IPv6]);
-		
-		$modifier=$this->semantic->htmlButton("edit","Modifier");
-		$modifier->setPositive();
-		$modifier->asLink("VirtualHosts/edit");
+			
+		$semantic->htmlButton("modifier","Modifier","black")->getOnClick("VirtualHosts/editApache","#modification")->setPositive();
 		
 		$buttons=$this->semantic->htmlButtonGroups("importOrExport",array("Importer","Exporter"));
 		$buttons->insertOr(0,"ou");
@@ -39,6 +40,12 @@ class VirtualHostsController extends ControllerBase
 	public function editApacheAction(){
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
+		
+		$semantic=$this->semantic;
+		
+		$form=$semantic->htmlForm("frm");
+		$form->addMessage("",new HtmlList("",array("Property1","Property2")),"Property","settings");
+		$form->addInputs(array(["identifier"=>"property1","label"=>"property1","placeholder"=>"Nouvelle valeur"]));
 		
 		$this->jquery->compile($this->view);
 	}
