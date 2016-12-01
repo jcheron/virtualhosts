@@ -1,5 +1,5 @@
 <?php
-use Ajax\semantic\html\collections\form\HtmlFormInput;
+use Ajax\semantic\html\elements\HtmlIcon;
 use Ajax\semantic\html\elements\HtmlList;
 class VirtualHostsController extends ControllerBase
 {
@@ -38,7 +38,7 @@ class VirtualHostsController extends ControllerBase
 		$this->jquery->compile($this->view);
 	}
 	
-	public function editApacheAction(){
+	public function editApacheAction(){		
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		
@@ -51,6 +51,8 @@ class VirtualHostsController extends ControllerBase
 		$form=$semantic->htmlForm("frm");
 		$form->addMessage("",new HtmlList("",array("<i>Description : </i>" . $property->getDescription(),"<i>Valeur : </i>" . $value)),$property->getName(),"settings");
 		$form->addInputs(array(["identifier"=>"property	","label"=>"Changer attribut de : " . $property->getName(),"placeholder"=>"Nouvelle valeur"]));
+		$form->addButton("submit", "Envoyer")->postFormOnClick("Virtualhost/editApache", $form);
+		
 		
 		$this->jquery->compile($this->view);
 	}
