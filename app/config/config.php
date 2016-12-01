@@ -14,7 +14,7 @@ return new \Phalcon\Config([
         'password'    => '',
         'dbname'      => 'virtualhosts',
         'charset'     => 'utf8',
-    	'port'        => '3305',
+    	'port'        => '3306',
     ],
     'application' => [
         'appDir'         => APP_PATH . '/',
