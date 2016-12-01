@@ -9,6 +9,10 @@ use Phalcon\Mvc\Dispatcher;
 class ControllerBase extends Controller{
 	protected $controller;
 	protected $action;
+
+	/**
+	 * @property \Ajax\Semantic;
+	 */
 	protected $semantic;
 
 	public function beforeExecuteRoute(Dispatcher $dispatcher){
@@ -45,6 +49,13 @@ class ControllerBase extends Controller{
 			}
 		}
 		return $menu;
+	}
+	
+	protected function loadMenus($controller=NULL,$action=NULL){
+		if(!isset($controller)) $controller=$this->controller;
+		if(!isset($action)) $action=$this->action;
+		$this->secondaryMenu($controller, $action);
+		$this->tools($controller, $action);
 	}
 
 	protected function secondaryMenu($controller,$action){
