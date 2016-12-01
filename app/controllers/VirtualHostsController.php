@@ -6,9 +6,6 @@ class VirtualHostsController extends ControllerBase
 	{
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
-		
-		
-		
 		$this->jquery->compile($this->view);
 	}
 	
@@ -26,6 +23,23 @@ class VirtualHostsController extends ControllerBase
 		$table=$this->semantic->htmlTable("infos",0,4);
 		$table->setHeaderValues(["Machine","Serveur","Adresse IPv6","Adresse IPv6"]);
 		$table->addRow([$host->getName(),$server->getName(),$host->getIpv4(),$IPv6]);
+		
+		$modifier=$this->semantic->htmlButton("edit","Modifier");
+		$modifier->setPositive();
+		$modifier->asLink("VirtualHosts/edit");
+		
+		$buttons=$this->semantic->htmlButtonGroups("importOrExport",array("Importer","Exporter"));
+		$buttons->insertOr(0,"ou");
+	
+		
+    	$this->jquery->exec("Prism.highlightAll();",true);
+		$this->jquery->compile($this->view);
+	}
+	
+	public function editApacheAction(){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		
 		$this->jquery->compile($this->view);
 	}
 }

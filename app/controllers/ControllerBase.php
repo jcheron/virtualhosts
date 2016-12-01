@@ -9,8 +9,11 @@ use Phalcon\Mvc\Dispatcher;
 class ControllerBase extends Controller{
 	protected $controller;
 	protected $action;
-	protected $semantic;
 
+	/**
+	 * @property \Ajax\Semantic;
+	 */
+	protected $semantic;
 	public function beforeExecuteRoute(Dispatcher $dispatcher){
 		if($this->request->isAjax()){
 			$this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
