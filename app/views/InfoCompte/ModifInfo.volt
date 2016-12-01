@@ -1,9 +1,10 @@
 <div class="ui info message">
-<h1>Attention vous entrez dans une zone de modification !</h1>
+	<div class="header">Attention vous entrez dans une zone de modification !</div>
 </div>
-
 {{ q["messageInfo"] }}
-Informations à modifier :
-{{ q["messageInfomodif"] }}
-<br></br>
+
+{{ q["frm4"] }}
+
+
 {{ q["btValider"] }}
+
