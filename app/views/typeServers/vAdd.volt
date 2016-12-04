@@ -12,9 +12,9 @@
 <button class="ui primary button">
   Valider
 </button>
-<button class="ui button">
+<a href="{{ url("typeServers") }}" class="ui button">
   Annuler
-</button>
+</a>
 </div>
 </div>
 </form>
