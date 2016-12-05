@@ -6,5 +6,5 @@
   <p>Vous pouvez visualiser les serveurs qui sont sur vos Hosts </p>
 </div>
 {{ q["lst-hosts"] }}
-<div id="servers" class="ui inverted segment"></div>
+<div id="servers" class="ui segment"></div>
 {{ script_foot }}

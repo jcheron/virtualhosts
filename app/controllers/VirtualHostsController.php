@@ -25,6 +25,7 @@ class VirtualHostsController extends ControllerBase
 		if($host->getIpv6() == ""){$IPv6 = "Aucune attribuée";}else{$IPv6 = $host->getIpv6();}
 		
 		$this->view->setVar("virtualHost", $virtualHosts);
+		
 		$table=$this->semantic->htmlTable("infos",0,4);
 		$table->setHeaderValues(["Machine","Serveur","Adresse IPv6","Adresse IPv6"]);
 		$table->addRow([$host->getName(),$server->getName(),$host->getIpv4(),$IPv6]);
