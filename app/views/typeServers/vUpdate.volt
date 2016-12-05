@@ -1,4 +1,4 @@
-<!--{{ q["frm"] }}-->
+<!--{{ q["frm"] }}
 <form class="ui form" action="{{ url("TypeServers/vUpdateSubmit") }}" method="Post">
   <div class="field">
     <label>Nom</label>
@@ -13,4 +13,8 @@
   <a href="{{ url("typeServers") }}" class="ui button">
   Annuler
 </a>
-</form>
+</form>-->
+<div class="ui green segment">
+    {{ q["frmUpdate"] }}
+</div>
+{{ script_foot }}

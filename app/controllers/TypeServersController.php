@@ -17,14 +17,16 @@ class TypeServersController extends ControllerBase
     	$btnAdd->getOnClick("TypeServers/vAdd","#divAction");
     	
     	
-    	$typeServers = Stype::find(); 
+    	$typeServers = Stype::find();
+    	
     	$i=0;
     	foreach ($typeServers as $typeServer){
-    		$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","green")->getOnClick("TypeServers/vUpdate/".$typeServer->getId(),"#divAction");
-    		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","red")->getOnClick("TypeServers/vDelete/".$typeServer->getId(),"#divAction");
+    		$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick("TypeServers/vUpdate/".$typeServer->getId(),"#divAction");
+    		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("TypeServers/vDelete/".$typeServer->getId(),"#divAction");
     		$table->addRow([$typeServer->getId(),$typeServer->getName(),$btnUpdate.$btnDelete]);
     		$i++;
     	}
+    	
     	$this->view->setVars(["typeServers"=>$typeServers]);
     	$this->jquery->compile($this->view);
     	
@@ -53,8 +55,8 @@ class TypeServersController extends ControllerBase
     	
     	if(!empty($_POST['name'] && $_POST['configTemplate'])){
 	    	$Stype = new Stype();
-	    	// Stocke et vérifie les erreurs
-	    	$success = $Stype->save(
+
+	    	$Stype->save(
 	    			$this->request->getPost(),
 	    			[
 	    					"name",
@@ -74,9 +76,22 @@ class TypeServersController extends ControllerBase
     public function vUpdateAction($id){
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
-    	$semantic=$this->semantic;
     	
     	$typeServer = Stype::findFirst($id);
+    	
+    	$semantic=$this->semantic;
+    	 
+    	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+    	$btnCancel->getOnClick("TypeServers","#divAction");
+    	 
+    	$form=$semantic->htmlForm("frmUpdate");
+    	$form->addInput("name","Nom")->setValue($typeServer->getName());
+    	$form->addItem(new HtmlFormTextarea("configTemplate","Template"))->setValue($typeServer->getConfigTemplate())->setRows(10);
+    	//$form->addButton("","Valider")->asSubmit();
+    	$form->addButton("submit", "Valider")->postFormOnClick("TypeServers/vUpdateSubmit", "frmUpdate","#divAction");
+    	
+    	
+    	
     	
     	$this->view->setVars(["typeServer"=>$typeServer]);
 
@@ -101,34 +116,31 @@ class TypeServersController extends ControllerBase
     	echo $this->jquery->compile();
     }
     public function vDeleteAction($id){
-    	
+    	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
+    	
+    	$typeServer = Stype::findFirst($id);
     	
     	$semantic=$this->semantic;
     	
     	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
     	$btnCancel->getOnClick("TypeServers","#divAction");
     	 
-    	$form=$semantic->htmlForm("frmAdd");
-    	$form->addInput("name","Nom");
-    	$form->addItem(new HtmlFormTextarea("configTemplate","Template"))->setRows(10);
-    	//$form->addButton("","Valider")->asSubmit();
-    	$form->addButton("submit", "Valider")->postFormOnClick("TypeServers/vAddSubmit", "frmAdd","#divAction");
+    	$form=$semantic->htmlForm("frmDelete");
     	
+    	$form->addHeader("Voulez-vous vraiment supprimer l'élément ". $typeServer->getName()."?",3);
+    	$form->addInput("id",NULL,"hidden",$typeServer->getId());
+    	$form->addInput("name","Nom","text",NULL,"Confirmer le nom du type de serveur");
+    	$form->addButton("submit", "Supprimer")->postFormOnClick("TypeServers/confirmDelete", "frmDelete","#divAction");
     	
-    	$this->secondaryMenu($this->controller,$this->action);
-    	$this->tools($this->controller,$this->action);
-    	$semantic=$this->semantic;
-    	 
-    	$typeServer = Stype::findFirst($id);
-    	 
+      	 
     	$this->view->setVars(["element"=>$typeServer]);
     
     	$this->jquery->compile($this->view);
     }
     
-    public function confirmDeleteAction($id){
-    	$Stype = Stype::findFirst($id);
+    public function confirmDeleteAction(){
+    	$Stype = Stype::findFirst($_POST['id']);
     	
     	if($Stype->getName() == $_POST['name']){
     		$Stype->delete();
@@ -138,8 +150,8 @@ class TypeServersController extends ControllerBase
     		
     	}else{
     		
-    		$this->flash->message("error","Le serveur n'a pas été supprimé ");
-    		$this->jquery->get("typeServers","#refresh");
+    		$this->flash->message("error","Le serveur n'a pas été supprimé : le nom ne correspond pas ! ");
+    		$this->jquery->get("typeServers/index","#refresh");
     	}
     	
     	echo $this->jquery->compile();

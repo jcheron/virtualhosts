@@ -1,3 +1,4 @@
+<!-- 
 <div class="ui red segment">
     <div class="ui error message">
       <i class="close icon"></i>
@@ -21,4 +22,11 @@
     	</div>
       </ul>
     </div>
-</div><br>
+</div>
+ -->
+<div class="ui error message">
+     <div class="ui red segment">
+        {{ q["frmDelete"] }}
+    </div>
+</div>
+{{ script_foot }}
