@@ -14,9 +14,9 @@ class ManageRoleController extends ControllerBase
 		$table->setHeaderValues(["Rôles","","",""]);
 		foreach ($roles as $Role)
 		{
-			$table->addRow([$Role->getName(),$semantic->htmlButton("editButton","Modifier","")->getOnClick("ManageRole/editRole/2","#editRole"),
+			$table->addRow([$i=$Role->getName(),$semantic->htmlButton("editButton","Modifier","")->getOnClick("ManageRole/editRole/$i","#editRole"),
 											 $semantic->htmlButton("addButton","Ajouter","")->getOnClick("ManageRole/addRole","#addRole"),
-											 $semantic->htmlButton("deleteButton","Supprimer","")->getOnClick("ManageRole/deleteRole","#deleteRole")]);	
+											 $semantic->htmlButton("deleteButton","Supprimer","")->getOnClick("ManageRole/deleteRole","#deleteRole")]);
 			
 		}
 		
@@ -27,12 +27,13 @@ class ManageRoleController extends ControllerBase
 
 
  $this->view->disable();
-    	var_dump($a) ;
-
+ //$a="user";
+    	var_dump($a);
+			$role=Role::findFirst("name='$a'");
 			$semantic=$this->semantic;
 			$form=$semantic->htmlForm("frm1");
-			$form->addInput("idRole","ID");
-			$form->addInput("nameRole","Role");
+			$form->addInput("idRole","ID","",$role->getId());
+			$form->addInput("nameRole","Nom","",$a);
 			$form->addButton("","Valider")->asSubmit();
 			echo $form;
 			$this->jquery->compile($this->view);

@@ -2,3 +2,4 @@
 
 </div>
 {{ q["dd"] }}
+{{ script_foot }}
