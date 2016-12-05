@@ -1,4 +1,4 @@
-<h1 class="ui dividing header">Mise à jour du fichier de configuration</h1>
+<h1 class="ui dividing header">Mise à jour du fichier de configuration <i class="configure icon"></i></h1>
 </br>
 
 
@@ -6,22 +6,20 @@
 <h4 class="ui dividing header">Recherche les VirtualHosts d'une machine ...</h4>
 <label>Utilisateur : </label> </br>
 <div class="ui  disabled dropdown">
-{{ user.getEmail() }} <i class="dropdown icon"></i>
-  <div class="menu">
-    <div class="item">yann.aubry@sts-sio-caen.info</div>
+{{ user.getEmail() }} 
 
-  </div>
 </div>
 
 	
 	<div class="field">
         <label>Machine :</label>       
-          <select class="ui fluid search dropdown" name=server">
+          <select class="ui fluid search dropdown" name="host">
           {% for host in hosts %}
           {% if host.getIdUser() == user.getId() %}
             <option value="{{ host.getId() }}">{{ host.getName() }}</option>
             {% endif %}
 		{% endfor %}
+		<option value="rien">Je ne possède aucune machine</option>
           </select>
 	</div>	
 
