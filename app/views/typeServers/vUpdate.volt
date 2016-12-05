@@ -9,5 +9,8 @@
     <textarea name="configTemplate">{{ typeServer.getConfigTemplate() }}</textarea>
   </div>
   <input type="hidden" name="id" value="{{ typeServer.getId() }}">
-  <button class="ui button" type="submit">Submit</button>
+  <button class="ui button" type="submit">Modifier</button>
+  <a href="{{ url("typeServers") }}" class="ui button">
+  Annuler
+</a>
 </form>

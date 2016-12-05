@@ -10,43 +10,65 @@ class TypeServersController extends ControllerBase
     	$this->tools($this->controller,$this->action);
     	$semantic=$this->semantic;
     	
-    	//$table = $semantic->htmlTable("table",0,3);
-    	//$table->setHeaderValues(["id","nom","Action"]);
-    	$semantic->htmlButton("btnAdd","Ajouter","blue")->getOnClick("TypeServers/vAdd","#divAdd");
+    	$table = $semantic->htmlTable("table",0,3);
+    	$table->setHeaderValues(["id","nom","Action"]);
     	
-    	//$btnUpdate = $semantic->htmlButton("btnUpdate","Modifier","green")->getOnClick("TypeServers/vUpdate");
+    	$btnAdd = $semantic->htmlButton("btnAdd","Ajouter","fluid ui button blue");
+    	$btnAdd->getOnClick("TypeServers/vAdd","#divAction");
+    	
+    	
     	$typeServers = Stype::find(); 
-    	/*foreach ($typeServers as $typeServer){
-    		$btnUpdate = $semantic->htmlButton("btnUpdate","Modifier","green")->getOnClick("TypeServers/vUpdate/".$typeServer->getId(),"#divAdd");
-    		$table->addRow([$typeServer->getId(),$typeServer->getName(),$btnUpdate]);
-    	}*/
+    	$i=0;
+    	foreach ($typeServers as $typeServer){
+    		$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","green")->getOnClick("TypeServers/vUpdate/".$typeServer->getId(),"#divAction");
+    		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","red")->getOnClick("TypeServers/vDelete/".$typeServer->getId(),"#divAction");
+    		$table->addRow([$typeServer->getId(),$typeServer->getName(),$btnUpdate.$btnDelete]);
+    		$i++;
+    	}
     	$this->view->setVars(["typeServers"=>$typeServers]);
     	$this->jquery->compile($this->view);
     	
     }
     
     public function vAddAction(){
+    	$this->tools($this->controller,$this->action);
+ 
     	$semantic=$this->semantic;
+    	
+    	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+    	$btnCancel->getOnClick("TypeServers","#divAction");
+    	
     	$form=$semantic->htmlForm("frmAdd");
-    	$form->addInput("Nom","Nom");
-    	$form->addItem(new HtmlFormTextarea("template","Template"))->setRows(2);
-    	$form->addButton("","Submit")->asSubmit();
+    	$form->addInput("name","Nom");
+    	$form->addItem(new HtmlFormTextarea("configTemplate","Template"))->setRows(10);
+    	//$form->addButton("","Valider")->asSubmit();
+    	$form->addButton("submit", "Valider")->postFormOnClick("TypeServers/vAddSubmit", "frmAdd","#divAction");
+    	
+    	
+    	
+    	$this->jquery->compile($this->view);
     }
     
     public function vAddSubmitAction(){
-    	$Stype = new Stype();
-    	// Stocke et vérifie les erreurs
-    	$success = $Stype->save(
-    			$this->request->getPost(),
-    			[
-    					"name",
-    					"configTemplate",
-    			]
-    			);
     	
-    	if ($success) {
-    		echo "Le serveur a été inseré avec succès";
-    	} 
+    	if(!empty($_POST['name'] && $_POST['configTemplate'])){
+	    	$Stype = new Stype();
+	    	// Stocke et vérifie les erreurs
+	    	$success = $Stype->save(
+	    			$this->request->getPost(),
+	    			[
+	    					"name",
+	    					"configTemplate",
+	    			]
+	    			);
+	    	
+	    	$this->flash->message("success", "Le serveur a été inseré avec succès");
+	    	$this->jquery->get("typeServers","#refresh");
+    	
+    	}else{
+    		$this->flash->message("error", "Veuillez remplir tous les champs");
+    	}
+    	echo $this->jquery->compile();
     }
     
     public function vUpdateAction($id){
@@ -73,9 +95,54 @@ class TypeServersController extends ControllerBase
     			);
     	 
     	if ($success) {
-    		echo "Le serveur a été modifié avec succès";
+    		$this->flash->message("success","Le serveur a été modifié avec succès");
     	}
+    	
+    	echo $this->jquery->compile();
     }
-
+    public function vDeleteAction($id){
+    	
+    	$this->tools($this->controller,$this->action);
+    	
+    	$semantic=$this->semantic;
+    	
+    	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+    	$btnCancel->getOnClick("TypeServers","#divAction");
+    	 
+    	$form=$semantic->htmlForm("frmAdd");
+    	$form->addInput("name","Nom");
+    	$form->addItem(new HtmlFormTextarea("configTemplate","Template"))->setRows(10);
+    	//$form->addButton("","Valider")->asSubmit();
+    	$form->addButton("submit", "Valider")->postFormOnClick("TypeServers/vAddSubmit", "frmAdd","#divAction");
+    	
+    	
+    	$this->secondaryMenu($this->controller,$this->action);
+    	$this->tools($this->controller,$this->action);
+    	$semantic=$this->semantic;
+    	 
+    	$typeServer = Stype::findFirst($id);
+    	 
+    	$this->view->setVars(["element"=>$typeServer]);
+    
+    	$this->jquery->compile($this->view);
+    }
+    
+    public function confirmDeleteAction($id){
+    	$Stype = Stype::findFirst($id);
+    	
+    	if($Stype->getName() == $_POST['name']){
+    		$Stype->delete();
+    		
+    		$this->flash->message("success","Le serveur a été supprimé avec succès");
+    		$this->jquery->get("typeServers","#refresh");
+    		
+    	}else{
+    		
+    		$this->flash->message("error","Le serveur n'a pas été supprimé ");
+    		$this->jquery->get("typeServers","#refresh");
+    	}
+    	
+    	echo $this->jquery->compile();
+    }
 }
 
