@@ -2,6 +2,7 @@
 use Ajax\semantic\html\elements\HtmlList;
 use Ajax\semantic\html\modules\checkbox\HtmlCheckbox;
 use Ajax\semantic\html\elements\HtmlButton;
+use Ajax\semantic\html\elements\HtmlInput;
 class VirtualHostsController extends ControllerBase
 {
 	public function indexAction()
@@ -46,8 +47,6 @@ class VirtualHostsController extends ControllerBase
 		$semantic=$this->semantic;
 		
 		$virtualHostProperties=Virtualhostproperty::find("idVirtualhost=2");
-				
-		$form=$semantic->htmlForm("frm");
 		$table=$semantic->htmlTable('infos',1,5);
 		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
 		$i=0;
@@ -55,14 +54,20 @@ class VirtualHostsController extends ControllerBase
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
 			$value=$virtualHostProperty->getValue();
-			$table->setRowValues($i,[HtmlCheckbox::slider("check".$i."")->setFitted(),$property->getName(), $property->getDescription(),$value,$form->addInputs(array(["identifier"=>"property","","placeholder"=>"Nouvelle valeur"]))]);
+			$table->setRowValues($i,[HtmlCheckbox::slider("check".$i."")->setFitted(),$property->getName(), $property->getDescription(),$value,new HtmlInput("property","text",$value,"Nouvelle valeur")]);
 			$i=$i+1;
 		}
 		$footer=$table->getFooter()->setFullWidth();
 		$footer->mergeCol(0,1);
-		$footer->getCell(0,1)->setValue([HtmlButton::labeled("submit","Valider","settings")->setFloated("right")->setColor('blue')]);
+		$bt=HtmlButton::labeled("submit","Valider","settings");
+		$bt->setFloated("right")->setColor('blue');
+		$bt->postFormOnClick("VirtualHosts/updateConfig", "frmConfig","#info");
+		$footer->getCell(0,1)->setValue([$bt]);
 		$table->addVariation("compact")->setDefinition()->setCelled();	
-
+	
 		$this->jquery->compile($this->view);
+	}
+	public function updateConfigAction(){
+		var_dump($_POST);
 	}
 }

@@ -1,5 +1,10 @@
 <h2 style="padding-top:10px">Propriétés</h2>
-<hr />
+
+   <div class="ui message info" id="info"></div>
+
+
+<form id="frmConfig">
 {{ q["infos"] }}
-<hr />
+</form>
 <br />
+{{ script_foot }}
