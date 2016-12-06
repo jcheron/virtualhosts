@@ -1,5 +1,5 @@
 <?php
-
+use Phalcon\Mvc\View;
 use Ajax\semantic\html\elements\HtmlButtonGroups;
 use Ajax\semantic\html\elements\HtmlButton;
 class ServeurController extends ControllerBase{
@@ -54,6 +54,12 @@ class ServeurController extends ControllerBase{
 			$item->addToProperty("data-ajax", $host->getId());
 		}
 		$list->setHorizontal();
+		
+		
+		$list->setSelection();
+		
+		
+		
 		$this->jquery->getOnClick("#lst-hosts .item","Serveur/servers","#servers",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
 		
@@ -67,41 +73,101 @@ class ServeurController extends ControllerBase{
 		$semantic=$this->semantic;
 		
 		$table=$semantic->htmlTable('table4',0,5);
-		$table->setHeaderValues([" ","Nom du Serveur","Configuration"," "]);
+		$table->setHeaderValues([" ","Nom du Serveur","Configuration","Modifier","Supprimer"]);
+		$i=0;
 		
 		foreach ($servers as $server){
+			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("VirtualHosts/config/","#divAction");
 			
 			
+			$btnCancel = $semantic->htmlButton("btnCancel-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/","#divAction");
 			$table->addRow([" ",$server->getName(),
-								$server->getConfig()," ",$buttons=$semantic->htmlButtonGroups("bg1",array("Supprimer","Configurer"))]);
-			
+								$server->getConfig(),$btnConfig,$btnCancel]);
 			
 			$table->setDefinition();
+			$i++;
+			
 		}
+	
 		echo $table;
-
 		echo "<br/> <br/>";
-		$ajout=$semantic->htmlButton("ajouter","Ajouter")->getOnClick("virtualhosts/"," ")->setNegative();
-		echo $ajout;
 		
-		
-		
+		$test=$semantic->htmlButton("ajouter","Ajouter","black")->getOnClick("Serveur/vUpdate","#divAction")->setNegative();
+		echo $test;
+		$this->jquery->exec("$('[data-ajax=".$idHost."]').toggleClass('active');",true);
 		
 		$list->setInverted()->setDivided()->setRelaxed();
+		echo $this->jquery->compile($this->view);
+	}
+	
+	/* ajout serveur */
+	
+	public function vUpdateAction($id){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		 
+		$Server = Server::findFirst($id);
+		 
+		$semantic=$this->semantic;
+	
+		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+		$btnCancel->getOnClick("TypeServers","#divAction");
+	
+		$form=$semantic->htmlForm("frmUpdate");
+		$form->addInput("name","Nom")->setValue($Server->getName());
+		$form->addItem(new HtmlFormTextarea("configTemplate","Template"))->setValue($Server->getConfigTemplate())->setRows(10);
+		$form->addButton("submit", "Valider")->postFormOnClick("TypeServers/vUpdateSubmit", "frmUpdate","#divAction");
+		 
+		 
+		$this->view->setVars(["Server"=>$Server]);
+	
 		$this->jquery->compile($this->view);
 	}
 	
-	/* supprimer serveurs */
-	public function deleteserveurAction(){
-		$this->secondaryMenu($this->controller,$this->action);
-		$this->tools($this->controller,$this->action);
-		$semantic=$this->semantic;
-	}
 	
-	/*ajouter serveurs*/
-	public function ajoutserveurAction(){
+	
+	
+	
+	/* supprimer serveurs */
+	public function vDeleteAction($id){
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
+		 
+		$Server = Server::findFirst($id);
+		 
 		$semantic=$this->semantic;
+		
+		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+		$btnCancel->getOnClick("TypeServers","#divAction");
+		
+		$form=$semantic->htmlForm("frmDelete");
+		 
+		$form->addHeader("Voulez-vous vraiment supprimer le serveur : ". $Server->getName()."?",3);
+		$form->addInput("id",NULL,"hidden",$Server->getId());
+		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du type de serveur");
+		$form->addButton("submit", "Supprimer")->postFormOnClick("TypeServers/confirmDelete", "frmDelete","#divAction");
+		 
+		
+		$this->view->setVars(["element"=>$Server]);
+		
+		$this->jquery->compile($this->view);
+		
+	}
+	public function confirmDeleteAction(){
+		$Server= Server::findFirst($_POST['id']);
+		 
+		if($Server->getName() == $_POST['name']){
+			$Server->delete();
+	
+			$this->flash->message("success","Le serveur a été supprimé avec succès");
+			$this->jquery->get("Servers","#refresh");
+	
+		}else{
+	
+			$this->flash->message("error","Le serveur n'a pas été supprimé : le nom ne correspond pas ! ");
+			$this->jquery->get("typeServers/index","#refresh");
+		}
+		 
+		echo $this->jquery->compile();
 	}
 }
