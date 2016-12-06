@@ -1,19 +1,22 @@
+
 <div id="index">
 
+	<div id="divAction"></div>
 
-<div id="divAction"></div>
-
-
-<div id="refresh">
-<div class="page-header">
-    <h1>Type Serveurs</h1><br>
-</div>
-    <div class="ui blue segment">
-        {{ q["btnAdd"] }}
+    <div id="refresh">
+    <div id="tools-container">
+    	{{ q["tools"] }}
     </div>
-    <div class="ui black segment">
-        {{ q['table'] }}
+    <br>
+        <div class="page-header">
+            <h1>Type Serveurs</h1>
+        </div>
+        <div class="ui blue segment">
+            {{ q["btnAdd"] }}
+        </div>
+        <div class="ui black segment">
+            {{ q['table'] }}
+        </div>
     </div>
-</div>
 </div>
 {{ script_foot }}

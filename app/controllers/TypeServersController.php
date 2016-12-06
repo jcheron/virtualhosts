@@ -41,8 +41,8 @@ class TypeServersController extends ControllerBase
     	$btnCancel->getOnClick("TypeServers/index","#index");
     	
     	$form=$semantic->htmlForm("frmAdd");
-    	$form->addInput("name","Nom * :");
-    	$form->addItem(new HtmlFormTextarea("configTemplate","Template * :"))->setRows(10);
+    	$form->addInput("name","Nom * :","text",false,"Nom du type de serveur");
+    	$form->addItem(new HtmlFormTextarea("configTemplate","Template * :",false,"Template"))->setRows(10);
     	//$form->addButton("","Valider")->asSubmit();
     	$form->addButton("submit", "Valider","ui blue button")->postFormOnClick("TypeServers/vAddSubmit", "frmAdd","#divAction");
     	$form->addButton("btnCancel", "Annuler","ui red button");
@@ -65,7 +65,7 @@ class TypeServersController extends ControllerBase
 	    			]
 	    			);
 	    	
-	    	$this->flash->message("success", "Le serveur a été inseré avec succès");
+	    	$this->flash->message("success", "Le serveur '".$_POST['name']."' a été inseré avec succès");
 	    	$this->jquery->get("typeServers","#refresh");
     	
     	}else{
@@ -113,7 +113,7 @@ class TypeServersController extends ControllerBase
     			);
     	 
     	if ($success) {
-    		$this->flash->message("success","Le serveur a été modifié avec succès");
+    		$this->flash->message("success","Le serveur '".$Stype->getName()."' a été modifié avec succès");
     		$this->jquery->get("typeServers","#refresh");
     	}
     	
@@ -150,12 +150,12 @@ class TypeServersController extends ControllerBase
     	if($Stype->getName() == $_POST['name']){
     		$Stype->delete();
     		
-    		$this->flash->message("success","Le serveur a été supprimé avec succès");
+    		$this->flash->message("success","Le type de serveur '".$_POST['name']."' a été supprimé avec succès");
     		$this->jquery->get("typeServers","#refresh");
     		
     	}else{
     		
-    		$this->flash->message("error","Le serveur n'a pas été supprimé : le nom ne correspond pas ! ");
+    		$this->flash->message("error","Le type de serveur '".$_POST['name']."' n'a pas été supprimé : le nom ne correspond pas ! ");
     		$this->jquery->get("typeServers","#refresh");
     	}
     	
