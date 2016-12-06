@@ -1,20 +1,57 @@
+<h1 class="ui dividing header">Mise à jour du fichier de configuration <i class="configure icon"></i></h1>
+</br>
+
+
+<form action="{{ url("Config/index") }}" class="ui form" method="POST" id='retour'>
+<button class="ui yellow button" id="Valider">
+<i class="reply icon"></i>
+  Retour 
+</button>
+
+</form>
+</br>
+<form action="{{ url("Config/Reboot") }}" class="ui form" method="POST" id='redemarer'>
 <h4 class="ui dividing header">Liste des virtualhosts trouvés ...</h4>
 
-{% for server in servers %}
+
+{% if host != "rien" %}<!-- 4 -->
+{% for server in servers %}<!-- 1 -->
 <h4 class="ui dividing header">{{ server.getName() }}: <div class="mini ui button"><i class="power icon"></i>Redémarer le serveur</div></h4> 
 <div class="ui middle aligned divided list">
-{% for virtualhost in virtualhosts %}
-{% if virtualhost.getIdServer() == server.getId() %}
+
+{% for virtualhost in virtualhosts %}<!-- 2 -->
+{% if virtualhost.getIdServer() == server.getId() %}<!-- 3 -->
   <div class="item">
     <div class="right floated content">
-      <div class="mini ui button"><i class="power icon"></i>Valider et redémarer le service</div>
-    </div>
+      <button class="mini ui button" name ="virtualhost" id="{{ virtualhost.getId() }}"><i class="power icon"></i>Valider et redémarer le service</div>
+    </button>
     <i class="disk outline icon"></i>
     <div class="content">
       {{ virtualhost.getName() }}
     </div>
   </div>
-{% endif %}
-{% endfor %}
+{% endif %}<!-- 3 -->
+{% endfor %}<!-- 2 -->
 </div>
-{% endfor %}
+{% endfor %}<!-- 1 -->
+{% endif %}<!-- 4 -->
+
+
+{% if host == "rien" %}
+<div class="ui middle aligned divided list">
+{% for virtualhost in virtualhosts %}<!-- 2 -->
+{% if virtualhost.getIdUser() == user.getId() %}<!-- 3 -->
+  <div class="item">
+    <div class="right floated content">
+      <button class="mini ui button" name ="virtualhost" id="{{ virtualhost.getId() }}"><i class="power icon"></i>Valider et redémarer le service</div>
+    </button>
+    <i class="disk outline icon"></i>
+    <div class="content">
+      {{ virtualhost.getName() }}
+    </div>
+  </div>
+{% endif %}<!-- 3 -->
+{% endfor %}<!-- 2 -->
+</div>
+{% endif %}
+</form>

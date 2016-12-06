@@ -1,8 +1,8 @@
-<form action="{{ url("typeServers/vAddSubmit") }}" method="Post">
+<!--  <form action="{{ url("typeServers/vAddSubmit") }}" method="Post">
 <div class="ui form">
   <div class="field">
     <label>Nom</label>
-    <input type="text" name="name" placeholder="Nom server">
+    <input type="text" name="name" placeholder="Nom type server">
   </div>
   <div class="field">
     <label>Template</label>
@@ -12,9 +12,12 @@
 <button class="ui primary button">
   Valider
 </button>
-<a href="{{ url("typeServers") }}" class="ui button">
-  Annuler
-</a>
 </div>
 </div>
 </form>
+-->
+<div class="ui green segment">
+{{ q["frmAdd"] }}
+{{ q["btnCancel"] }}
+</div>
+{{ script_foot }}

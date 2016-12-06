@@ -11,6 +11,15 @@ class ListhostvirtualController extends ControllerBase {
 			$item->addToProperty("data-ajax", $host->getId());
 		}
 		$list->setHorizontal();
+		
+		$virtualhosts=Virtualhost::find();
+		$list=$this->semantic->htmlList("lst-virtualhosts");
+		foreach ($virtualhosts as $virtualhost){
+			$item=$list->addItem(["icon"=>"add","header"=>$virtualhost->getName(),"description"=>$virtualhost->getServer()->getName()]);
+			$item->addToProperty("data-ajax", $virtualhost->getId());
+		}
+		
 		$this->jquery->compile($this->view);
-}
+	}
+
 }

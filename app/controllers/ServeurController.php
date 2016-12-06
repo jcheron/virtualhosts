@@ -54,7 +54,7 @@ class ServeurController extends ControllerBase{
 			$item->addToProperty("data-ajax", $host->getId());
 		}
 		$list->setHorizontal();
-		$this->jquery->getOnClick("#lst-hosts .item","Tmp/servers","#servers",["attr"=>"data-ajax"]);
+		$this->jquery->getOnClick("#lst-hosts .item","Serveur/servers","#servers",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
 		
 	}
@@ -62,10 +62,46 @@ class ServeurController extends ControllerBase{
 	public function serversAction($idHost=NULL){
 		$servers=Server::find("idHost=".$idHost);
 		$list=$this->semantic->htmlList("lst-hosts");
+		
+		
+		$semantic=$this->semantic;
+		
+		$table=$semantic->htmlTable('table4',0,5);
+		$table->setHeaderValues([" ","Nom du Serveur","Configuration"," "]);
+		
 		foreach ($servers as $server){
-			$item=$list->addItem(["icon"=>"delete","header"=>$server->getName()]);
+			
+			
+			$table->addRow([" ",$server->getName(),
+								$server->getConfig()," ",$buttons=$semantic->htmlButtonGroups("bg1",array("Supprimer","Configurer"))]);
+			
+			
+			$table->setDefinition();
 		}
+		echo $table;
+
+		echo "<br/> <br/>";
+		$ajout=$semantic->htmlButton("ajouter","Ajouter")->getOnClick("virtualhosts/"," ")->setNegative();
+		echo $ajout;
+		
+		
+		
+		
 		$list->setInverted()->setDivided()->setRelaxed();
-		echo $list->compile();
+		$this->jquery->compile($this->view);
+	}
+	
+	/* supprimer serveurs */
+	public function deleteserveurAction(){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		$semantic=$this->semantic;
+	}
+	
+	/*ajouter serveurs*/
+	public function ajoutserveurAction(){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		$semantic=$this->semantic;
 	}
 }

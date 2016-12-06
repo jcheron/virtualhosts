@@ -1,4 +1,4 @@
-<!--{{ q["frm"] }}-->
+<!--{{ q["frm"] }}
 <form class="ui form" action="{{ url("TypeServers/vUpdateSubmit") }}" method="Post">
   <div class="field">
     <label>Nom</label>
@@ -9,5 +9,12 @@
     <textarea name="configTemplate">{{ typeServer.getConfigTemplate() }}</textarea>
   </div>
   <input type="hidden" name="id" value="{{ typeServer.getId() }}">
-  <button class="ui button" type="submit">Submit</button>
-</form>
+  <button class="ui button" type="submit">Modifier</button>
+  <a href="{{ url("typeServers") }}" class="ui button">
+  Annuler
+</a>
+</form>-->
+<div class="ui green segment">
+    {{ q["frmUpdate"] }}
+</div>
+{{ script_foot }}
