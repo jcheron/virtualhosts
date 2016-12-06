@@ -7,8 +7,7 @@ class ListhostvirtualController extends ControllerBase {
 		$hosts=Host::find();
 		$list=$this->semantic->htmlList("lst-hosts");
 		foreach ($hosts as $host){
-			$item=$list->addItem(["icon"=>"add","header"=>$host->getName(),"description"=>$host->getIpv4()]);
-			echo GetIpv4;
+			$item=$list->addItem(["icon"=>"cloud","header"=>$host->getName(),"description"=>$host->getIpv4()]);
 			$item->addToProperty("data-ajax", $host->getId());
 		}
 		$list->setHorizontal();
@@ -16,7 +15,7 @@ class ListhostvirtualController extends ControllerBase {
 		$virtualhosts=Virtualhost::find();
 		$list=$this->semantic->htmlList("lst-virtualhosts");
 		foreach ($virtualhosts as $virtualhost){
-			$item=$list->addItem(["icon"=>"add","header"=>$virtualhost->getName(),"description"=>$virtualhost->getServer()->getName()]);
+			$item=$list->addItem(["icon"=>"cloud","header"=>$virtualhost->getName(),"description"=>$virtualhost->getServer()->getName()]);
 			$item->addToProperty("data-ajax", $virtualhost->getId());
 		}
 		$list->setHorizontal();
