@@ -5,6 +5,7 @@
 
 {{ q["frm4"] }}
 
+{{ q["btValider"] }} {{ q["btRetourner"] }}
 
-{{ q["btValider"] }}
 
+{{ script_foot }}
