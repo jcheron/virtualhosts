@@ -2,6 +2,8 @@
 use Phalcon\Mvc\View;
 use Ajax\semantic\html\elements\HtmlButtonGroups;
 use Ajax\semantic\html\elements\HtmlButton;
+use Ajax\semantic\html\collections\form\HtmlFormTextarea;
+use Ajax\semantic\html\collections\form\HtmlFormDropdown;
 class ServeurController extends ControllerBase{
 
 	
@@ -80,9 +82,9 @@ class ServeurController extends ControllerBase{
 			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("VirtualHosts/config/","#divAction");
 			
 			
-			$btnCancel = $semantic->htmlButton("btnCancel-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/","#divAction");
+			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/".$server->getId(),"#divAction");
 			$table->addRow([" ",$server->getName(),
-								$server->getConfig(),$btnConfig,$btnCancel]);
+								$server->getConfig(),$btnConfig,$btnDelete]);
 			
 			$table->setDefinition();
 			$i++;
@@ -94,32 +96,33 @@ class ServeurController extends ControllerBase{
 		
 		$test=$semantic->htmlButton("ajouter","Ajouter","black")->getOnClick("Serveur/vUpdate","#divAction")->setNegative();
 		echo $test;
-		$this->jquery->exec("$('[data-ajax=".$idHost."]').toggleClass('active');",true);
-		
+		$this->jquery->exec("$('#lst-hosts .item').removeClass('active');",true);
+		$this->jquery->exec("$('[data-ajax=".$idHost."]').addClass('active');",true);
 		$list->setInverted()->setDivided()->setRelaxed();
 		echo $this->jquery->compile($this->view);
 	}
 	
 	/* ajout serveur */
 	
-	public function vUpdateAction($id){
+	public function vUpdateAction(){
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		 
-		$Server = Server::findFirst($id);
 		 
 		$semantic=$this->semantic;
 	
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
-		$btnCancel->getOnClick("TypeServers","#divAction");
+		$btnCancel->getOnClick("Servers","#divAction");
 	
 		$form=$semantic->htmlForm("frmUpdate");
-		$form->addInput("name","Nom")->setValue($Server->getName());
-		$form->addItem(new HtmlFormTextarea("configTemplate","Template"))->setValue($Server->getConfigTemplate())->setRows(10);
-		$form->addButton("submit", "Valider")->postFormOnClick("TypeServers/vUpdateSubmit", "frmUpdate","#divAction");
+		$form->addInput("name","Nom du serveur : *");
+		$form->addItem(new HtmlFormTextarea("configTemplate","Configuration du serveur: *"))->setRows(4);
+		$form->addItem(new HtmlFormDropdown());
+		$form->addButton("submit", "Valider")->postFormOnClick("Serveur/vUpdateSubmit", "frmUpdate","#divAction");
+		$form->addButton("cancel", "Annuler")->postFormOnClick("Serveur/vUpdateSubmit", "frmUpdate","#divAction");
+		
 		 
-		 
-		$this->view->setVars(["Server"=>$Server]);
+		
 	
 		$this->jquery->compile($this->view);
 	}
@@ -145,7 +148,7 @@ class ServeurController extends ControllerBase{
 		$form->addHeader("Voulez-vous vraiment supprimer le serveur : ". $Server->getName()."?",3);
 		$form->addInput("id",NULL,"hidden",$Server->getId());
 		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du type de serveur");
-		$form->addButton("submit", "Supprimer")->postFormOnClick("TypeServers/confirmDelete", "frmDelete","#divAction");
+		$form->addButton("submit", "Supprimer")->postFormOnClick("Serveur/confirmDelete", "frmDelete","#divAction");
 		 
 		
 		$this->view->setVars(["element"=>$Server]);

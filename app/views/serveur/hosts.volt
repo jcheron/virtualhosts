@@ -1,9 +1,9 @@
 <div class="ui positive message">
   <i class="close icon"></i>
   <div class="header">
-   Voici tous vos Hots :
+   Liste des machines :
   </div>
-  <p>Vous pouvez visualiser les serveurs qui sont sur vos Hosts </p>
+  <p>Séléctionner une machine pour visualiser la liste des ervseurs installés. </p>
 </div>
 
 {{ q["lst-hosts"] }}
