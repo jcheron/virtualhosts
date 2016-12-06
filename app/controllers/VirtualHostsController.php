@@ -3,6 +3,7 @@ use Ajax\semantic\html\elements\HtmlList;
 use Ajax\semantic\html\modules\checkbox\HtmlCheckbox;
 use Ajax\semantic\html\elements\HtmlButton;
 use Ajax\semantic\html\elements\HtmlInput;
+use Ajax\Semantic;
 class VirtualHostsController extends ControllerBase
 {
 	public function indexAction()
@@ -31,20 +32,19 @@ class VirtualHostsController extends ControllerBase
 		$table->setHeaderValues(["Machine","Serveur","Adresse IPv6","Adresse IPv6"]);
 		$table->addRow([$host->getName(),$server->getName(),$host->getIpv4(),$IPv6]);
 			
-		$semantic->htmlButton("modifier","Modifier","black")->getOnClick("VirtualHosts/editApache","#modification")->setPositive();
+		$semantic->htmlButton("modifier","Modifier")->getOnClick("VirtualHosts/editApache","#modification")->setPositive();
 		
 		$buttons=$this->semantic->htmlButtonGroups("importOrExport",array("Importer","Exporter"));
-		$buttons->insertOr(0,"ou");
-	
+		$buttons->insertOr(0,"ou");		
+		$buttons->getElement(0)->getOnClick("VirtualHosts/readConfig","#fileUpload");
+		$buttons->getElement(2)->getOnClick("VirtualHosts/exportConfig","#fileExport");
 		
-    	$this->jquery->exec("Prism.highlightAll();",true);
+		$this->jquery->exec("Prism.highlightAll();",true);
 		$this->jquery->compile($this->view);
 	}
 	
 	public function editApacheAction($idVirtualhost=NULL){
 		$idVirtualhost=2;
-		$this->secondaryMenu($this->controller,$this->action);
-		$this->tools($this->controller,$this->action);
 		$semantic=$this->semantic;
 		
 		$virtualHostProperties=Virtualhostproperty::find("idVirtualhost={$idVirtualhost}");
@@ -62,9 +62,7 @@ class VirtualHostsController extends ControllerBase
 					$value,($input)
 					.(new HtmlInput("id[]","hidden",$property->getId()))
 					
-			]);
-
-				
+			]);				
 			$i=$i+1;
 		}
 		
@@ -78,10 +76,8 @@ class VirtualHostsController extends ControllerBase
 		
 		$footer->getCell(0,1)->setValue([$bt]);
 		$table->addVariation("compact")->setDefinition()->setCelled();	
-
-		$this->jquery->execOn("onClick", "#value", '$("#data-input").prop("checked", true);');
-		$this->jquery->change("#value",'$("#check0").prop("checked", true);');
 		
+		$this->jquery->change("#value",'$(this).data("data-input").prop("checked", true);');		
 		$this->jquery->compile($this->view);
 	}
 	public function updateConfigAction(){
@@ -98,5 +94,15 @@ class VirtualHostsController extends ControllerBase
 			$i=$i+1;			
 		}
 		echo $this->jquery->compile();
+	}
+	
+	public function readConfigAction(){
+		$semantic=$this->semantic;
+		$this->jquery->compile($this->view);
+	}
+
+	public function exportConfigAction(){
+		$semantic=$this->semantic;		
+		$this->jquery->compile($this->view);
 	}
 }
