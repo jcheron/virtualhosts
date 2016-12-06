@@ -55,9 +55,11 @@ class VirtualHostsController extends ControllerBase
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
 			$value=$virtualHostProperty->getValue();
+			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
+			$input->setProperty("data-input", "check$i");
 			$table->addRow([HtmlCheckbox::slider("check$i")->setFitted(),
 					$property->getName(), $property->getDescription(),
-					$value,(new HtmlInput("value[]","text",$value,"Nouvelle valeur"))
+					$value,($input)
 					.(new HtmlInput("id[]","hidden",$property->getId()))
 					
 			]);
@@ -76,14 +78,16 @@ class VirtualHostsController extends ControllerBase
 		
 		$footer->getCell(0,1)->setValue([$bt]);
 		$table->addVariation("compact")->setDefinition()->setCelled();	
-	
-		$this->jquery->execOn("onClick", "check0", '$("#check0").prop("checked", true);')
+
+		$this->jquery->execOn("onClick", "#value", '$("#data-input").prop("checked", true);');
+		$this->jquery->change("#value",'$("#check0").prop("checked", true);');
+		
 		$this->jquery->compile($this->view);
 	}
 	public function updateConfigAction(){
 		$this->jquery->exec("$('#info').show();",true);
 
-		var_dump($_POST);
+		echo "Mise à jour des propriétés effectuées !";
 
 		$i = 0;	
 		$idVH=$_POST["idvh"];
