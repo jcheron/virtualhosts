@@ -1,11 +1,10 @@
-Liste host : str_repeat('&nbsp;', 5); Liste virtualHost : 
-<br>
-
-{{ q["lst-hosts"] }}
-
-Liste virtualHost : 
-
-{{ q["lst-virtualhosts"] }}
-<br>
-<br> 
-
+<div class="ui grid">
+	<div class="eight wide column">
+    	<div class="ui header">Liste host :</div> 
+        {{ q["lst-hosts"] }}
+    </div>
+    <div class="eight wide column">			
+    	<div class="ui header">Liste virtualHost :</div> 
+        {{ q["lst-virtualhosts"] }}
+    </div>
+</div>
