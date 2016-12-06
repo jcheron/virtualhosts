@@ -1,2 +1,2 @@
-{{ q["frm1"] }}
+{{ q["frmEdit"] }}
 {{ script_foot }}

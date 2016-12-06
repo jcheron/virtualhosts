@@ -14,9 +14,9 @@ class ManageRoleController extends ControllerBase
 		$table->setHeaderValues(["Rôles","","",""]);
 		foreach ($roles as $Role)
 		{
-			$table->addRow([$i=$Role->getName(),$semantic->htmlButton("editButton".$i."","Modifier","")->getOnClick("ManageRole/editRole/$i","#editRole"),
-											 $semantic->htmlButton("addButton","Ajouter","")->getOnClick("ManageRole/addRole","#addRole"),
-											 $semantic->htmlButton("deleteButton","Supprimer","")->getOnClick("ManageRole/deleteRole","#deleteRole")]);
+			$table->addRow([$i=$Role->getName(),$semantic->htmlButton("editButton".$i."","Modifier","")->getOnClick("ManageRole/editRole/$i","#divRole"),
+											 $semantic->htmlButton("addButton".$i."","Ajouter","")->getOnClick("ManageRole/addRole/$i","#divRole"),
+											 $semantic->htmlButton("deleteButton".$i."","Supprimer","")->getOnClick("ManageRole/deleteRole/$i","#divRole")]);
 			
 		}
 		
@@ -24,26 +24,54 @@ class ManageRoleController extends ControllerBase
     }
     
     public function editRoleAction($a=NULL){
-
-
- //$this->view->disable();
- //$a="user";
-   // 	var_dump($a);
+    	
 			$role=Role::findFirst("name='$a'");
+			
+			$roleEdit=Role::findFirst($_POST["name='$a'"]);
+			
 			$semantic=$this->semantic;
-			$form=$semantic->htmlForm("frm1");
-			$form->addInput("idRole","ID","",$role->getId());
-			$form->addInput("nameRole","Nom","",$a);
+			
+			$form=$semantic->htmlForm("frmEdit");
+			$form->addInput("id","ID","text",$role->getId());
+			$form->addInput("name","Nom","text",$a);
+			
+			$toUpdate=["id","name"];
+			
 			$form->addButton("","Valider")->asSubmit();
+			
+			$roleEdit->save($_POST,$toUpdate);		
+			
 			$this->jquery->compile($this->view);
     }
     
-    public function addRoleAction(){
-    	
+    public function addRoleAction($a=NULL){
+	    	$semantic=$this->semantic;
+	    	$form=$semantic->htmlForm("frmAdd");
+	    	$form->addInput("idRole","ID","text");
+	    	$form->addInput("nameRole","Nom","text");
+	    	$form->addButton("","Ajouter le rôle")->asSubmit();
+	    	$this->jquery->compile($this->view);
     }
     
-    public function deleteRoleAction(){
-    	
+    public function deleteRoleAction($a=NULL){
+	    	$role=Role::findFirst("name='$a'");
+	    		
+	    	$semantic=$this->semantic;
+	    	
+	    	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+	    	$btnCancel->getOnClick("TypeServers","#divAction");
+	    	
+	    	$form=$semantic->htmlForm("frmDelete");
+	    		
+	    	$form->addHeader("Voulez-vous vraiment supprimer le rôle : ". $role->getName()."?",3);
+	    	$form->addInput("id",NULL,"hidden",$role->getId());
+	    	$form->addInput("name","Nom","text",NULL,"Entrez le nom du rôle pour confirmer la suppression");
+	    	$form->addButton("submit", "Supprimer")->postFormOnClick("TypeServers/confirmDelete", "frmDelete","#divAction");
+	    		
+	    	
+	    	$this->view->setVars(["element"=>$role]);
+	    	
+	    	$this->jquery->compile($this->view);
     }
 
 }
