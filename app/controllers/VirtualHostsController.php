@@ -41,33 +41,58 @@ class VirtualHostsController extends ControllerBase
 		$this->jquery->compile($this->view);
 	}
 	
-	public function editApacheAction(){		
+	public function editApacheAction($idVirtualhost=NULL){
+		$idVirtualhost=2;
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		$semantic=$this->semantic;
 		
-		$virtualHostProperties=Virtualhostproperty::find("idVirtualhost=2");
-		$table=$semantic->htmlTable('infos',1,5);
+		$virtualHostProperties=Virtualhostproperty::find("idVirtualhost={$idVirtualhost}");
+		$table=$semantic->htmlTable('infos',0,5);
 		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
 		$i=0;
 		
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
 			$value=$virtualHostProperty->getValue();
-			$table->setRowValues($i,[HtmlCheckbox::slider("check".$i."")->setFitted(),$property->getName(), $property->getDescription(),$value,new HtmlInput("property","text",$value,"Nouvelle valeur")]);
+			$table->addRow([HtmlCheckbox::slider("check$i")->setFitted(),
+					$property->getName(), $property->getDescription(),
+					$value,(new HtmlInput("value[]","text",$value,"Nouvelle valeur"))
+					.(new HtmlInput("id[]","hidden",$property->getId()))
+					
+			]);
+
+				
 			$i=$i+1;
 		}
+		
+		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
 		$footer=$table->getFooter()->setFullWidth();
 		$footer->mergeCol(0,1);
+		
 		$bt=HtmlButton::labeled("submit","Valider","settings");
 		$bt->setFloated("right")->setColor('blue');
 		$bt->postFormOnClick("VirtualHosts/updateConfig", "frmConfig","#info");
+		
 		$footer->getCell(0,1)->setValue([$bt]);
 		$table->addVariation("compact")->setDefinition()->setCelled();	
 	
+		$this->jquery->execOn("onClick", "check0", '$("#check0").prop("checked", true);')
 		$this->jquery->compile($this->view);
 	}
 	public function updateConfigAction(){
+		$this->jquery->exec("$('#info').show();",true);
+
 		var_dump($_POST);
+
+		$i = 0;	
+		$idVH=$_POST["idvh"];
+		foreach($_POST["id"] as $property){	
+			$property=Virtualhostproperty::findFirst("idVirtualhost=$idVH AND idProperty=$property");
+			$property->setValue($_POST["value"][$i]);
+			$property->save();
+			$i=$i+1;			
+		}
+		echo $this->jquery->compile();
 	}
 }
