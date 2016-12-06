@@ -41,8 +41,8 @@ class TypeServersController extends ControllerBase
     	$btnCancel->getOnClick("TypeServers/index","#index");
     	
     	$form=$semantic->htmlForm("frmAdd");
-    	$form->addInput("name","Nom * :");
-    	$form->addItem(new HtmlFormTextarea("configTemplate","Template * :"))->setRows(10);
+    	$form->addInput('name',"Nom * :");
+    	$form->addItem(new HtmlFormTextarea('configTemplate',"Template * :"))->setRows(10);
     	//$form->addButton("","Valider")->asSubmit();
     	$form->addButton("submit", "Valider","ui blue button")->postFormOnClick("TypeServers/vAddSubmit", "frmAdd","#divAction");
     	$form->addButton("btnCancel", "Annuler","ui red button");

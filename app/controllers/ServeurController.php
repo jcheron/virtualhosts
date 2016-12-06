@@ -1,9 +1,6 @@
 <?php
 use Phalcon\Mvc\View;
-use Ajax\semantic\html\elements\HtmlButtonGroups;
-use Ajax\semantic\html\elements\HtmlButton;
 use Ajax\semantic\html\collections\form\HtmlFormTextarea;
-use Ajax\semantic\html\collections\form\HtmlFormDropdown;
 class ServeurController extends ControllerBase{
 
 	
@@ -108,7 +105,8 @@ class ServeurController extends ControllerBase{
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		 
-		 
+		$host = Host::findFirst();
+		
 		$semantic=$this->semantic;
 	
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
@@ -116,17 +114,35 @@ class ServeurController extends ControllerBase{
 	
 		$form=$semantic->htmlForm("frmUpdate");
 		$form->addInput("name","Nom du serveur : *");
-		$form->addItem(new HtmlFormTextarea("configTemplate","Configuration du serveur: *"))->setRows(4);
-		$form->addItem(new HtmlFormDropdown());
-		$form->addButton("submit", "Valider")->postFormOnClick("Serveur/vUpdateSubmit", "frmUpdate","#divAction");
-		$form->addButton("cancel", "Annuler")->postFormOnClick("Serveur/vUpdateSubmit", "frmUpdate","#divAction");
-		
+		$form->addInput("config","Configuration du serveur: *");
+		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmit", "frmUpdate","#divAction");
+		$form->addButton("btnCancel", "Annuler","ui red button");
 		 
-		
-	
 		$this->jquery->compile($this->view);
 	}
 	
+
+	public function vAddSubmitAction(){
+		 
+		if(!empty($_POST['name'] && $_POST['config'])){
+			$Server = new Server();
+	
+			$Server->save(
+					$this->request->getPost(),
+					[
+							"name",
+							"config"
+					]
+					);
+	
+			$this->flash->message("success", "Le serveur a été inseré avec succès");
+			$this->jquery->get("Serveur","#refresh");
+			 
+		}else{
+			$this->flash->message("error", "Veuillez remplir tous les champs");
+		}
+		echo $this->jquery->compile();
+	}
 	
 	
 	
@@ -149,7 +165,7 @@ class ServeurController extends ControllerBase{
 		$form->addInput("id",NULL,"hidden",$Server->getId());
 		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du type de serveur");
 		$form->addButton("submit", "Supprimer")->postFormOnClick("Serveur/confirmDelete", "frmDelete","#divAction");
-		 
+		$form->addButton("cancel", "Annuler")->postFormOnClick("Serveur/divers","#divAction");
 		
 		$this->view->setVars(["element"=>$Server]);
 		
