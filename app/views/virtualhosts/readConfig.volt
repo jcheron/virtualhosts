@@ -54,6 +54,7 @@
 
 <h2 style="padding-top:10px">Séléctionnez un fichier de configuration</h2>
 
+{{ q["virtualHosts"] }}
 <div class="input-file-container">
   <input class="input-file" id="my-file" type="file">
   <label for="my-file" class="input-file-trigger" tabindex="0">Parcourir</label>

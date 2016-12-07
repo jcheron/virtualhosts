@@ -1,0 +1,1 @@
+<h2>Confirmer la suppression de l'utilisateur "{{ id }}"</h2>
