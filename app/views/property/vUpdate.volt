@@ -1,7 +1,7 @@
 
 <div class="ui black message">
   <div class="header">
-    Modifier propriétés : <span class="ui green tiny label">{{ Property.getName() }}</span>
+    Modifier propriété : <span class="ui green tiny label">{{ Property.getName() }}</span>
   </div>
   <p>Tous les champs marqués par des <em>*</em> sont obligatoires.</p>
 </div>

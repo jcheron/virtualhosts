@@ -53,8 +53,8 @@ class TypePropertyController extends ControllerBase
     	$form=$semantic->htmlForm("frmAdd");
     	$fields=$form->addFields();
   
-    	$fields->addDropdown("stype",$itemsStypes,"Type Servers","test1",false)->setWidth(8).
-    	$fields->addDropdown("property",$itemsProperties,"Propriétés","test2",false)->setWidth(8);
+    	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs","Selectionner un type de serveur ...",false)->setWidth(8).
+    	$fields->addDropdown("property",$itemsProperties,"Propriétés","Selectionner une propriétés ...",false)->setWidth(8);
     	
     	$form->addInput("name","Nom * :","text",false,"Nom de la propriété");
     	$form->addItem(new HtmlFormTextarea("template","Template * :",false,"Template"))->setRows(10);
@@ -69,20 +69,25 @@ class TypePropertyController extends ControllerBase
     
     public function vAddSubmitAction(){
     	var_dump($_POST);
-    	if(!empty($_POST['name'] && $_POST['template'])){
+    	if(!empty($_POST['name'] && $_POST['template'] && $_POST['stype'] && $_POST['property'])){
+    		
+    		$stype = Stype::findFirst("name = '".$_POST['stype']."'");
+    		$property = Property::findFirst("name = '".$_POST['property']."'");
+    		
     		$StypeProperty = new Stypeproperty();
-    
+    		
+    		$StypeProperty->setIdStype($stype->getId());
+    		$StypeProperty->setIdProperty($property->getId());
+    		
     		$StypeProperty->save(
     				$this->request->getPost(),
     				[
-    						"stype",
-    						"property",
     						"name",
     						"template",
     				]
     				);
     
-    		$this->flash->message("success", "Le serveur '".$_POST['name']."' a été inseré avec succès");
+    		$this->flash->message("success", "Le type de propriété '".$_POST['name']."' a été inseré avec succès");
     		$this->jquery->get($this->controller,"#refresh");
     		 
     	}else{
@@ -117,8 +122,9 @@ class TypePropertyController extends ControllerBase
     	$form=$semantic->htmlForm("frmUpdate");
     	$fields=$form->addFields();
     	
-    	$fields->addDropdown("stype",$itemsStypes,"Type Servers","test1",false)->setWidth(8).
-    	$fields->addDropdown("property",$itemsProperties,"Propriétés","test2",false)->setWidth(8);
+    	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs",$typeProperty->getStype()->getName(),false)->setWidth(8).
+    	$fields->addDropdown("property",$itemsProperties,"Propriétés",$typeProperty->getProperty()->getName(),false)->setWidth(8);
+    	
     	$form->addInput("idProperty",NULL,"hidden",$typeProperty->getIdProperty());
     	$form->addInput("idStype",NULL,"hidden",$typeProperty->getIdStype());
     	$form->addInput("name","Nom *:")->setValue($typeProperty->getName());
@@ -127,29 +133,38 @@ class TypePropertyController extends ControllerBase
     	$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit", "frmUpdate","#divAction");
     	$form->addButton("btnCancel", "Annuler","ui red button");
     	 
-    	 
-    	 
-    	 
+    	
     	$this->view->setVars(["typeProperty"=>$typeProperty]);
     
     	$this->jquery->compile($this->view);
     }
     
     public function vUpdateSubmitAction(){
-    	$Stype = Stype::findFirst("idStype = ".$_POST['idStype']." and idProperty = ".$_POST['idProperty']);
+    	
+    	$StypeProperty = Stypeproperty::findFirst("idStype = ".$_POST['idStype']." and idProperty = ".$_POST['idProperty']);
+
+    	if(!empty($_POST['stype'])){
+    		$stype = Stype::findFirst("name = '".$_POST['stype']."'");
+    		$StypeProperty->setIdStype($stype->getId());
+    	}
+    	if(!empty($_POST['property'])){
+    		$property = Property::findFirst("name = '".$_POST['property']."'");
+    		$StypeProperty->setIdProperty($property->getId());
+    	}
+    	var_dump($stype->getId());
+    	var_dump($property->getId());
     	// Stocke et vérifie les erreurs
-    	$success = $Stype->update(
+    	$success = $StypeProperty->update(
     			$this->request->getPost(),
     			[
-    					"stype",
-    					"property",
     					"name",
     					"template",
     			]
     			);
     
+    	
     	if ($success) {
-    		$this->flash->message("success","Le serveur '".$Stype->getName()."' a été modifié avec succès");
+    		$this->flash->message("success","Le type de propriété '".$StypeProperty->getName()."' a été modifié avec succès");
     		$this->jquery->get($this->controller,"#refresh");
     	}
     	 
