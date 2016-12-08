@@ -1,27 +1,32 @@
-<h1 class="ui dividing header">Mise à jour du fichier de configuration <i class="configure icon"></i></h1>
+<h1 class="ui dividing header">Mise Ã  jour du fichier de configuration <i class="configure icon"></i></h1>
 </br>
 
-{% if attente == 0 %}
-<form action="{{ url("Config/reboot") }}" class="ui form" method="POST" id='chargement'>
+
+<form action="{{ url("Config/fin") }}" class="ui form" method="POST" id='chargement'>
 <div class="ui icon message">
   <i class="notched circle loading icon"></i>
   <div class="content">
     <div class="header">
-      Veuillez patienter
+      En attente de la confirmation de redemarage du virtualhost :
     </div>
-    <p class="ui brown header">Le virtualhost<b> {{ virtualhost.getName() }}</b>     redémare.</p>
+    <p class="ui brown header"><b> {{ virtualhost.getName() }}</b>     </p>
   </div>
 </div>
+
+
+  <button class="ui green button" name ="property" id="{{ propertys.getIdProperty() }}">
+<i class="reply icon"></i>
+  Confirmer 
+</button>
+
+
+</br>
+</br>
+
 </form>
-{% endif %}
-
-{% if attente == 1 %}
-<h1>Bonjour</h1>
-{% endif %}
-{#% for property in propertys %}
-{% if property.getIdVirtualhost() == virtualhost.getId() %}
-{% set  property.setActive(0) %}
-{% endif %}
-{% endfor %}
-
-
+<form action="{{ url("Config/index") }}" class="ui form" method="POST" id='chargement'>
+  <button class="ui red button"  >
+<i class="reply icon"></i>
+ Annuler
+</button>
+</form>

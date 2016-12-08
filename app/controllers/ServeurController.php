@@ -12,19 +12,7 @@ class ServeurController extends ControllerBase{
 		$this->jquery->getOnClick(".clickable", "","#content-container",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
 	}
-	private function createBts($name,$actions){
-		$bts=new HtmlButtonGroups("bg-".$name);
-		foreach ($actions as $k=>$action){
-				$bt=new HtmlButton($k."-".$action);
-				$bt->setValue($k);
-				$bt->setProperty("data-ajax", $action);
-				$bt->addToProperty("class", "clickable");
-				$bts->addElement($bt);
-		}
-		
-		return $bts;
-		
-	}
+
 	
 	public function diversAction(){
 		$this->loadMenus();
@@ -76,7 +64,7 @@ class ServeurController extends ControllerBase{
 		$i=0;
 		
 		foreach ($servers as $server){
-			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("VirtualHosts/config/","#divAction");
+			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("ServeurVirtualHost/index/","#divAction");
 			
 			
 			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/".$server->getId(),"#divAction");
@@ -107,7 +95,25 @@ class ServeurController extends ControllerBase{
 		 
 		$host = Host::findFirst();
 		
+		$stypes = Stype::find();
+		$itemsStypes = array();
+		foreach($stypes as $stype) {
+			$itemsStypes[] = $stype->getName();
+		}
+		
+
+		$hosts = Host::find();
+		$itemshost = array();
+		foreach($hosts as $host) {
+			$itemshost[] = $host->getName();
+		}
+		
+		
 		$semantic=$this->semantic;
+		
+		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+		$btnCancel->getOnClick("Serveur/index","#index");
+		
 	
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 		$btnCancel->getOnClick("Servers","#divAction");
@@ -115,7 +121,13 @@ class ServeurController extends ControllerBase{
 		$form=$semantic->htmlForm("frmUpdate");
 		$form->addInput("name","Nom du serveur : *");
 		$form->addInput("config","Configuration du serveur: *");
+	
+		$form->addDropdown("stype",$itemsStypes,"Type Serveurs : * ","Selectionner un type de serveur ...",false);
+		$form->addDropdown("host",$itemshost,"Host : *","Selectionner host ...",false);
+		
 		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmit", "frmUpdate","#divAction");
+		
+		
 		$form->addButton("btnCancel", "Annuler","ui red button");
 		 
 		$this->jquery->compile($this->view);
@@ -123,15 +135,20 @@ class ServeurController extends ControllerBase{
 	
 
 	public function vAddSubmitAction(){
-		 
-		if(!empty($_POST['name'] && $_POST['config'])){
+		if(!empty($_POST['name'] && $_POST['config'] && $_POST['stype'] && $_POST['host'])){
 			$Server = new Server();
 	
+			$idhost = Host::findFirst("name = '".$_POST['host']."'");
+			$idstype = Stype::findFirst("name = '".$_POST['stype']."'");
+			
+			$Server->setIdStype($idstype->getId());
+			$Server->setIdHost($idhost->getId());
 			$Server->save(
 					$this->request->getPost(),
 					[
 							"name",
-							"config"
+							"config",
+					
 					]
 					);
 	
@@ -146,7 +163,6 @@ class ServeurController extends ControllerBase{
 	
 	
 	
-	
 	/* supprimer serveurs */
 	public function vDeleteAction($id){
 		$this->secondaryMenu($this->controller,$this->action);
@@ -156,6 +172,7 @@ class ServeurController extends ControllerBase{
 		 
 		$semantic=$this->semantic;
 		
+		
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 		$btnCancel->getOnClick("TypeServers","#divAction");
 		
@@ -164,8 +181,10 @@ class ServeurController extends ControllerBase{
 		$form->addHeader("Voulez-vous vraiment supprimer le serveur : ". $Server->getName()."?",3);
 		$form->addInput("id",NULL,"hidden",$Server->getId());
 		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du type de serveur");
-		$form->addButton("submit", "Supprimer")->postFormOnClick("Serveur/confirmDelete", "frmDelete","#divAction");
-		$form->addButton("cancel", "Annuler")->postFormOnClick("Serveur/divers","#divAction");
+		
+		$form->addButton("submit", "Supprimer","ui green button")->postFormOnClick("Serveur/confirmDelete", "frmDelete","#divAction");
+		$form->addButton("btnCancel", "Annuler","ui red button");
+
 		
 		$this->view->setVars(["element"=>$Server]);
 		

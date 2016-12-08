@@ -1,5 +1,7 @@
 <?php
 
+use Ajax\Semantic;
+
 class ConfigController extends ControllerBase
 {
 
@@ -20,11 +22,12 @@ class ConfigController extends ControllerBase
 		$virtualhosts=Virtualhost::find();
 		$this->view->setVars(["virtualhosts"=>$virtualhosts,"user"=>$user]);
 		
+		$semantic=$this->semantic;
 		
-		
+		$btnValider = $semantic->htmlButton("btnValider","Valider","ui green button")->getOnClick("Config/liste","#liste");
+		$btnValider->addIcon("checkmark icon");
 		$this->jquery->compile($this->view);
 		
-		//
 	}
 	public function listeAction(){
 		if ($this->request->isPost()) {
@@ -50,9 +53,9 @@ class ConfigController extends ControllerBase
 		$virtualhosts=Virtualhost::find();
 		$this->view->setVars(["virtualhosts"=>$virtualhosts,"user"=>$user,"host"=>$host]);
 		
-		
-		
 		$this->jquery->compile($this->view);
+		
+		
 	}
 	public function rebootAction(){
 		$this->secondaryMenu($this->controller,$this->action);
@@ -61,30 +64,32 @@ class ConfigController extends ControllerBase
 		if ($this->request->isPost()) {
 			// récupére les donnée dans le formulaire
 			$id  = $this->request->getPost("virtualhost");
-			$virtualhost = Virtualhost::findFirst($id);
-			
 		}
+			$virtualhost = Virtualhost::findFirst($id);
+			$this->view->setVars(["virtualhost"=>$virtualhost]);
+				
+			$propertys=Virtualhostproperty::findFirst($id);		
+			$this->view->setVars(["propertys"=>$propertys]);
+			
+			
 		
+			$this->jquery->compile($this->view);
+	
+
+	}
+	public function finAction(){
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
-		
-		$propertys=Virtualhostproperty::find();
-		
-		$attente=0;
-		
-		if($attente ==0){
-		$this->view->setVars(["virtualhost"=>$virtualhost,"propertys"=>$propertys,"attente"=>$attente]);
-		$attente=1;
-		$this->jquery->compile($this->view);
+		if ($this->request->isPost()) {
+			// récupére les donnée dans le formulaire
+			$id  = $this->request->getPost("virtualhost");
 		}
 		
 		
-		if($attente ==1){
-			sleep(10);
-		$this->view->setVars(["attente"=>$attente]);
+		
+		
 		$this->jquery->compile($this->view);
-		}
-			
+		
 		
 		
 	}

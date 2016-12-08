@@ -1,4 +1,3 @@
-
 <div class="ui green segment">
     {{ q["frmUpdate"] }}
 </div>
