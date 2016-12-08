@@ -3,6 +3,13 @@
 
 
 <form action="{{ url("Config/fin") }}" class="ui form" method="POST" id='chargement'>
+
+
+
+{{ virtualhost.getName() }}
+{{ server.getName() }}
+
+
 <div class="ui icon message">
   <i class="notched circle loading icon"></i>
   <div class="content">
@@ -14,7 +21,10 @@
 </div>
 
 
-  <button class="ui green button" name ="property" id="{{ propertys.getIdProperty() }}">
+
+
+
+  <button class="ui green button" name ="property">
 <i class="reply icon"></i>
   Confirmer 
 </button>

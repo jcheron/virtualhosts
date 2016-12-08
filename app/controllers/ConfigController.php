@@ -61,19 +61,19 @@ class ConfigController extends ControllerBase
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		
-		if ($this->request->isPost()) {
-			// récupére les donnée dans le formulaire
-			$id  = $this->request->getPost("virtualhost");
-		}
-			$virtualhost = Virtualhost::findFirst($id);
-			$this->view->setVars(["virtualhost"=>$virtualhost]);
-				
-			$propertys=Virtualhostproperty::findFirst($id);		
-			$this->view->setVars(["propertys"=>$propertys]);
-			
-			
 		
-			$this->jquery->compile($this->view);
+			// récupére les donnée dans le formulaire
+			$idVH  = $this->request->getPost("redemarerVH");
+			$idServ = $this->request->getPost("redemarerServ");
+		
+			$virtualhost = Virtualhost::findFirst("id = ".$idVH);
+			$this->view->setVars(["virtualhost"=>$virtualhost]);
+			
+			$server = Server::findFirst("id = ".$idServ);
+			$this->view->setVars(["server"=>$server]);
+						
+			$this->jquery->compile($this->view); 
+			
 	
 
 	}
