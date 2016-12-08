@@ -8,3 +8,4 @@
         {{ q["lst-virtualhosts"] }}
     </div>
 </div>
+{{ script_foot }} <!-- Pas oubliez pour compiler le java -->
