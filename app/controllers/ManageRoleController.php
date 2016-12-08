@@ -1,5 +1,11 @@
 <?php
 
+
+use Ajax\semantic\html\elements\HtmlList;
+use Ajax\semantic\html\modules\checkbox\HtmlCheckbox;
+use Ajax\semantic\html\elements\HtmlButton;
+use Ajax\semantic\html\elements\HtmlInput;
+use Ajax\Semantic;
 class ManageRoleController extends ControllerBase
 {
 
@@ -23,25 +29,30 @@ class ManageRoleController extends ControllerBase
 		$this->jquery->compile($this->view);
     }
     
-    public function editRoleAction($a=NULL){
-    	
-			$role=Role::findFirst("name='$a'");
-			
-			$roleEdit=Role::findFirst($_POST["name='$a'"]);
-			
-			$semantic=$this->semantic;
-			
+    public function editRoleAction($a=NULL){		
+    	$semantic=$this->semantic;	
+    		
+			$roleEdit=Role::findFirst(["name='$a'"]);
+	
 			$form=$semantic->htmlForm("frmEdit");
-			$form->addInput("id","ID","text",$role->getId());
+			$form->addInput("id","ID","text",$roleEdit->getId()	);
 			$form->addInput("name","Nom","text",$a);
-			
-			$toUpdate=["id","name"];
-			
-			$form->addButton("","Valider")->asSubmit();
-			
-			$roleEdit->save($_POST,$toUpdate);		
-			
+			$form->addButton("submit","envoyer")->postFormOnClick("ManageRole/majRole","frmEdit","#result");
 			$this->jquery->compile($this->view);
+    }
+
+    public function majRoleAction(){    	
+    	$nom=$_POST["name"];
+    	$id=$_POST["id"];
+    	
+    	$roleEdit=Role::findFirst(["id=$id"]);
+    	
+
+    	$roleEdit->setName($nom);
+   // 	$roleEdit->setId($id);
+    	$roleEdit->save();
+    		
+    	$this->jquery->compile($this->view);
     }
     
     public function addRoleAction($a=NULL){
