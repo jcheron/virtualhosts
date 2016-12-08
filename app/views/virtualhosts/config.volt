@@ -11,9 +11,8 @@
 <div class="ui bottom attached tab segment" data-tab="second">
   {{ q["modifier"] }}
   {{ q["importOrExport"] }}
-  
-  <div id="fileUpload"></div>
-  <div id="fileExport"></div>
+
+  <div id="uploadExport"></div>
   <div id="modification"></div>
   <pre>
   	<code class="language-apacheconf">
