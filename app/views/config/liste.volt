@@ -2,13 +2,7 @@
 </br>
 
 
-<form action="{{ url("Config/index") }}" class="ui form" method="POST" id='retour'>
-<button class="ui yellow button" id="Valider">
-<i class="reply icon"></i>
-  Retour 
-</button>
 
-</form>
 </br>
 <form action="{{ url("Config/Reboot") }}" class="ui form" method="POST" id='redemarer'>
 <h4 class="ui dividing header">Liste des virtualhosts trouvés ...</h4>

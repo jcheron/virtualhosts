@@ -24,7 +24,7 @@
 </br>
 
 </form>
-<form action="{{ url("Config/liste") }}" class="ui form" method="POST" id='chargement'>
+<form action="{{ url("Config/index") }}" class="ui form" method="POST" id='chargement'>
   <button class="ui red button"  >
 <i class="reply icon"></i>
  Annuler

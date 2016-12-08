@@ -1,4 +1,4 @@
-<h1 class="ui dividing header">Mise Ã  jour du fichier de configuration <i class="configure icon"></i></h1>
+<h1 class="ui dividing header">Mise à  jour du fichier de configuration <i class="configure icon"></i></h1>
 </br>
 
 
@@ -14,18 +14,18 @@
   <div class="two fields">
 	<div class="col-md-7">
         <label>Machine :</label>       
-          <select class="ui fluid search dropdown" name="host">
+          <select class="ui fluid search  selection dropdown" name="host">
           {% for host in hosts %}
           {% if host.getIdUser() == user.getId() %}
             <option value="{{ host.getId() }}">{{ host.getName() }}</option>
             {% endif %}
 		{% endfor %}
-		<option value="rien">Je ne possÃ¨de aucune machine</option>
+		<option value="rien">Je ne posséde aucune machine</option>
           </select>
 	</div>	
 	<div class="col-md-7">
         <label>Machine :</label>       
-          <select class="ui fluid search dropdown" name="host">
+          <select class="ui fluid search  selection dropdown" name="host">
           {% for host in hosts %}
           {% if host.getIdUser() == user.getId() %}
             <option value="{{ host.getId() }}">{{ host.getName() }}</option>
@@ -42,12 +42,12 @@
 
 
 </br>
-<button class="ui green button" id="Valider" name="Valider">
-<i class="checkmark icon"></i>
-  Valider 
-</button>
+
+{{ q["btnValider"] }}
+</br>
 </br>
 </form>
+<div id="liste"></div>
 
 
 

@@ -1,5 +1,7 @@
 <?php
 
+use Ajax\Semantic;
+
 class ConfigController extends ControllerBase
 {
 
@@ -20,6 +22,10 @@ class ConfigController extends ControllerBase
 		$virtualhosts=Virtualhost::find();
 		$this->view->setVars(["virtualhosts"=>$virtualhosts,"user"=>$user]);
 		
+		$semantic=$this->semantic;
+		
+		$btnValider = $semantic->htmlButton("btnValider","Valider","ui green button")->getOnClick("Config/liste","#liste");
+		$btnValider->addIcon("checkmark icon");
 		$this->jquery->compile($this->view);
 		
 	}
@@ -47,7 +53,7 @@ class ConfigController extends ControllerBase
 		$virtualhosts=Virtualhost::find();
 		$this->view->setVars(["virtualhosts"=>$virtualhosts,"user"=>$user,"host"=>$host]);
 		
-		
+		$this->jquery->compile($this->view);
 		
 		
 	}
