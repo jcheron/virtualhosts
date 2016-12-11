@@ -46,6 +46,8 @@ class VirtualHostsController extends ControllerBase
 
 		$title2=$semantic->htmlHeader("header2",2);
 		$title2->asTitle("Fichier de configuration","Fichier Apache actuellement utilisé sur l'hôte virtuel");
+		$semantic->htmlIcon("editIcon","edit")->getOnClick("VirtualHosts/editApache","#modification");
+		
 		$this->view->setVar("title2", $title2);
 		
 		$table=$semantic->htmlTable('infos',5,3);
@@ -59,8 +61,6 @@ class VirtualHostsController extends ControllerBase
 		]);
 		$table->setDefinition();
 		
-		
-		
 		/*$table=$this->semantic->htmlTable("infos",2,4);
 		$table->setHeaderValues(["Machine","Serveur","Adresse IPv4","Adresse IPv6"]);
 		$table->setValues([$host->getName(),$server->getName(),$host->getIpv4(),$IPv6]);
@@ -71,6 +71,7 @@ class VirtualHostsController extends ControllerBase
 		$buttons->insertOr(0,"ou");		
 		$buttons->getElement(0)->getOnClick("VirtualHosts/readConfig","#uploadExport");
 		$buttons->getElement(2)->getOnClick("VirtualHosts/exportConfig","#uploadExport");
+		
 		
 		$this->jquery->exec("Prism.highlightAll();",true);
 		$this->jquery->compile($this->view);
