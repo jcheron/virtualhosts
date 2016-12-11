@@ -1,6 +1,4 @@
 <div class="header">
-<div id="divAction">
-</div>
 
 <div class="ui positive message">
 <h3> Liste des machines : </h3>
@@ -9,5 +7,6 @@
 </div>  </div> <br />
 {{ q["lst-hosts"] }}
 <div id="servers" class="ui segment"></div>
-<div id="test"> </div>
+<div id="divAction">
+</div>
 {{ script_foot }}
