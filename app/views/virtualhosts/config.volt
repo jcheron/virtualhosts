@@ -6,7 +6,17 @@
   <a class="item" data-tab="second"><i class="settings icon"></i>Configuration</a>
 </div>
 <div class="ui bottom attached tab segment active" data-tab="first">
+{{ title1 }}
 {{ q["infos"] }}
+
+<br />
+{{ title2 }}
+  <pre>
+  	<code class="language-apacheconf">
+  		 {{ virtualHost.getConfig() }}
+  	</code>
+  
+  </pre>
 </div>
 <div class="ui bottom attached tab segment" data-tab="second">
   {{ q["modifier"] }}

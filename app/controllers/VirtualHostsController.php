@@ -3,6 +3,7 @@ use Ajax\semantic\html\modules\checkbox\HtmlCheckbox;
 use Ajax\semantic\html\elements\HtmlButton;
 use Ajax\semantic\html\elements\HtmlInput;
 use Ajax\Semantic;
+use Ajax\semantic\html\elements\HtmlIcon;
 class VirtualHostsController extends ControllerBase
 {
 	public function indexAction()
@@ -27,10 +28,43 @@ class VirtualHostsController extends ControllerBase
 		
 		$this->view->setVar("virtualHost", $virtualHosts);
 		
-		$table=$this->semantic->htmlTable("infos",0,4);
-		$table->setHeaderValues(["Machine","Serveur","Adresse IPv6","Adresse IPv6"]);
-		$table->addRow([$host->getName(),$server->getName(),$host->getIpv4(),$IPv6]);
-			
+		
+		$check=new HtmlIcon("","large green checkmark");
+		
+		if ($server->getName() != NULL && $host->getName() != NULL && $host->getIPv4() != NULL || $IPv6 != NULL){
+			$check="Config. 0K "; 
+			$check.=new HtmlIcon("", "large green checkmark");
+		}else{
+			$check="Err. config ";
+			$check.=new HtmlIcon("", "large red bug");
+		}
+		
+		$title=$semantic->htmlHeader("header1",2);
+		$title->asTitle("Informations générales","Permet de vérifier l'état actuel de machine");
+		$this->view->setVar("title1", $title);
+		
+
+		$title2=$semantic->htmlHeader("header2",2);
+		$title2->asTitle("Fichier de configuration","Fichier Apache actuellement utilisé sur l'hôte virtuel");
+		$this->view->setVar("title2", $title2);
+		
+		$table=$semantic->htmlTable('infos',5,3);
+		$table->setHeaderValues(["","Valeur","Description"]);
+		$table->setValues([["Etat global : ",$check,"<i>Vérifie si la machine dispose d'une configuration suffisante</i>"],
+				["Serveur",$server->getName(),"<i>Nom du serveur sur lequel est hebergé la machine</i>"],
+				["Machine",$host->getName(),"<i>Nom de l'hôte hebergeant l'hôte virtuel</i>"],
+				["Adresse IPv4",$host->getIpv4(),"<i>Adresse IPv4 affectée à l'hôte virtuel</i>"],
+				["Adresse IPv4",$IPv6,"<i>Adresse IPv6 affectée à l'hôte virtuel</i>"],
+				
+		]);
+		$table->setDefinition();
+		
+		
+		
+		/*$table=$this->semantic->htmlTable("infos",2,4);
+		$table->setHeaderValues(["Machine","Serveur","Adresse IPv4","Adresse IPv6"]);
+		$table->setValues([$host->getName(),$server->getName(),$host->getIpv4(),$IPv6]);
+			*/
 		$semantic->htmlButton("modifier","Modifier")->getOnClick("VirtualHosts/editApache","#modification")->setPositive();
 		
 		$buttons=$this->semantic->htmlButtonGroups("importOrExport",array("Importer","Exporter"));
