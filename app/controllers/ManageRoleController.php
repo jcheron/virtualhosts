@@ -14,18 +14,17 @@ class ManageRoleController extends ControllerBase
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
     	$semantic=$this->semantic;
+    	$semantic->htmlButton("addButton","Ajouter","fluid ui button green")->getOnClick("ManageRole/addRole","#divRole");   	 
     	$roles=Role::find();
     
-		$table=$this->semantic->htmlTable("dd",0,4);
-		$table->setHeaderValues(["Rôles","","",""]);
+		$table=$this->semantic->htmlTable("dd",0,3);
+		$table->setHeaderValues(["Rôles","Nombre d'utilisateur",""]);
 		foreach ($roles as $Role)
 		{
-			$table->addRow([$i=$Role->getName(),$semantic->htmlButton("editButton".$i."","Modifier","")->getOnClick("ManageRole/editRole/$i","#divRole"),
-											 $semantic->htmlButton("addButton".$i."","Ajouter","")->getOnClick("ManageRole/addRole/$i","#divRole"),
-											 $semantic->htmlButton("deleteButton".$i."","Supprimer","")->getOnClick("ManageRole/deleteRole/$i","#divRole")]);
+			$table->addRow([$i=$Role->getName(),"PlaceHolder",$semantic->htmlButton("editButton".$i."","Modifier","small green basic")->asIcon("edit")->getOnClick("ManageRole/editRole/$i","#divRole").									
+											 $semantic->htmlButton("deleteButton".$i."","Supprimer","small red")->asIcon("remove")->getOnClick("ManageRole/deleteRole/$i","#divRole")]);
 			
 		}
-		
 		$this->jquery->compile($this->view);
     }
     

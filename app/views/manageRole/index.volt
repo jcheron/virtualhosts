@@ -1,3 +1,4 @@
+{{ q["addButton"] }}
 {{ q["dd"] }}
 <div id="divRole">
 
