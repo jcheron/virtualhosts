@@ -92,16 +92,14 @@ class VirtualHostsController extends ControllerBase
 			$property=$virtualHostProperty->getProperty();
 			$value=$virtualHostProperty->getValue();
 			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
-			$input->setProperty("data-input", "check$i");
-			$table->addRow([HtmlCheckbox::slider("check$i")->setFitted(),
+			$input->setProperty("data-changed", "label$i");
+			$table->addRow([$semantic->htmlLabel("label$i","État"),
 					$property->getName(), $property->getDescription(),
 					$value,($input)
 					.(new HtmlInput("id[]","hidden",$property->getId()))
 					
-			]);				
-			$i=$i+1;
-			
-			
+			]);		
+			$i=$i+1;		
 		}
 		
 		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
@@ -112,11 +110,12 @@ class VirtualHostsController extends ControllerBase
 		$bt->setFloated("right")->setColor('blue');
 		$bt->postFormOnClick("VirtualHosts/updateConfig", "frmConfig","#info");
 		
+		$this->jquery->change("[data-changed]","$('#'+$(this).attr('data-changed')).html('Modifié');");
+			
 		$footer->getCell(0,1)->setValue([$bt]);
 		$table->addVariation("compact")->setDefinition()->setCelled();	
 		
-		$this->jquery->change("#value",'$(this).data("data-input").prop("checked", true);');		
-		$this->jquery->compile($this->view);
+			$this->jquery->compile($this->view);
 	}
 	public function updateConfigAction(){
 		$this->jquery->exec("$('#info').show();",true);
