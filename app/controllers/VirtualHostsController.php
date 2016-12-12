@@ -90,6 +90,11 @@ class VirtualHostsController extends ControllerBase
 		
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
+			$priority=$property->getPrority();
+			
+
+			
+			
 			$value=$virtualHostProperty->getValue();
 			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
 			$input->setProperty("data-changed", "label$i");
