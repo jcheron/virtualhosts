@@ -29,6 +29,8 @@ class AccueilController extends ControllerBase
 	}
 	
 	public function loginAction(){
+		
+		
 		if ($this->request->isPost()) {
 			// récupére les donnée dans le formulaire
 			$mail    = $this->request->getPost("email");
@@ -73,6 +75,10 @@ class AccueilController extends ControllerBase
 						"action"     => "connect",
 				]
 				);
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		
+		$this->jquery->compile($this->view);
 	}
 	
 }
