@@ -46,8 +46,10 @@ class VirtualHostsController extends ControllerBase
 
 		$title2=$semantic->htmlHeader("header2",2);
 		$title2->asTitle("Fichier de configuration","Fichier Apache actuellement utilisé sur l'hôte virtuel");
-		$semantic->htmlIcon("editIcon","edit")->getOnClick("VirtualHosts/editApache","#modification2");
+		//$semantic->htmlIcon("editIcon","edit")->getOnClick("VirtualHosts/editApache","#modification2");
 		
+		$semantic->htmlIcon("editIcon", "edit")->onClick("$('.settings').trigger('click')")->onClick("$('#modifier').trigger('click')");
+		//->onClick("$('#modifier').trigger('click')");
 		$this->view->setVar("title2", $title2);
 		
 		$table=$semantic->htmlTable('infos',5,3);
