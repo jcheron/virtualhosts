@@ -1,5 +1,5 @@
 <?php
-
+use Ajax\semantic\html\base\constants\State;
 
 
 class AccueilController extends ControllerBase
@@ -29,6 +29,9 @@ class AccueilController extends ControllerBase
 	}
 	
 	public function loginAction(){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		
 		
 		
 		if ($this->request->isPost()) {
@@ -46,7 +49,15 @@ class AccueilController extends ControllerBase
 							]
 					]
 					);
-		
+				
+			if($mail==null){
+				$semantic=$this->semantic;
+				$form=$semantic->htmlForm("frm");
+				$form->addMessage("msg","Veuillez remplir le champs E-mail !","Champ oublié",NULL,State::ERROR);
+				$this->jquery->compile($this->view);
+			}
+			else{
+			
 			if ($user !== false) {
 				$this->_registerSession($user);
 		
@@ -63,9 +74,12 @@ class AccueilController extends ControllerBase
 						);
 			}
 		
+		
 			$this->flash->error(
 					"Mauvais mot de passe ou Email ...."
 					);
+			}
+			
 		}
 		
 		// Retourne au formulaire si la connexion à échoué
@@ -75,10 +89,9 @@ class AccueilController extends ControllerBase
 						"action"     => "connect",
 				]
 				);
-		$this->secondaryMenu($this->controller,$this->action);
-		$this->tools($this->controller,$this->action);
 		
 		$this->jquery->compile($this->view);
+	
 	}
 	
 }

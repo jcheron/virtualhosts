@@ -20,9 +20,12 @@
 					</div>
 					<label><i class="asterisk red icon"></i> Champs obligatoires </label>
 					</br>
+					{{ q['frm'] }}
 					</br>
 					<input type="submit" value="Connexion" class="ui button" id="connexion">
 				</form>
 			</div>
+			
+			 
 	</div>
 <!-- //DIV FORM LOGIN .col-md-4-->
