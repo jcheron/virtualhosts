@@ -14,7 +14,7 @@
   <div class="two fields">
 	<div class="col-md-7">
         <label>Machine :</label>       
-          <select class="ui fluid search  selection dropdown" name="host">
+          <select class="ui fluid search  selection dropdown" id="host" name="host">
           {% for host in hosts %}
           {% if host.getIdUser() == user.getId() %}
             <option value="{{ host.getId() }}">{{ host.getName() }}</option>
@@ -23,17 +23,7 @@
 		<option value="rien">Je ne posséde aucune machine</option>
           </select>
 	</div>	
-	<div class="col-md-7">
-        <label>Machine :</label>       
-          <select class="ui fluid search  selection dropdown" name="host">
-          {% for host in hosts %}
-          {% if host.getIdUser() == user.getId() %}
-            <option value="{{ host.getId() }}">{{ host.getName() }}</option>
-            {% endif %}
-		{% endfor %}
-		<option value="rien">Je ne posséde aucune machine</option>
-          </select>
-	</div>	
+
 	
 	
 	

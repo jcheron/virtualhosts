@@ -26,6 +26,7 @@ class ConfigController extends ControllerBase
 		
 		$btnValider = $semantic->htmlButton("btnValider","Valider","ui green button")->getOnClick("Config/liste","#liste");
 		$btnValider->addIcon("checkmark icon");
+		$host=$this->request->getPost("#host");
 		$this->jquery->compile($this->view);
 		
 	}
@@ -58,24 +59,48 @@ class ConfigController extends ControllerBase
 		
 	}
 	public function rebootAction(){
+		
+		if ($this->request->isPost()) {
+			// récupére les donnée dans le formulaire
+			$idVH  = $this->request->getPost("virtualhost");
+
+		}
+		
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		
 		
-			// récupére les donnée dans le formulaire
-			$idVH  = $this->request->getPost("redemarerVH");
-			$idServ = $this->request->getPost("redemarerServ");
-		
+
 			$virtualhost = Virtualhost::findFirst("id = ".$idVH);
 			$this->view->setVars(["virtualhost"=>$virtualhost]);
 			
-			$server = Server::findFirst("id = ".$idServ);
-			$this->view->setVars(["server"=>$server]);
-						
+
 			$this->jquery->compile($this->view); 
 			
 	
 
+	}
+	public function rebootServAction(){
+	
+		if ($this->request->isPost()) {
+			// récupére les donnée dans le formulaire
+			$idServ  = $this->request->getPost("server");
+	
+		}
+	
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+	
+	
+	
+		$server = Server::findFirst("id = ".$idServ);
+		$this->view->setVars(["server"=>$server]);
+			
+	
+		$this->jquery->compile($this->view);
+			
+	
+	
 	}
 	public function finAction(){
 		$this->secondaryMenu($this->controller,$this->action);
@@ -92,6 +117,22 @@ class ConfigController extends ControllerBase
 		
 		
 		
+	}
+	public function finServAction(){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		if ($this->request->isPost()) {
+			// récupére les donnée dans le formulaire
+			$id  = $this->request->getPost("server");
+		}
+	
+	
+	
+	
+		$this->jquery->compile($this->view);
+	
+	
+	
 	}
 	
 	

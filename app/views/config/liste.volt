@@ -10,9 +10,10 @@
 
 {% if host != "rien" %}<!-- 4 -->
 {% for server in servers %}<!-- 1 -->
-<form action="{{ url("Config/Reboot") }}" class="ui form" method="POST" name='redemarerServ' id='redemarerServ'>
+<form action="{{ url("Config/RebootServ") }}" class="ui form" method="POST" name='redemarerServ' id='redemarerServ'>
 <h4 class="ui dividing header">{{ server.getName() }}: 
-<button class="mini ui button" name ="server" id="{{ server.getId() }}><i class="power icon"></i>Redémarer le serveur</button> 
+<input type="hidden" name ="server" value="{{ server.getId() }}">
+<button class="mini ui button" ><i class="power icon"></i>Redémarer le serveur</button> 
 </h4>
 </form>
 <div class="ui middle aligned divided list">
@@ -21,7 +22,8 @@
   <div class="item">
    <form action="{{ url("Config/Reboot") }}" class="ui form" method="POST" name='redemarerVH' id='redemarerVH'>
     <div class="right floated content">
-      <button class="mini ui button" name ="virtualhost" id="{{ virtualhost.getId() }}"><i class="power icon"></i>Valider et redémarer le service</div>
+    <input type="hidden" name ="virtualhost" value="{{ virtualhost.getId() }}">
+      <button class="mini ui button" ><i class="power icon"></i>Valider et redémarer le service</div>
      <i class="disk outline icon"></i>
       </button>        
     <div class="content">
@@ -43,7 +45,8 @@
   <div class="item">
   <form action="{{ url("Config/Reboot") }}" class="ui form" method="POST"  name='redemarerVH' id='redemarer' id='redemarerVH'>
     <div class="right floated content">
-      <button class="mini ui button" name ="virtualhost" id="{{ virtualhost.getId() }}"><i class="power icon"></i>Valider et redémarer le service</div>
+    <input type="hidden" name ="virtualhost" value="{{ virtualhost.getId() }}">
+      <button class="mini ui button" ><i class="power icon"></i>Valider et redémarer le service</div>
       <i class="disk outline icon"></i>
       </button>
     <div class="content">
