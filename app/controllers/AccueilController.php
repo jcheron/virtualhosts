@@ -1,5 +1,6 @@
 <?php
 use Ajax\semantic\html\base\constants\State;
+use Ajax\semantic\components\validation\Rule;
 
 
 class AccueilController extends ControllerBase
@@ -10,10 +11,24 @@ class AccueilController extends ControllerBase
 	
 	public function connectAction()
 	{
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		
+		$semantic=$this->semantic;
+		$semantic->setLanguage("fr");
+		$form=$semantic->htmlForm("frm2");
+		$form->addErrorMessage();
+		$form->addHeader("Connexion Utilisateur :",3);
+		$form->addInput("email","Adresse")->addRule("empty","Veuillez remplir le champ adresse...");
+		$form->addInput("password","Mot de passe","password")->addRule("empty","Veuillez remplir le champ mot de passe ...");
+		$icon=$semantic->htmlIcon("","checkmark");
+		$form->addButton("btValider","Valider")->setColor("green")->asSubmit();
+		$form->submitOn("click","btValider","Accueil/login","#suite");
+	
 		
 		
-		
-		
+		//echo $form;
+		$this->jquery->compile($this->view);
 		
 	}
 	
@@ -50,13 +65,7 @@ class AccueilController extends ControllerBase
 					]
 					);
 				
-			if($mail==null){
-				$semantic=$this->semantic;
-				$form=$semantic->htmlForm("frm");
-				$form->addMessage("msg","Veuillez remplir le champs E-mail !","Champ oublié",NULL,State::ERROR);
-				$this->jquery->compile($this->view);
-			}
-			else{
+		
 			
 			if ($user !== false) {
 				$this->_registerSession($user);
@@ -66,6 +75,7 @@ class AccueilController extends ControllerBase
 						);
 		
 				//Envois à la page d'acceuil si la connexion est réussis !
+				
 				return $this->dispatcher->forward(
 						[
 								"controller" => "Index",
@@ -78,17 +88,12 @@ class AccueilController extends ControllerBase
 			$this->flash->error(
 					"Mauvais mot de passe ou Email ...."
 					);
-			}
+			
 			
 		}
 		
 		// Retourne au formulaire si la connexion à échoué
-		return $this->dispatcher->forward(
-				[
-						"controller" => "Accueil",
-						"action"     => "connect",
-				]
-				);
+	
 		
 		$this->jquery->compile($this->view);
 	
