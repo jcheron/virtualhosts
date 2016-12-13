@@ -16,7 +16,7 @@ class SignController extends ControllerBase{
 		$fields=$form->addFields();
 		$fields->addInput("name","Nom(*)","text","","Entrez votre nom")->addRule("empty");
 		$fields->addInput("firstname","Prenom(*)","text","","Entrez votre prenom")->addRule("empty");
-		$form->addInput("email","Email(*)","email","","Entrez votre Email")->addRule("empty");
+		$form->addInput("email","Email(*)","email","","Entrez votre Email")->addRules(["empty","email"]);
 		$form->addInput("password","Mot de passe(*)","password","","Veuillez entrer un mot de passe")->addRules(["empty","minLength[8]"]);
 		$form->addInput("checkpassword","Confirmation mot de passe(*)","password","","Veuillez confirmer votre mot de passe")->addRules(["empty","minLength[8]","match[password]"]);
 		$form->addInput("login","Login(*)","text","","Entrez votre identifiant" )->addRule("empty");
@@ -46,8 +46,8 @@ class SignController extends ControllerBase{
 		}
 		
 		User::create( $_POST, $toCreate );		
-		$ms2=$semantic->htmlMessage ( "okMsg", "Vous êtes bien inscrit !!" );
-		$ms2->addHeader ( "!! Succes !!");
+		$ms2=$semantic->htmlMessage ( "okMsg", "Vous êtes bien inscrit !" );
+		$ms2->addHeader ( " Succes !");
 		$ms2->setStyle ( "positive" );
 		echo $ms2;
 	}
