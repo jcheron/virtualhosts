@@ -2,7 +2,7 @@
 </br>
 
 
-<form action="{{ url("Config/fin") }}" class="ui form" method="POST" id='chargement'>
+<form action="{{ url("Config/finServ") }}" class="ui form" method="POST" id='chargement'>
 
 
 
@@ -14,9 +14,9 @@
   <i class="notched circle loading icon"></i>
   <div class="content">
     <div class="header">
-      En attente de la confirmation de redemarage du virtualhost :
+      En attente de la confirmation de redemarage du server :
     </div>
-    <p class="ui brown header"><b> {{ virtualhost.getName() }}</b>     </p>
+    <p class="ui brown header"><b> {{ server.getName() }}</b>     </p>
   </div>
 </div>
 

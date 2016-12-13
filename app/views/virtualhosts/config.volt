@@ -21,8 +21,6 @@
 
 <br />
 {{ title2 }}
-  <div id="uploadExport"></div>
-  <div id="modification2"></div>
   <pre>
   {{ q["editIcon"] }}
   	<code class="language-apacheconf">

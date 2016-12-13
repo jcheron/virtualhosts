@@ -14,16 +14,31 @@ class ManageRoleController extends ControllerBase
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
     	$semantic=$this->semantic;
-    	$semantic->htmlButton("addButton","Ajouter","fluid ui button green")->getOnClick("ManageRole/addRole","#divRole");   	 
+    	$semantic->htmlButton("addButton","Ajouter","button green")->getOnClick("ManageRole/addRole","#divRole");   	 
     	$roles=Role::find();
+    	$users=User::find();
     
 		$table=$this->semantic->htmlTable("dd",0,3);
-		$table->setHeaderValues(["Rôles","Nombre d'utilisateur",""]);
+		$table->setHeaderValues(["Rôles","Nombre d'utilisateurs",""]);
+		$nbrUser = 0;
 		foreach ($roles as $Role)
 		{
-			$table->addRow([$i=$Role->getName(),"PlaceHolder",$semantic->htmlButton("editButton".$i."","Modifier","small green basic")->asIcon("edit")->getOnClick("ManageRole/editRole/$i","#divRole").									
-											 $semantic->htmlButton("deleteButton".$i."","Supprimer","small red")->asIcon("remove")->getOnClick("ManageRole/deleteRole/$i","#divRole")]);
-			
+			//sizeof($role->getUsers());
+			foreach ($users as $User){
+				if ($Role->getId() == $User->getIdrole()){
+					$nbrUser = $nbrUser +1;	
+				}}
+				if ($nbrUser == 0)
+				{$p="";}
+				else if ($nbrUser == 1)
+				{$p= $semantic->htmlLabel("",$nbrUser . " Utilisateur","user")->setColor("green");}
+				else
+				{$p= $semantic->htmlLabel("",$nbrUser . " Utilisateurs","user")->setColor("green");};
+			$table->addRow([$i=$Role->getName(),
+			$p,
+							$semantic->htmlButton("editButton".$i."","Modifier","small green basic")->asIcon("edit")->getOnClick("ManageRole/editRole/$i","#divRole").									
+							$semantic->htmlButton("deleteButton".$i."","Supprimer","small red")->asIcon("remove")->getOnClick("ManageRole/deleteRole/$i","#divRole")]);
+			$nbrUser = 0;
 		}
 		$this->jquery->compile($this->view);
     }
@@ -36,7 +51,7 @@ class ManageRoleController extends ControllerBase
 			$form=$semantic->htmlForm("frmEdit");
 			$form->addInput("id","ID","text",$roleEdit->getId()	);
 			$form->addInput("name","Nom","text",$a);
-			$form->addButton("submit","envoyer")->postFormOnClick("ManageRole/majRole","frmEdit","#result");
+			$form->addButton("submit","envoyer","button green")->postFormOnClick("ManageRole/majRole","frmEdit","#result");
 			$this->jquery->compile($this->view);
     }
 
@@ -59,7 +74,7 @@ class ManageRoleController extends ControllerBase
 	    	$form=$semantic->htmlForm("frmAdd");
 	    	$form->addInput("idRole","ID","text");
 	    	$form->addInput("nameRole","Nom","text");
-	    	$form->addButton("","Ajouter le rôle")->asSubmit();
+	    	$form->addButton("","Ajouter le rôle","button green")->asSubmit();
 	    	$this->jquery->compile($this->view);
     }
     
@@ -76,7 +91,7 @@ class ManageRoleController extends ControllerBase
 	    	$form->addHeader("Voulez-vous vraiment supprimer le rôle : ". $role->getName()."?",3);
 	    	$form->addInput("id",NULL,"hidden",$role->getId());
 	    	$form->addInput("name","Nom","text",NULL,"Entrez le nom du rôle pour confirmer la suppression");
-	    	$form->addButton("submit", "Supprimer")->postFormOnClick("TypeServers/confirmDelete", "frmDelete","#divAction");
+	    	$form->addButton("submit", "Supprimer","button red")->postFormOnClick("TypeServers/confirmDelete", "frmDelete","#divAction");
 	    		
 	    	
 	    	$this->view->setVars(["element"=>$role]);

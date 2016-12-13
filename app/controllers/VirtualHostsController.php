@@ -46,8 +46,10 @@ class VirtualHostsController extends ControllerBase
 
 		$title2=$semantic->htmlHeader("header2",2);
 		$title2->asTitle("Fichier de configuration","Fichier Apache actuellement utilisé sur l'hôte virtuel");
-		$semantic->htmlIcon("editIcon","edit")->getOnClick("VirtualHosts/editApache","#modification2");
+		//$semantic->htmlIcon("editIcon","edit")->getOnClick("VirtualHosts/editApache","#modification2");
 		
+		$semantic->htmlIcon("editIcon", "edit")->onClick("$('.settings').trigger('click')")->onClick("$('#modifier').trigger('click')");
+		//->onClick("$('#modifier').trigger('click')");
 		$this->view->setVar("title2", $title2);
 		
 		$table=$semantic->htmlTable('infos',5,3);
@@ -88,18 +90,21 @@ class VirtualHostsController extends ControllerBase
 		
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
+			$priority=$property->getPrority();
+			
+
+			
+			
 			$value=$virtualHostProperty->getValue();
 			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
-			$input->setProperty("data-input", "check$i");
-			$table->addRow([HtmlCheckbox::slider("check$i")->setFitted(),
+			$input->setProperty("data-changed", "label$i");
+			$table->addRow([$semantic->htmlLabel("label$i","État"),
 					$property->getName(), $property->getDescription(),
 					$value,($input)
 					.(new HtmlInput("id[]","hidden",$property->getId()))
 					
-			]);				
-			$i=$i+1;
-			
-			
+			]);		
+			$i=$i+1;		
 		}
 		
 		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
@@ -110,11 +115,12 @@ class VirtualHostsController extends ControllerBase
 		$bt->setFloated("right")->setColor('blue');
 		$bt->postFormOnClick("VirtualHosts/updateConfig", "frmConfig","#info");
 		
+		$this->jquery->change("[data-changed]","$('#'+$(this).attr('data-changed')).html('Modifié');");
+			
 		$footer->getCell(0,1)->setValue([$bt]);
 		$table->addVariation("compact")->setDefinition()->setCelled();	
 		
-		$this->jquery->change("#value",'$(this).data("data-input").prop("checked", true);');		
-		$this->jquery->compile($this->view);
+			$this->jquery->compile($this->view);
 	}
 	public function updateConfigAction(){
 		$this->jquery->exec("$('#info').show();",true);
