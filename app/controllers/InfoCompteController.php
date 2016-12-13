@@ -33,7 +33,7 @@ class InfoCompteController extends ControllerBase{
 	}
 	public function updateInfoAction() {
 		$semantic = $this->semantic;
-		$user = User::findFirst ( $_POST ["id"] );
+		$user = User::find ( $_POST ["id"] );
 		$toUpdate = [ 
 				"login",
 				"email",
