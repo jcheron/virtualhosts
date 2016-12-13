@@ -14,22 +14,30 @@ class ManageRoleController extends ControllerBase
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
     	$semantic=$this->semantic;
-    	$semantic->htmlButton("addButton","Ajouter","fluid ui button green")->getOnClick("ManageRole/addRole","#divRole");   	 
+    	$semantic->htmlButton("addButton","Ajouter","button green")->getOnClick("ManageRole/addRole","#divRole");   	 
     	$roles=Role::find();
     	$users=User::find();
     
 		$table=$this->semantic->htmlTable("dd",0,3);
-		$table->setHeaderValues(["Rôles","Nombre d'utilisateur",""]);
+		$table->setHeaderValues(["Rôles","Nombre d'utilisateurs",""]);
 		$nbrUser = 0;
 		foreach ($roles as $Role)
 		{
+			//sizeof($role->getUsers());
 			foreach ($users as $User){
 				if ($Role->getId() == $User->getIdrole()){
 					$nbrUser = $nbrUser +1;	
 				}}
-			$table->addRow([$i=$Role->getName(),$nbrUser,
-								$semantic->htmlButton("editButton".$i."","Modifier","small green basic")->asIcon("edit")->getOnClick("ManageRole/editRole/$i","#divRole").									
-								$semantic->htmlButton("deleteButton".$i."","Supprimer","small red")->asIcon("remove")->getOnClick("ManageRole/deleteRole/$i","#divRole")]);
+				if ($nbrUser == 0)
+				{$p="";}
+				else if ($nbrUser == 1)
+				{$p= $semantic->htmlLabel("",$nbrUser . " Utilisateur","user")->setColor("green");}
+				else
+				{$p= $semantic->htmlLabel("",$nbrUser . " Utilisateurs","user")->setColor("green");};
+			$table->addRow([$i=$Role->getName(),
+			$p,
+							$semantic->htmlButton("editButton".$i."","Modifier","small green basic")->asIcon("edit")->getOnClick("ManageRole/editRole/$i","#divRole").									
+							$semantic->htmlButton("deleteButton".$i."","Supprimer","small red")->asIcon("remove")->getOnClick("ManageRole/deleteRole/$i","#divRole")]);
 			$nbrUser = 0;
 		}
 		$this->jquery->compile($this->view);
