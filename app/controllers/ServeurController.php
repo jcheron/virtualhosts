@@ -123,16 +123,12 @@ class ServeurController extends ControllerBase{
 	
 		
 		$form=$semantic->htmlForm("frmUpdate");
-		
-		$input=$semantic->htmlInput("nom du serveur");
-		$input->labeledToCorner("asterisk","right");
-		$this->view->setVar("name",$input);
+		$form->addInput("name")->getField()->labeledToCorner("asterisk","right");
 		
 		
 		$input2=$semantic->htmlInput("Configuration...");
-		$input2->labeledToCorner("asterisk","right");
-		$this->view->setVar("config",$input2);
-		
+		$form->addInput("config")->getField()->labeledToCorner("asterisk","right");
+			
 		
 	
 		$form->addDropdown("stype",$itemsStypes,"Type Serveurs : * ","Selectionner un type de serveur ...",false);
@@ -144,6 +140,8 @@ class ServeurController extends ControllerBase{
 		$form->addButton("cancel", "Annuler","ui red button");
 		 
 		$this->jquery->compile($this->view);
+		
+		
 	}
 	
 
@@ -166,12 +164,19 @@ class ServeurController extends ControllerBase{
 					);
 	
 			$this->flash->message("success", "Le serveur a été inseré avec succès");
-			$this->jquery->get("Serveur","#refresh");
+			//$this->jquery->get("Serveur","#refresh");
+
+			$this->jquery->get("Serveur/servers/".$idhost,"#servers");
 			 
 		}else{
 			$this->flash->message("error", "Veuillez remplir tous les champs");
+			
 		}
+		
+
+		
 		echo $this->jquery->compile();
+		
 	}
 	
 	
