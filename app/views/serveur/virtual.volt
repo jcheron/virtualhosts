@@ -1,3 +1,4 @@
+<div id="test"></div>
 <div class="ui positive message">
 <h3> Liste des machines : </h3>
    Liste des VirtualHosts :
@@ -5,8 +6,8 @@
 </div>
 
 <div id="divAction">
-{{ q["virtual"] }}
+{{ q["table4"] }}
 </div>
-<div id="test"</div>
+
 
 {{ script_foot }}
