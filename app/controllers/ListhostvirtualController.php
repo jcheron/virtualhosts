@@ -18,44 +18,45 @@ class ListhostvirtualController extends ControllerBase {
 		$list->setHorizontal();
 		
 		$virtualhosts=Virtualhost::find();
-		$vhp=Virtualhostproperty::findFirst();
+		//$vhp=Virtualhostproperty::findFirst();
 		$list=$this->semantic->htmlList("lst-virtualhosts");
 		
 		foreach ($virtualhosts as $virtualhost){
 			$item=$list->addItem(["icon"=>"cloud","header"=>$virtualhost->getName(),"description"=>$virtualhost->getServer()->getName()]);
-			$item->addPopup("Propriétés :","ServeurName: ".$vhp->getValue());
+			$props=$virtualhost->getVirtualhostproperties();
+			$item->addPopup("Propriétés :","ServeurName: ".$props[0]->getValue());
 			$item->addToProperty("data-ajax", $virtualhost->getId());
-			$item->getOnClick("Listhostvirtual/AfficherVh","#modification");
+			$item->getOnClick("Listhostvirtual/AfficherVh","#modification",["attr"=>"data-ajax"]);
 			
 			
 		}
 		$list->setHorizontal();
 		$this->jquery->compile($this->view);
 	}
-	public function AfficherVhAction(){
+	public function AfficherVhAction($idVh){
 		$semantic=$this->semantic;
 
-		$idVirtualhost=2;
-		$virtualhosts=Virtualhost::findFirst("id=2");
-		$vhp=Virtualhostproperty::find("idVirtualhost={$idVirtualhost}");
+		$virtualhost=Virtualhost::findFirst($idVh);
+		$vhp=$virtualhost->getVirtualhostproperties();
 		$table=$semantic->htmlTable('infos',0,5);
-		$table->setHeaderValues(["Host","Nom","Description","Value"]);
+		$table->setHeaderValues(["VirtualHost","Nom","Description","Value"]);
 		$i=0;
-		
-		foreach ($vhp as $virtualHostProperty){
-			$property=$virtualHostProperty->getProperty();
-			$value=$virtualHostProperty->getValue();
-			
-			$table->addRow([$virtualhosts->getName(),
-					$property->getName(), $property->getDescription(),
-					$value
+
+			$vh=$virtualhost->getName();
+			foreach ($vhp as $virtualHostProperty){
+				$property=$virtualHostProperty->getProperty();
+				$value=$virtualHostProperty->getValue();
 					
-						
-			]);
-			$i=$i+1;
-				
-				
-		}
+				$table->addRow([$vh,
+						$property->getName(), $property->getDescription(),
+						$value
+							
+			
+				]);
+				$i=$i+1;
+			
+			
+			}		
 		
 		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
 		$footer=$table->getFooter()->setFullWidth();

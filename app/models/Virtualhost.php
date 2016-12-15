@@ -160,7 +160,7 @@ class Virtualhost extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Virtualhostproperty', 'idVirtualhost', ['alias' => 'Virtualhostproperty']);
+        $this->hasMany('id', 'Virtualhostproperty', 'idVirtualhost', ['alias' => 'Virtualhostproperties']);
         $this->belongsTo('idUser', 'User', 'id', ['alias' => 'User']);
         $this->belongsTo('idServer', 'Server', 'id', ['alias' => 'Server']);
     }
