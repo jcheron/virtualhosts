@@ -100,8 +100,8 @@ class Stype extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Server', 'idStype', ['alias' => 'Server']);
-        $this->hasMany('id', 'Stypeproperty', 'idStype', ['alias' => 'Stypeproperty']);
+        $this->hasMany('id', 'Server', 'idStype', ['alias' => 'Servers']);
+        $this->hasMany('id', 'Stypeproperty', 'idStype', ['alias' => 'Stypeproperties']);
     }
 
     /**

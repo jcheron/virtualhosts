@@ -13,7 +13,7 @@ class PropertyController extends ControllerBase
 		$semantic=$this->semantic;
 	
 		$table = $semantic->htmlTable("table",0,3);
-		$table->setHeaderValues(["id","nom","Action"]);
+		$table->setHeaderValues(["#","nom","Action"]);
 	
 		$btnAdd = $semantic->htmlButton("btnAdd","Ajouter","fluid ui button blue");
 		$btnAdd->getOnClick($this->controller."/vAdd","#divAction");
@@ -23,7 +23,7 @@ class PropertyController extends ControllerBase
 		$i=0;
 		foreach ($Properties as $Property){
 			$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Property->getId(),"#divAction");
-			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Property->getId(),"#divAction");
+			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Property->getId(),"#divAction");
 			$table->addRow([$i+1,$Property->getName(),$btnUpdate.$btnDelete]);
 			$i++;
 		}
@@ -44,9 +44,11 @@ class PropertyController extends ControllerBase
 		$form->addInput("name","Nom * :","text",false,"Nom de la propriété");
 		$fields=$form->addFields();
 		
-		$fields->addItem(new HtmlFormTextarea("description","Description * :",false,"Description"))->setWidth(10);
-		$fields->addItem(new HtmlFormCheckbox("prority","Prority ?","1","checkbox"))->setWidth(3);
-		$fields->addItem(new HtmlFormCheckbox("required","Requis ?","1","checkbox"))->setWidth(3);
+		$fields->addItem(new HtmlFormTextarea("description","Description * :",false,"Description"))->setWidth(8);
+		$fields->addInput("prority","position","number",FALSE,"Saisir un chiffre ")->setWidth(8);
+		
+		//$fields->addItem(new HtmlFormCheckbox("prority",c,"1","checkbox"))->setWidth(3);
+		$form->addItem(new HtmlFormCheckbox("required","Requis ?","1","checkbox"))->setWidth(4);
 		
 		$form->addButton("submit", "Valider","ui blue button")->postFormOnClick($this->controller."/vAddSubmit", "frmAdd","#divAction");
 		$form->addButton("btnCancel", "Annuler","ui red button");
@@ -58,7 +60,7 @@ class PropertyController extends ControllerBase
 	
 	public function vAddSubmitAction(){
 		var_dump($_POST);
-		if(!empty($_POST['name'] && $_POST['description'])){
+		if(!empty($_POST['name']) && !empty($_POST['description'])){
 			
 			$Property = new Property();
 	

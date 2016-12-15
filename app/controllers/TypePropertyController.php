@@ -12,7 +12,7 @@ class TypePropertyController extends ControllerBase
     	$semantic=$this->semantic;
     	 
     	$table = $semantic->htmlTable("table",0,3);
-    	$table->setHeaderValues(["id","nom","Action"]);
+    	$table->setHeaderValues(["#","nom","Action"]);
     	 
     	$btnAdd = $semantic->htmlButton("btnAdd","Ajouter","fluid ui button blue");
     	$btnAdd->getOnClick($this->controller."/vAdd","#divAction");
@@ -22,7 +22,7 @@ class TypePropertyController extends ControllerBase
     	$i=0;
     	foreach ($typeProperties as $Stypeproperty){
     		$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
-    		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
+    		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
     		$table->addRow([$i+1,$Stypeproperty->getName(),$btnUpdate.$btnDelete]);
     		$i++;
     	}
@@ -53,8 +53,8 @@ class TypePropertyController extends ControllerBase
     	$form=$semantic->htmlForm("frmAdd");
     	$fields=$form->addFields();
   
-    	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs","Selectionner un type de serveur ...",false)->setWidth(8).
-    	$fields->addDropdown("property",$itemsProperties,"Propriétés","Selectionner une propriétés ...",false)->setWidth(8);
+    	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs","Selectionner un type de serveur...",false)->setWidth(8).
+    	$fields->addDropdown("property",$itemsProperties,"Propriétés","Selectionner une propriété...",false)->setWidth(8);
     	
     	$form->addInput("name","Nom * :","text",false,"Nom de la propriété");
     	$form->addItem(new HtmlFormTextarea("template","Template * :",false,"Template"))->setRows(10);
@@ -96,46 +96,55 @@ class TypePropertyController extends ControllerBase
     	echo $this->jquery->compile();
     }
     
-    public function vUpdateAction($idStype,$idProperty){
+    public function vUpdateAction($idStype){
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
     	
+    	$typeProperties = Stypeproperty::find("idStype = ".$idStype);
+    	$Stype = Stype::findFirst($idStype);
     	$semantic=$this->semantic;
     	
-    	$typeProperty = Stypeproperty::findFirst("idStype = ".$idStype." and idProperty = ".$idProperty);
-    	
-    	$stypes = Stype::find();
-    	$itemsStypes = array();
-    	foreach($stypes as $stype) {
-    		$itemsStypes[] = $stype->getName();
-    	}
-    	 
-    	$properties = Property::find();
-    	$itemsProperties = array();
-    	foreach($properties as $property) {
-    		$itemsProperties[] = $property->getName();
-    	}
+    	$table = $semantic->htmlTable("table",0,4);
+    	$table->setHeaderValues(["#","serveur (propriétés)","Nom","Template"]);
     	
     	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
     	$btnCancel->getOnClick($this->controller."/index","#index");
-    
+    	 
     	$form=$semantic->htmlForm("frmUpdate");
-    	$fields=$form->addFields();
+     	
+    	$i=0;
+    	foreach ($typeProperties as $Stypeproperty){
+ 
+    		//$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
+    		//$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
+    		//$form->addInput("idProperty[]",NULL,"hidden",$typeProperty->getIdProperty());
+    		$form->addInput("idStype[]",NULL,"hidden",$Stypeproperty->getIdStype());
+    		$inputName = $form->addInput("name",false)->setValue($Stypeproperty->getName());
+    		$inputTemplate = $form->addInput("template",false)->setValue($Stypeproperty->getTemplate());
+    		
+    		$table->addRow(
+    				[
+    						$i+1,//col1
+    						$Stypeproperty->getName()."(".$Stypeproperty->getProperties()->getName().")",//col2
+    						$inputName,//Col3
+    						$inputTemplate//col4
+    						
+    				]);
+    		$i++;
+    	}
+    	$table->setDefinition();
+    	$table->addColVariations(2,"collapsing");
+
+    	 
+    	//$fields->addDropdown("stype",$itemsStypes,"Type Serveurs",$typeProperty->getStypes()->getName(),false)->setWidth(8).
+    	//$fields->addDropdown("property",$itemsProperties,"Propriétés",$typeProperty->getProperties()->getName(),false)->setWidth(8);
+    	 
+
     	
-    	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs",$typeProperty->getStype()->getName(),false)->setWidth(8).
-    	$fields->addDropdown("property",$itemsProperties,"Propriétés",$typeProperty->getProperty()->getName(),false)->setWidth(8);
-    	
-    	$form->addInput("idProperty",NULL,"hidden",$typeProperty->getIdProperty());
-    	$form->addInput("idStype",NULL,"hidden",$typeProperty->getIdStype());
-    	$form->addInput("name","Nom *:")->setValue($typeProperty->getName());
-    	$form->addItem(new HtmlFormTextarea("template","Template *:"))->setValue($typeProperty->getTemplate())->setRows(10);
-    
     	$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit", "frmUpdate","#divAction");
     	$form->addButton("btnCancel", "Annuler","ui red button");
-    	 
     	
-    	$this->view->setVars(["typeProperty"=>$typeProperty]);
-    
+    	$this->view->setVars(["Stype"=>$Stype]);
     	$this->jquery->compile($this->view);
     }
     
@@ -143,16 +152,15 @@ class TypePropertyController extends ControllerBase
     	
     	$StypeProperty = Stypeproperty::findFirst("idStype = ".$_POST['idStype']." and idProperty = ".$_POST['idProperty']);
 
-    	if(!empty($_POST['stype'])){
+    	/*if(!empty($_POST['stype'])){
     		$stype = Stype::findFirst("name = '".$_POST['stype']."'");
     		$StypeProperty->setIdStype($stype->getId());
     	}
     	if(!empty($_POST['property'])){
     		$property = Property::findFirst("name = '".$_POST['property']."'");
     		$StypeProperty->setIdProperty($property->getId());
-    	}
-    	var_dump($stype->getId());
-    	var_dump($property->getId());
+    	}*/
+
     	// Stocke et vérifie les erreurs
     	$success = $StypeProperty->update(
     			$this->request->getPost(),
@@ -184,14 +192,12 @@ class TypePropertyController extends ControllerBase
     	$form=$semantic->htmlForm("frmDelete");
     	 
     	$form->addHeader("Voulez-vous vraiment supprimer l'élément : ". $typeProperty->getName()." ? ",3);
-
     	$form->addInput("idProperty",NULL,"hidden",$typeProperty->getIdProperty());
-    	$form->addInput("idStype",NULL,"hidden",$typeProperty->getIdStype());
     	
     	$form->addInput("name","Nom *:","text",NULL,"Confirmer le nom du type de propriété");
     	$form->addButton("submit", "Supprimer","ui negative button")->postFormOnClick($this->controller."/confirmDelete", "frmDelete","#divAction");
     	$form->addButton("btnCancel", "Annuler","ui positive button");
-    	 
+    	$form->addInput("idStype",NULL,"hidden",$typeProperty->getIdStype());
     
     	$this->view->setVars(["element"=>$typeProperty]);
     
