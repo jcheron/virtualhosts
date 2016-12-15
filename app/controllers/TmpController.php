@@ -16,7 +16,7 @@ class TmpController extends ControllerBase{
 		$grid->addRow(2)->setValues(["Thomas",$this->createBts("thomas",["Config virtualhost"=>"VirtualHosts/config"])]);
 		$grid->addRow(2)->setValues(["Edouard",$this->createBts("ed",["Gest. rôles"=>"ManageRole/index","Gest. utilisateurs"=>"ManageUsers/index"])]);
 		$grid->addRow(2)->setValues(["Romain",$this->createBts("romain",["Infos compte"=>"InfoCompte/ModifInfo"])]);
-		$grid->addRow(2)->setValues(["Anthony",$this->createBts("anthony",["S'enregistrer"=>"Sign/Signin","Liste hosts & virtualhost"=>"Listhostvirtual/listhv"])]);
+		$grid->addRow(2)->setValues(["Anthony",$this->createBts("anthony",["S'enregistrer"=>"Sign/Signin","Liste hosts & virtualhost"=>"Listhostvirtual/listhv","Liste vh/server"=>"ListVirtualhostParServ/listServer"])]);
 		$grid->addRow(2)->setValues(["Aboudou",$this->createBts("aboudou",["Gest. types servers"=>"TypeServers/index"])]);
 		$this->jquery->getOnClick(".clickable", "","#content-container",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
