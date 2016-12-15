@@ -84,17 +84,16 @@ class VirtualHostsController extends ControllerBase
 		$semantic=$this->semantic;
 		
 		$virtualHostProperties=Virtualhostproperty::find("idVirtualhost={$idVirtualhost}");
+		
 		$table=$semantic->htmlTable('infos',0,5);
+		
 		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
 		$i=0;
-		
+		sort($table);
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
 			$priority=$property->getPrority();
-			
 
-			
-			
 			$value=$virtualHostProperty->getValue();
 			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
 			$input->setProperty("data-changed", "label$i");
@@ -102,10 +101,12 @@ class VirtualHostsController extends ControllerBase
 					$property->getName(), $property->getDescription(),
 					$value,($input)
 					.(new HtmlInput("id[]","hidden",$property->getId()))
-					
 			]);		
+			
 			$i=$i+1;		
 		}
+		
+		$table->setSortable(1);
 		
 		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
 		$footer=$table->getFooter()->setFullWidth();
@@ -120,7 +121,7 @@ class VirtualHostsController extends ControllerBase
 		$footer->getCell(0,1)->setValue([$bt]);
 		$table->addVariation("compact")->setDefinition()->setCelled();	
 		
-			$this->jquery->compile($this->view);
+		$this->jquery->compile($this->view);
 	}
 	public function updateConfigAction(){
 		$this->jquery->exec("$('#info').show();",true);

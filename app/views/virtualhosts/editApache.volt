@@ -8,4 +8,5 @@
 {{ q["infos"] }}
 </form>
 <br />
+{{ javascript_include("js/jquery.tablesort.min.js") }}
 {{ script_foot }}
