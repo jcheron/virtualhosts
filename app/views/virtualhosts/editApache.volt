@@ -5,7 +5,7 @@
 
 <form id="frmConfig">
 {{ q["div-idvh"] }}
-{{ q["infos"] }}
+{{ q["s-infos"] }}
 </form>
 <br />
 {{ javascript_include("js/jquery.tablesort.min.js") }}

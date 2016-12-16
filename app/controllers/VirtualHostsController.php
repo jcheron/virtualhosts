@@ -85,42 +85,38 @@ class VirtualHostsController extends ControllerBase
 		
 		$virtualHostProperties=Virtualhostproperty::find("idVirtualhost={$idVirtualhost}");
 		
-		$table=$semantic->htmlTable('infos',0,5);
-		
-		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
-		$i=0;
-		sort($table);
+		$table=$semantic->htmlTable("s-infos",0,6);
+		$table->setHeaderValues(["","Priorité","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
 			$priority=$property->getPrority();
-
+		
 			$value=$virtualHostProperty->getValue();
 			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
 			$input->setProperty("data-changed", "label$i");
 			$table->addRow([$semantic->htmlLabel("label$i","État"),
+					$priority,
 					$property->getName(), $property->getDescription(),
 					$value,($input)
-					.(new HtmlInput("id[]","hidden",$property->getId()))
-			]);		
-			
-			$i=$i+1;		
+					.(new HtmlInput("id[]","hidden",$property->getId())),
+					
+			]);
+				
+			$i=$i+1;
 		}
-		
-		$table->setSortable(1);
-		
-		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
+	
 		$footer=$table->getFooter()->setFullWidth();
 		$footer->mergeCol(0,1);
-		
 		$bt=HtmlButton::labeled("submit","Valider","settings");
 		$bt->setFloated("right")->setColor('blue');
 		$bt->postFormOnClick("VirtualHosts/updateConfig", "frmConfig","#info");
-		
-		$this->jquery->change("[data-changed]","$('#'+$(this).attr('data-changed')).html('Modifié');");
-			
 		$footer->getCell(0,1)->setValue([$bt]);
-		$table->addVariation("compact")->setDefinition()->setCelled();	
+		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
 		
+		$table->setSortable(1);
+		
+
+		$this->jquery->change("[data-changed]","$('#'+$(this).attr('data-changed')).html('Modifié');");
 		$this->jquery->compile($this->view);
 	}
 	public function updateConfigAction(){
