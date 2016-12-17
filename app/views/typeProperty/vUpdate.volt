@@ -16,8 +16,9 @@
   <i class="inbox icon"></i>
   <div class="content">
     <div class="header">
-      Ce type de serveur "{{ Stype.getName() }}" ne possède pas de propriétés ! Voulez-vous ajouter un type de propriété maintenant ?
+		Propriété type de serveur : <span class="ui green tiny label">{{ Stype.getName() }}</span>
     </div>
+      <p>Ce type de serveur ne possède pas de propriétés ! Voulez-vous ajouter un type de propriété maintenant ?</p>
 	<br>
     {{ q["btnAdd"] }}
     {{ q["btnCancel"] }}
