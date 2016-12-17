@@ -6,6 +6,8 @@
   <p>Tous les champs marqués par des <em>*</em> sont obligatoires.</p>
 </div>
 <div class="ui green segment">
+<form id="frmUpdate">
     {{ q["table"] }}
+</form>
 </div>
 {{ script_foot }}

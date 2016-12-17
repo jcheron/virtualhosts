@@ -100,7 +100,7 @@ class TypePropertyController extends ControllerBase
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
     	
-    	$typeProperties = Stypeproperty::find("idStype = ".$idStype);
+    	$StypeProperties = Stypeproperty::find("idStype = ".$idStype);
     	$Stype = Stype::findFirst($idStype);
     	$semantic=$this->semantic;
     	
@@ -113,19 +113,16 @@ class TypePropertyController extends ControllerBase
     	$form=$semantic->htmlForm("frmUpdate");
      	
     	$i=0;
-    	foreach ($typeProperties as $Stypeproperty){
+    	foreach ($StypeProperties as $Stypeproperty){
  
-    		//$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
-    		//$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
-    		//$form->addInput("idProperty[]",NULL,"hidden",$typeProperty->getIdProperty());
-    		$form->addInput("idStype[]",NULL,"hidden",$Stypeproperty->getIdStype());
-    		$inputName = $form->addInput("name",false)->setValue($Stypeproperty->getName());
-    		$inputTemplate = $form->addInput("template",false)->setValue($Stypeproperty->getTemplate());
+    		$hiddenPrprty = $form->addInput("idProperty[]",NULL,"hidden",$Stypeproperty->getIdProperty());
+    		$inputName = $form->addInput("name[]",false)->setValue($Stypeproperty->getName());
+    		$inputTemplate = $form->addInput("template[]",false)->setValue($Stypeproperty->getTemplate());
     		
     		$table->addRow(
     				[
     						$i+1,//col1
-    						$Stypeproperty->getName()."(".$Stypeproperty->getProperties()->getName().")",//col2
+    						$Stypeproperty->getName()."(".$Stypeproperty->getProperties()->getName().")".$hiddenPrprty,//col2
     						$inputName,//Col3
     						$inputTemplate//col4
     						
@@ -134,14 +131,19 @@ class TypePropertyController extends ControllerBase
     	}
     	$table->setDefinition();
     	$table->addColVariations(2,"collapsing");
-
+		$footer = $table->getFooter()->setFullWidth();
+		$footer->getCell(0,1)->setValue([
+				$form->addInput("idStype",NULL,"hidden",$Stypeproperty->getIdStype()),
+				$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit","frmUpdate","#divAction"),
+				$form->addButton("btnCancel", "Annuler","ui red button")
+		]);
     	 
     	//$fields->addDropdown("stype",$itemsStypes,"Type Serveurs",$typeProperty->getStypes()->getName(),false)->setWidth(8).
     	//$fields->addDropdown("property",$itemsProperties,"Propriétés",$typeProperty->getProperties()->getName(),false)->setWidth(8);
     	 
 
     	
-    	$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit", "frmUpdate","#divAction");
+    	
     	$form->addButton("btnCancel", "Annuler","ui red button");
     	
     	$this->view->setVars(["Stype"=>$Stype]);
@@ -149,30 +151,21 @@ class TypePropertyController extends ControllerBase
     }
     
     public function vUpdateSubmitAction(){
-    	
-    	$StypeProperty = Stypeproperty::findFirst("idStype = ".$_POST['idStype']." and idProperty = ".$_POST['idProperty']);
-
-    	/*if(!empty($_POST['stype'])){
-    		$stype = Stype::findFirst("name = '".$_POST['stype']."'");
-    		$StypeProperty->setIdStype($stype->getId());
+    	$success = false;
+    	$i = 0;
+    	foreach($_POST["idProperty"] as $property){
+    		$property=Stypeproperty::findFirst("idStype = ".$_POST["idStype"]." AND idProperty = ".$property);
+    		$property->setName($_POST["name"][$i]);
+    		$property->setTemplate($_POST["template"][$i]);
+    		$property->save();
+    		$i++;
+    		$success = true;
     	}
-    	if(!empty($_POST['property'])){
-    		$property = Property::findFirst("name = '".$_POST['property']."'");
-    		$StypeProperty->setIdProperty($property->getId());
-    	}*/
-
-    	// Stocke et vérifie les erreurs
-    	$success = $StypeProperty->update(
-    			$this->request->getPost(),
-    			[
-    					"name",
-    					"template",
-    			]
-    			);
-    
-    	
     	if ($success) {
-    		$this->flash->message("success","Le type de propriété '".$StypeProperty->getName()."' a été modifié avec succès");
+    		$this->flash->message("success","Les modifications ont été effectuée avec succès");
+    		$this->jquery->get($this->controller,"#refresh");
+    	}else {
+    		$this->flash->message("error","Une erreur est survenue ! veuillez réessayer à nouveau !");
     		$this->jquery->get($this->controller,"#refresh");
     	}
     	 
