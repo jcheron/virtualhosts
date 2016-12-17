@@ -96,13 +96,16 @@ class TypePropertyController extends ControllerBase
     	echo $this->jquery->compile();
     }
     
-    public function vUpdateAction($idStype){
+    public function vUpdateAction($idStype,$active = NULL){
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
+    	$semantic=$this->semantic;
     	
     	$StypeProperties = Stypeproperty::find("idStype = ".$idStype);
     	$Stype = Stype::findFirst($idStype);
-    	$semantic=$this->semantic;
+    	
+    	if($StypeProperties->count() > 1 ){
+    	
     	
     	$table = $semantic->htmlTable("table",0,4);
     	$table->setHeaderValues(["#","serveur (propriétés)","Nom","Template"]);
@@ -136,17 +139,24 @@ class TypePropertyController extends ControllerBase
 				$form->addInput("idStype",NULL,"hidden",$Stypeproperty->getIdStype()),
 				$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit","frmUpdate","#divAction"),
 				$form->addButton("btnCancel", "Annuler","ui red button")
-		]);
-    	 
-    	//$fields->addDropdown("stype",$itemsStypes,"Type Serveurs",$typeProperty->getStypes()->getName(),false)->setWidth(8).
-    	//$fields->addDropdown("property",$itemsProperties,"Propriétés",$typeProperty->getProperties()->getName(),false)->setWidth(8);
-    	 
-
-    	
+		]);  	
     	
     	$form->addButton("btnCancel", "Annuler","ui red button");
     	
-    	$this->view->setVars(["Stype"=>$Stype]);
+    	$this->view->setVars(["Stype"=>$Stype,"active"=>"true"]);
+    	
+    	}else{
+
+    		$btnCancel = $semantic->htmlButton("btnCancel","Non","ui button red");
+    		$btnCancel->getOnClick($this->controller."/index","#content-container");
+    		
+    		$btnAdd = $semantic->htmlButton("btnAdd","Oui","ui button blue");
+    		$btnAdd->getOnClick($this->controller."/vAdd","#content-container");
+    		
+    		$this->view->setVars(["Stype"=>$Stype,"active"=>"false"]);
+    		$this->jquery->compile($this->view);
+    	}
+    	
     	$this->jquery->compile($this->view);
     }
     
@@ -215,5 +225,6 @@ class TypePropertyController extends ControllerBase
     	 
     	echo $this->jquery->compile();
     }
+    
 }
 
