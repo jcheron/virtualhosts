@@ -6,6 +6,7 @@ use Ajax\semantic\html\modules\checkbox\HtmlCheckbox;
 use Ajax\semantic\html\elements\HtmlButton;
 use Ajax\semantic\html\elements\HtmlInput;
 use Ajax\Semantic;
+
 class ManageRoleController extends ControllerBase
 {
 
@@ -44,12 +45,12 @@ class ManageRoleController extends ControllerBase
     }
     
     public function editRoleAction($a=NULL){		
-    	$semantic=$this->semantic;	
+    		$semantic=$this->semantic;	
     		
 			$roleEdit=Role::findFirst(["name='$a'"]);
 	
 			$form=$semantic->htmlForm("frmEdit");
-			$form=$semantic->htmlLabel("bt",$roleEdit->getId(),"")->setColor("blue");
+			$form->addInput("id","ID","text",$roleEdit->getId());
 			$form->addInput("name","Nom","text",$a);
 			
 			$form->addButton("submit","envoyer","button green")->postFormOnClick("ManageRole/majRole","frmEdit","#result");
@@ -64,7 +65,6 @@ class ManageRoleController extends ControllerBase
     	
 
     	$roleEdit->setName($nom);
-   // 	$roleEdit->setId($id);
     	$roleEdit->save();
     		
     	$this->jquery->compile($this->view);
@@ -72,23 +72,29 @@ class ManageRoleController extends ControllerBase
     
     public function addRoleAction(){
 	    	$semantic=$this->semantic;
+	    	
 	    	$form=$semantic->htmlForm("frmAdd");
 	    	$form->addInput("nameRole","Nom","text");
-	    	$form->addButton("","Ajouter le rôle","button green")->asSubmit();
+	    	
+	    	$form->addButton("submit","Ajouter le rôle","button green")->postFormOnClick("ManageRole/newRole","frmAdd","#result");
 	    	$this->jquery->compile($this->view);
     }
     
     public function newRoleAction(){
-	    	$nom=$_POST["name"];
+	    	$nom=$_POST["nameRole"];
+	    	
+	    	$newRole=Role::find();
+	    	
 	    	$newRole->setName($nom);
 	    	$newRole->save();
+	    	
 	    	$this->jquery->compile($this->view);
     }
     
     public function deleteRoleAction($a=NULL){
+    		$semantic=$this->semantic;
+    	
 	    	$role=Role::findFirst("name='$a'");
-	    		
-	    	$semantic=$this->semantic;
 	    	
 	    	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 	    	$btnCancel->getOnClick("TypeServers","#divAction");
@@ -98,7 +104,7 @@ class ManageRoleController extends ControllerBase
 	    	$form->addHeader("Voulez-vous vraiment supprimer le rôle : ". $role->getName()."?",3);
 	    	$form->addInput("id",NULL,"hidden",$role->getId());
 	    	$form->addInput("name","Nom","text",NULL,"Entrez le nom du rôle pour confirmer la suppression");
-	    	$form->addButton("submit", "Supprimer","button red")->postFormOnClick("manageRole/confirmDelete", "frmDelete","#divAction");
+	    	$form->addButton("submit", "Supprimer","button red")->postFormOnClick("manageRole/confirmDelete", "frmDelete","#result");
 	    		
 	    	
 	    	$this->view->setVars(["element"=>$role]);
@@ -106,8 +112,13 @@ class ManageRoleController extends ControllerBase
 	    	$this->jquery->compile($this->view);
     }
     
-    public function confirmDeleteAction($a=NULL){
+    public function confirmDeleteAction(){
+    	$deleteRole = Role::findFirst($_POST['id']);
+    		
+    	if($deleteRole->getName() == $_POST['name']){
+    		$deleteRole->delete();
     		$this->jquery->compile($this->view);
+    	}
     }
 
 }
