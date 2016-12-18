@@ -1,5 +1,5 @@
 <h1>Gestion des rôles</h1>
-<div align="right">
+<div align="right" >
 {{ q["addButton"] }}
 </div>
 {{ q["dd"] }}

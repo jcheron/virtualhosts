@@ -49,8 +49,9 @@ class ManageRoleController extends ControllerBase
 			$roleEdit=Role::findFirst(["name='$a'"]);
 	
 			$form=$semantic->htmlForm("frmEdit");
-			$form->addInput("id","ID","text",$roleEdit->getId()	);
+			$form=$semantic->htmlLabel("bt",$roleEdit->getId(),"")->setColor("blue");
 			$form->addInput("name","Nom","text",$a);
+			
 			$form->addButton("submit","envoyer","button green")->postFormOnClick("ManageRole/majRole","frmEdit","#result");
 			$this->jquery->compile($this->view);
     }
@@ -69,12 +70,18 @@ class ManageRoleController extends ControllerBase
     	$this->jquery->compile($this->view);
     }
     
-    public function addRoleAction($a=NULL){
+    public function addRoleAction(){
 	    	$semantic=$this->semantic;
 	    	$form=$semantic->htmlForm("frmAdd");
-	    	$form->addInput("idRole","ID","text");
 	    	$form->addInput("nameRole","Nom","text");
 	    	$form->addButton("","Ajouter le rôle","button green")->asSubmit();
+	    	$this->jquery->compile($this->view);
+    }
+    
+    public function newRoleAction(){
+	    	$nom=$_POST["name"];
+	    	$newRole->setName($nom);
+	    	$newRole->save();
 	    	$this->jquery->compile($this->view);
     }
     
@@ -91,12 +98,16 @@ class ManageRoleController extends ControllerBase
 	    	$form->addHeader("Voulez-vous vraiment supprimer le rôle : ". $role->getName()."?",3);
 	    	$form->addInput("id",NULL,"hidden",$role->getId());
 	    	$form->addInput("name","Nom","text",NULL,"Entrez le nom du rôle pour confirmer la suppression");
-	    	$form->addButton("submit", "Supprimer","button red")->postFormOnClick("TypeServers/confirmDelete", "frmDelete","#divAction");
+	    	$form->addButton("submit", "Supprimer","button red")->postFormOnClick("manageRole/confirmDelete", "frmDelete","#divAction");
 	    		
 	    	
 	    	$this->view->setVars(["element"=>$role]);
 	    	
 	    	$this->jquery->compile($this->view);
+    }
+    
+    public function confirmDeleteAction($a=NULL){
+    		$this->jquery->compile($this->view);
     }
 
 }

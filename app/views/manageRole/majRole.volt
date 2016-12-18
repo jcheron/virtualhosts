@@ -1,1 +1,2 @@
-<h2>Modification(s) effectuée(s) avec succès !</h2>
+</br>
+<h2>Modification effectuée avec succès !</h2>
