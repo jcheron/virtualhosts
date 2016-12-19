@@ -50,7 +50,7 @@ class ManageRoleController extends ControllerBase
 			$roleEdit=Role::findFirst(["name='$a'"]);
 	
 			$form=$semantic->htmlForm("frmEdit");
-			$form->addInput("id","ID","text",$roleEdit->getId());
+			$form->addInput("id","","hidden",$roleEdit->getId());
 			$form->addInput("name","Nom","text",$a);
 			
 			$form->addButton("submit","envoyer","button green")->postFormOnClick("ManageRole/majRole","frmEdit","#result");
@@ -62,10 +62,9 @@ class ManageRoleController extends ControllerBase
     	$id=$_POST["id"];
     	
     	$roleEdit=Role::findFirst(["id=$id"]);
-    	
 
     	$roleEdit->setName($nom);
-    	$roleEdit->save();
+    	$roleEdit->update();
     		
     	$this->jquery->compile($this->view);
     }
