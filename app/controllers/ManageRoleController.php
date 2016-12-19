@@ -82,11 +82,11 @@ class ManageRoleController extends ControllerBase
     
     public function newRoleAction(){
 	    	$nom=$_POST["nameRole"];
+
 	    	
-	    	$newRole=Role::find();
-	    	
+	    	$newRole = new Role();
 	    	$newRole->setName($nom);
-	    	$newRole->save();
+	    	$newRole->create();
 	    	
 	    	$this->jquery->compile($this->view);
     }
