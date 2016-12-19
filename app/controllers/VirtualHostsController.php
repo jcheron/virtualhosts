@@ -101,7 +101,12 @@ class VirtualHostsController extends ControllerBase
 		$idVirtualhost=2;
 		$semantic=$this->semantic;
 		
-		$virtualHostProperties=Virtualhostproperty::find("idVirtualhost={$idVirtualhost}");
+		$virtualHostProperties=Virtualhostproperty::find(
+				[
+						"idVirtualhost = {$idVirtualhost}",
+						"order"=>"idProperty ASC",
+				]
+				);
 		$properties=Property::find();
 
 		$newProperty=false;
@@ -114,16 +119,14 @@ class VirtualHostsController extends ControllerBase
 		}
 		
 		$table=$semantic->htmlTable("s-infos",0,6);
-		$table->setHeaderValues(["","Priorité","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
+		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
-			$priority=$property->getPrority();
 		
 			$value=$virtualHostProperty->getValue();
 			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
 			$input->setProperty("data-changed", "label$i");
 			$table->addRow([$semantic->htmlLabel("label$i","État"),
-					$priority,
 					$property->getName(), $property->getDescription(),
 					$value,($input)
 					.(new HtmlInput("id[]","hidden",$property->getId())),
@@ -140,7 +143,7 @@ class VirtualHostsController extends ControllerBase
 		$footer->getCell(0,1)->setValue([$bt]);
 		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
 		
-		$table->setSortable(1);
+		$table->setSortable(2);
 		
 
 		$this->jquery->change("[data-changed]","$('#'+$(this).attr('data-changed')).html('Modifié');");
