@@ -67,7 +67,7 @@ class ServeurController extends ControllerBase{
 		$i=0;
 		
 		foreach ($servers as $server){
-			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/virtual","#divAction");
+			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/virtual/".$server->getId(),"#divAction");
 			
 			
 			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/".$server->getId(),"#divAction");
@@ -227,13 +227,23 @@ class ServeurController extends ControllerBase{
 		echo $this->jquery->compile();
 	}
 	
+	
+	
+	
+	/* virtualhost */
+	
+	
+	
 	/* virtualhost du serveur */
 	
-	public function virtualAction($idHost=NULL){
+	public function virtualAction($idServer=NULL,$idhost=NULL){
 	
-		$virtualhosts=Virtualhost::find();
+		$virtualhosts=Virtualhost::find("idServer=".$idServer."");
+		
+		$this->view->disable();
+		var_dump($virtualhosts);
+		
 		$list=$this->semantic->htmlList("virtual");
-	
 	
 		$semantic=$this->semantic;
 	
@@ -242,7 +252,7 @@ class ServeurController extends ControllerBase{
 		$i=0;
 		echo "<h3> Liste des virtualhosts : </h3>";
 		foreach ($virtualhosts as $virtualhost){
-			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/hosts","#test");
+			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/vUpdatevirtual","#test");
 	
 	
 			$btnDelete = $semantic->htmlButton("btnDeleteVirtual-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDeletevirtual/".$virtualhost->getId(),"#test");
@@ -261,7 +271,7 @@ class ServeurController extends ControllerBase{
 		$test=$semantic->htmlButton("ajouter","Ajouter","black")->getOnClick("Serveur/vUpdate","#divAction")->setNegative();
 		echo $test;
 		$this->jquery->exec("$('#divAction .item').removeClass('active');",true);
-		$this->jquery->exec("$('[data-ajax=".$idHost."]').addClass('active');",true);
+		$this->jquery->exec("$('[data-ajax=".$idhost."]').addClass('active');",true);
 		$list->setInverted()->setDivided()->setRelaxed();
 		echo $this->jquery->compile($this->view);
 	}
@@ -311,5 +321,36 @@ class ServeurController extends ControllerBase{
 		}
 			
 		echo $this->jquery->compile();
+	}
+	
+	/* ajout les virtualhost du serveur */
+	public function vUpdatevirtualAction(){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+		 
+		$Virtualhost = Virtualhost::findFirst();
+		
+		$semantic=$this->semantic;
+		
+		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+		$btnCancel->getOnClick("Serveur/index","#index");
+		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+		$btnCancel->getOnClick("Servers","#divAction");
+		$form=$semantic->htmlForm("frmUpdate");
+		$form->addInput("name")->getField()->labeledToCorner("asterisk","right");
+		$input2=$semantic->htmlInput("Configuration...");
+		$form->addInput("config")->getField()->labeledToCorner("asterisk","right");
+			
+		$form->addDropdown("stype",$itemsStypes,"Type Serveurs : * ","Selectionner un type de serveur ...",false);
+		$form->addDropdown("host",$itemshost,"Host : *","Selectionner host ...",false);
+		
+		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmit", "frmUpdate","#divAction");
+		
+		
+		$form->addButton("cancel", "Annuler","ui red button");
+		 
+		$this->jquery->compile($this->view);
+		
+		
 	}
 }
