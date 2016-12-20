@@ -227,6 +227,7 @@ class VirtualHostsController extends ControllerBase
 		// Récupérer la config du VH actuel
 		$virtualHost = Virtualhost::findFirst("id=$idVirtualHost");
 		$config = $virtualHost->getConfig();
+		$id = $virtualHost->getId();
 		
 		// Créer le dossier temporaire
 		$target_dir = APP_PATH."/uploads/tmp";
@@ -235,7 +236,7 @@ class VirtualHostsController extends ControllerBase
 		}
 		
 		// Créer le pointeur
-		$fp = fopen("$target_dir/test.txt","w");
+		$fp = fopen("$target_dir/configVH_$id.htaccess","w");
 		
 		// Ecrire dans le fichier
 		fwrite($fp, "$config");
@@ -243,51 +244,24 @@ class VirtualHostsController extends ControllerBase
 		// Fermer le fichier
 		fclose($fp);
 		
-		$fichier =  $target_dir . "/test.txt";
-		echo "<a href='./downloadConfig?file=$fichier'>Download file</a>";
-		
-		$this->view->disable();
+		$semantic->htmlButton("telecharger","Télécharger")->asLink("./downloadConfig/$id");
 		$this->jquery->compile($this->view);
 	}
 	
-	public function downloadConfigAction($idVirtualHost=NULL){
-		if (isset($_GET['file']) && basename($_GET['file']) == $_GET['file']) {
-			$filename = $_GET['file'];
-		} else {
-			$filename = NULL;
-			$err = '<p style="color:#990000">Sorry, the file you are requesting is unavailable.</p>';
-		}
-		
-		if (!$filename) {
-			// if variable $filename is NULL or false display the message
-			echo $err;
-		} else {
-			// define the path to your download folder plus assign the file name
-			$path = 'downloads/'.$filename;
-			// check that file exists and is readable
-			if (file_exists($path) && is_readable($path)) {
-				// get the file size and send the http headers
-				$size = filesize($path);
-				header('Content-Type: application/octet-stream');
-				header('Content-Length: '.$size);
-				header('Content-Disposition: attachment; filename='.$filename);
-				header('Content-Transfer-Encoding: binary');
-				// open the file in binary read-only mode
-				// display the error message if file can't be opened
-				$file = @ fopen($path, 'rb');
-				if ($file) {
-					// stream the file and exit the script when complete
-					fpassthru($file);
-					exit;
-				} else {
-					echo $err;
-				}
-			} else {
-				echo $err;
-			}
-		}
-		
-		$this->view->disable();
-		$this->jquery->compile($this->view);
+	public function downloadConfigAction($id=NULL){
+	$target_dir = APP_PATH."/uploads/tmp";
+	$file =  $target_dir . "/configVH_$id.htaccess";
+	
+	if (file_exists($file)) {
+	    header('Content-Description: File Transfer');
+	    header('Content-Type: application/octet-stream');
+	    header('Content-Disposition: attachment; filename="'.basename($file).'"');
+	    header('Expires: 0');
+	    header('Cache-Control: must-revalidate');
+	    header('Pragma: public');
+	    header('Content-Length: ' . filesize($file));
+	    readfile($file);
+	    exit;
+	}
 	}
 }
