@@ -6,7 +6,12 @@
 </div>
 
 <div id="divAction">
+
 {{ q["table4"] }}
+
+
+{{ q["ajoutervirtual"]}}
+
 </div>
 
 

@@ -5,12 +5,7 @@ class ServeurController extends ControllerBase{
 
 	
 	public function indexAction(){
-		$this->loadMenus();
-		$semantic=$this->semantic;
-		$grid=$semantic->htmlGrid("grid");
-		$grid->addRow(2)->setValues(["Vincent",$this->createBts("vincent",["Url1"=>"zz","Url2"=>"Index"])]);
-		$this->jquery->getOnClick(".clickable", "","#content-container",["attr"=>"data-ajax"]);
-		$this->jquery->compile($this->view);
+	
 	}
 
 	
@@ -62,17 +57,29 @@ class ServeurController extends ControllerBase{
 		
 		$semantic=$this->semantic;
 		
-		$table=$semantic->htmlTable('table4',0,5);
-		$table->setHeaderValues([" ","Nom du Serveur","Configuration","Modifier","Supprimer"]);
+		$table=$semantic->htmlTable('table4',0,6);
+		$table->setHeaderValues([" ","Nom du Serveur","Configuration","Modifier","Supprimer","Nombre Virtualhost"]);
 		$i=0;
-		
+		$nbrvirtual = 0;
 		foreach ($servers as $server){
 			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/virtual/".$server->getId(),"#divAction");
 			
-			
-			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/".$server->getId(),"#divAction");
-			$table->addRow([" ",$server->getName(),
-								$server->getConfig(),$btnConfig,$btnDelete]);
+				foreach ($virtualhosts as $virtualhost){
+					if ($virtualhost->getId() == $virtualhost->getId()){
+						$nbrvirtual = $nbrvirtual +1;
+					}}
+					if ($nbrvirtual == 0)
+					{$p="";}
+					else if ($nbrvirtual == 1)
+					{$p= $semantic->htmlLabel("",$nbrvirtual . " Virtualhost","virtualhost")->setColor("green");}
+					else
+					{$p= $semantic->htmlLabel("",$nbrvirtual . " Virtualhost","virtualhost")->setColor("green");};
+					$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/".$server->getId(),"#divAction");
+						
+					$table->addRow([" ",$server->getName(),
+							$server->getConfig(),$btnConfig,$btnDelete]);
+						
+					$nbrvirtual = 0;
 			
 			$table->setDefinition();
 			$i++;
@@ -240,8 +247,7 @@ class ServeurController extends ControllerBase{
 	
 		$virtualhosts=Virtualhost::find("idServer=".$idServer."");
 		
-		$this->view->disable();
-		var_dump($virtualhosts);
+		
 		
 		$list=$this->semantic->htmlList("virtual");
 	
@@ -268,8 +274,10 @@ class ServeurController extends ControllerBase{
 		echo $table;
 		echo "<br/> <br/>";
 	
-		$test=$semantic->htmlButton("ajouter","Ajouter","black")->getOnClick("Serveur/vUpdate","#divAction")->setNegative();
-		echo $test;
+		$ajoutervirtual=$semantic->htmlButton("ajoutervirtual","Ajouter","black")->getOnClick("Serveur/vUpdatevirtual","#divAction")->setNegative();
+		
+		
+	
 		$this->jquery->exec("$('#divAction .item').removeClass('active');",true);
 		$this->jquery->exec("$('[data-ajax=".$idhost."]').addClass('active');",true);
 		$list->setInverted()->setDivided()->setRelaxed();
@@ -294,7 +302,7 @@ class ServeurController extends ControllerBase{
 			
 		$form->addHeader("Voulez-vous vraiment supprimer le virtualhost : ". $Virtualhost->getName()."?",3);
 		$form->addInput("id",NULL,"hidden",$Virtualhost->getId());
-		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du type de serveur");
+		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du virtualhost");
 	
 		$form->addButton("submit", "Supprimer","ui green button")->postFormOnClick("Serveur/confirmDeletevirtual", "frmDelete","#test");
 		$form->addButton("cancel", "Annuler","ui red button");
@@ -323,34 +331,92 @@ class ServeurController extends ControllerBase{
 		echo $this->jquery->compile();
 	}
 	
+	
 	/* ajout les virtualhost du serveur */
 	public function vUpdatevirtualAction(){
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
-		 
-		$Virtualhost = Virtualhost::findFirst();
+			
+		$host = Host::findFirst();
+		
+		$stypes = Stype::find();
+		$itemsStypes = array();
+		foreach($stypes as $stype) {
+			$itemsStypes[] = $stype->getName();
+		}
+		
+		
+		$hosts = Host::find();
+		$itemshost = array();
+		foreach($hosts as $host) {
+			$itemshost[] = $host->getName();
+		}
+		
 		
 		$semantic=$this->semantic;
 		
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 		$btnCancel->getOnClick("Serveur/index","#index");
+		
+		
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 		$btnCancel->getOnClick("Servers","#divAction");
+		
+		
 		$form=$semantic->htmlForm("frmUpdate");
 		$form->addInput("name")->getField()->labeledToCorner("asterisk","right");
+		
+		
 		$input2=$semantic->htmlInput("Configuration...");
 		$form->addInput("config")->getField()->labeledToCorner("asterisk","right");
 			
+		
+		
 		$form->addDropdown("stype",$itemsStypes,"Type Serveurs : * ","Selectionner un type de serveur ...",false);
 		$form->addDropdown("host",$itemshost,"Host : *","Selectionner host ...",false);
 		
-		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmit", "frmUpdate","#divAction");
+		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmitvirtual", "frmUpdate","#divAction");
 		
 		
 		$form->addButton("cancel", "Annuler","ui red button");
-		 
+			
 		$this->jquery->compile($this->view);
 		
 		
 	}
+	public function vAddSubmitvirtualAction(){
+		if(!empty($_POST['name'] && $_POST['config'] && $_POST['stype'] && $_POST['host'])){
+			$Virtualhost = new Virtualhost();
+	
+			$idhost = Host::findFirst("name = '".$_POST['host']."'");
+			$idstype = Stype::findFirst("name = '".$_POST['stype']."'");
+				
+			$Virtualhost->setIdServer($idstype->getId());
+			$Virtualhost->setIdUser($idhost->getId());
+			$Virtualhost->save(
+					$this->request->getPost(),
+					[
+							"name",
+							"config",
+								
+					]
+					);
+	
+			$this->flash->message("success", "Le serveur a été inseré avec succès");
+			//$this->jquery->get("Serveur","#refresh");
+	
+			$this->jquery->get("Serveur/servers/".$idhost,"#servers");
+	
+		}else{
+			$this->flash->message("error", "Veuillez remplir tous les champs");
+				
+		}
+	
+	
+	
+		echo $this->jquery->compile();
+	
+	}
+	
+	
 }
