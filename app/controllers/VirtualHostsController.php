@@ -90,7 +90,7 @@ class VirtualHostsController extends ControllerBase
 		$buttons=$this->semantic->htmlButtonGroups("importOrExport",array("Importer","Exporter"));
 		$buttons->insertOr(0,"ou");		
 		$buttons->getElement(0)->getOnClick("VirtualHosts/readConfig/".$virtualHosts->getId()."","#uploadExport");
-		$buttons->getElement(2)->getOnClick("VirtualHosts/exportConfig","#uploadExport");
+		$buttons->getElement(2)->getOnClick("VirtualHosts/exportConfig/".$virtualHosts->getId()."","#uploadExport");
 		
 		
 		$this->jquery->exec("Prism.highlightAll();",true);
@@ -101,25 +101,18 @@ class VirtualHostsController extends ControllerBase
 		$idVirtualhost=2;
 		$semantic=$this->semantic;
 		
+		$properties=Property::find();
 		$virtualHostProperties=Virtualhostproperty::find(
 				[
 						"idVirtualhost = {$idVirtualhost}",
 						"order"=>"idProperty ASC",
 				]
 				);
-		$properties=Property::find();
-
-		$newProperty=false;
-		foreach ($properties as $property){
-			if ($property->getName() == "Nammee"){
-				$newProperty=true;
-			}else{
-				$newProperty=false;
-			}
-		}
+		
 		
 		$table=$semantic->htmlTable("s-infos",0,6);
 		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
+
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
 		
@@ -149,6 +142,7 @@ class VirtualHostsController extends ControllerBase
 		$this->jquery->change("[data-changed]","$('#'+$(this).attr('data-changed')).html('Modifié');");
 		$this->jquery->compile($this->view);
 	}
+	
 	public function updateConfigAction(){
 		$this->jquery->exec("$('#info').show();",true);
 
@@ -227,8 +221,73 @@ class VirtualHostsController extends ControllerBase
 	$this->jquery->compile($this->view);
 	}
 		
-	public function exportConfigAction(){
+	public function exportConfigAction($idVirtualHost=NULL){
 		$semantic=$this->semantic;		
+		
+		// Récupérer la config du VH actuel
+		$virtualHost = Virtualhost::findFirst("id=$idVirtualHost");
+		$config = $virtualHost->getConfig();
+		
+		// Créer le dossier temporaire
+		$target_dir = APP_PATH."/uploads/tmp";
+		if (!file_exists($target_dir)){
+			mkdir($target_dir,077,true);
+		}
+		
+		// Créer le pointeur
+		$fp = fopen("$target_dir/test.txt","w");
+		
+		// Ecrire dans le fichier
+		fwrite($fp, "$config");
+		
+		// Fermer le fichier
+		fclose($fp);
+		
+		$fichier =  $target_dir . "/test.txt";
+		echo "<a href='./downloadConfig?file=$fichier'>Download file</a>";
+		
+		$this->view->disable();
+		$this->jquery->compile($this->view);
+	}
+	
+	public function downloadConfigAction($idVirtualHost=NULL){
+		if (isset($_GET['file']) && basename($_GET['file']) == $_GET['file']) {
+			$filename = $_GET['file'];
+		} else {
+			$filename = NULL;
+			$err = '<p style="color:#990000">Sorry, the file you are requesting is unavailable.</p>';
+		}
+		
+		if (!$filename) {
+			// if variable $filename is NULL or false display the message
+			echo $err;
+		} else {
+			// define the path to your download folder plus assign the file name
+			$path = 'downloads/'.$filename;
+			// check that file exists and is readable
+			if (file_exists($path) && is_readable($path)) {
+				// get the file size and send the http headers
+				$size = filesize($path);
+				header('Content-Type: application/octet-stream');
+				header('Content-Length: '.$size);
+				header('Content-Disposition: attachment; filename='.$filename);
+				header('Content-Transfer-Encoding: binary');
+				// open the file in binary read-only mode
+				// display the error message if file can't be opened
+				$file = @ fopen($path, 'rb');
+				if ($file) {
+					// stream the file and exit the script when complete
+					fpassthru($file);
+					exit;
+				} else {
+					echo $err;
+				}
+			} else {
+				echo $err;
+			}
+		}
+		
+		$this->view->disable();
 		$this->jquery->compile($this->view);
 	}
 }

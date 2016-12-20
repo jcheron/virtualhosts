@@ -52,6 +52,7 @@
 }
 </style>
 
+{{ q["telecharger"] }}
 <h2 style="padding-top:10px">Cliquez ici pour télécharger le fichier de configuration Apache</h2>
 <div class="input-file-container">
   <input class="input-file" id="my-file" type="file">
