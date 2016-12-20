@@ -1,4 +1,5 @@
-
+<div id="divAction"></div>
+<div id="delete"></div>
 <div class="ui black message">
 {% if active === "true" %}
   <div class="header">
@@ -6,11 +7,13 @@
   </div>
   <p>Tous les champs marqués par des <em>*</em> sont obligatoires.</p>
 </div>
+
 <div class="ui green segment">
 <form id="frmUpdate">
     {{ q["table"] }}
 </form>
 </div>
+
 {% else  %}
 <div class="ui icon message">
   <i class="inbox icon"></i>
@@ -24,5 +27,6 @@
     {{ q["btnCancel"] }}
   </div>
 </div>
+
 {% endif  %}
 {{ script_foot }}

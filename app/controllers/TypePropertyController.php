@@ -11,8 +11,8 @@ class TypePropertyController extends ControllerBase
     	$this->tools($this->controller,$this->action);
     	$semantic=$this->semantic;
     	 
-    	$table = $semantic->htmlTable("table",0,3);
-    	$table->setHeaderValues(["#","nom","Action"]);
+    	$table = $semantic->htmlTable("table",0,4);
+    	$table->setHeaderValues(["#","nom","Propriétés","Action"]);
     	 
     	$btnAdd = $semantic->htmlButton("btnAdd","Ajouter","fluid ui button blue");
     	$btnAdd->getOnClick($this->controller."/vAdd","#divAction");
@@ -21,14 +21,30 @@ class TypePropertyController extends ControllerBase
     	 
     	$i=0;
     	foreach ($typeProperties as $Stypeproperty){
+    		$id = $Stypeproperty->getStypes()->getId();
+    		$nbProperties = count(Stypeproperty::find("idStype = ".$id));
+    		$label= $semantic->htmlLabel("nbProprietes",$this->properties($nbProperties),false)->setColor("green");
+    		
     		$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
-    		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
-    		$table->addRow([$i+1,$Stypeproperty->getName(),$btnUpdate.$btnDelete]);
+    		//$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
+    		$table->addRow([$i+1,$Stypeproperty->getStypes()->getName(),$label,$btnUpdate]);
     		$i++;
     	}
-    	 
+    	$table->addColVariations(1,"collapsing");
     	$this->view->setVars(["typeProperty"=>$Stypeproperty]);
     	$this->jquery->compile($this->view);
+    }
+    private function properties($nb){
+    	$mot = "";
+    	if($nb == 0){
+    		$mot = $nb." Aucune propriété";
+    	}elseif ($nb == 1){
+    		$mot = $nb." Propriété";
+    	}else{
+    		$mot = $nb." Propriétés";
+    	}
+    	return $mot;
+    	
     }
     public function vAddAction(){
     	$this->tools($this->controller,$this->action);
@@ -104,11 +120,11 @@ class TypePropertyController extends ControllerBase
     	$StypeProperties = Stypeproperty::find("idStype = ".$idStype);
     	$Stype = Stype::findFirst($idStype);
     	
-    	if($StypeProperties->count() > 1 ){
+    	if($StypeProperties->count() > 0 ){
     	
     	
-    	$table = $semantic->htmlTable("table",0,4);
-    	$table->setHeaderValues(["#","serveur (propriétés)","Nom","Template"]);
+    	$table = $semantic->htmlTable("table",0,5);
+    	$table->setHeaderValues(["#","serveur (propriétés)","Nom","Template","Supprimer"]);
     	
     	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
     	$btnCancel->getOnClick($this->controller."/index","#index");
@@ -117,7 +133,9 @@ class TypePropertyController extends ControllerBase
      	
     	$i=0;
     	foreach ($StypeProperties as $Stypeproperty){
- 
+    		
+    		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#delete");
+    		
     		$hiddenPrprty = $form->addInput("idProperty[]",NULL,"hidden",$Stypeproperty->getIdProperty());
     		$inputName = $form->addInput("name[]",false)->setValue($Stypeproperty->getName());
     		$inputTemplate = $form->addInput("template[]",false)->setValue($Stypeproperty->getTemplate());
@@ -127,8 +145,8 @@ class TypePropertyController extends ControllerBase
     						$i+1,//col1
     						$Stypeproperty->getName()."(".$Stypeproperty->getProperties()->getName().")".$hiddenPrprty,//col2
     						$inputName,//Col3
-    						$inputTemplate//col4
-    						
+    						$inputTemplate,//col4
+    						$btnDelete
     				]);
     		$i++;
     	}
@@ -215,7 +233,7 @@ class TypePropertyController extends ControllerBase
     		$typeProperty->delete();
     
     		$this->flash->message("success","Le type de propriété '".$_POST['name']."' a été supprimé avec succès");
-    		$this->jquery->get($this->controller,"#refresh");
+    		$this->jquery->get($this->controller."/vUpdate/".$_POST['idStype'],"#refresh");
     
     	}else{
     
