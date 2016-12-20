@@ -176,27 +176,24 @@ class VirtualHostsController extends ControllerBase
 		$uploadOk = 1;
 		$fileType = pathinfo($target_file,PATHINFO_EXTENSION);
 		
-		// Check if file already exists
-	/*	if (file_exists($target_file)) {
-			$state2="Désolé, le fichier existe déjà.";
-			$uploadOk = 0;
-			$this->view->setVar("state2", $state2);
-		}*/
 		// Check file size
 		if ($_FILES["fileToUpload"]["size"] > 500000) {
 			$uploadOk = 0;
 			$this->view->setVar("state2", $state2);
 		}
+		
 		// Allow certain file formats
-		if($fileType != "txt" ) {
-					$state3="Seul les fichiers textes sont acceptés.";
+		if($fileType != "txt" && $fileType != "htaccess") {
+					$state3="Seul les fichiers textes et htaccess sont acceptés.";
 					$uploadOk = 0;
 					$this->view->setVar("state3", $state3);
 				}
+				
 				// Check if $uploadOk is set to 0 by an error
 				if ($uploadOk == 0) {
 					$state4="Aucun fichier n'a pas été envoyé.";
 					$this->view->setVar("state4", $state4);
+					
 					// if everything is ok, try to upload file
 				} else {
 					if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {						
@@ -209,8 +206,7 @@ class VirtualHostsController extends ControllerBase
 						$db->query("UPDATE virtualhost SET config ='$_resultat' WHERE id='$idVH'");
 						fclose($fichier);						
 						$state4="Le fichier ". basename( $_FILES["fileToUpload"]["name"]). " a bien été envoyé.<a href='/VirtualHosts/VirtualHosts/'>Cliquez-ici pour revenir à la configuration</a>";
-						
-						//$this->response->redirect("VirtualHosts/index/uploadOK");
+
 						
 						$this->view->setVar("state4", $state4);
 					} else {
@@ -249,19 +245,20 @@ class VirtualHostsController extends ControllerBase
 	}
 	
 	public function downloadConfigAction($id=NULL){
-	$target_dir = APP_PATH."/uploads/tmp";
-	$file =  $target_dir . "/configVH_$id.htaccess";
+		$target_dir = APP_PATH."/uploads/tmp";
+		$file =  $target_dir . "/configVH_$id.htaccess";
 	
-	if (file_exists($file)) {
-	    header('Content-Description: File Transfer');
-	    header('Content-Type: application/octet-stream');
-	    header('Content-Disposition: attachment; filename="'.basename($file).'"');
-	    header('Expires: 0');
-	    header('Cache-Control: must-revalidate');
-	    header('Pragma: public');
-	    header('Content-Length: ' . filesize($file));
-	    readfile($file);
-	    exit;
-	}
+		if (file_exists($file)) {
+		    header('Content-Description: File Transfer');
+		    header('Content-Type: application/octet-stream');
+		    header('Content-Disposition: attachment; filename="'.basename($file).'"');
+		    header('Expires: 0');
+		    header('Cache-Control: must-revalidate');
+		    header('Pragma: public');
+		    header('Content-Length: ' . filesize($file));
+		    readfile($file);
+		    unlink($file);
+		    exit;
+		}
 	}
 }
