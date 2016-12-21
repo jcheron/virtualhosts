@@ -10,8 +10,8 @@ class TypeServersController extends ControllerBase
     	$this->tools($this->controller,$this->action);
     	$semantic=$this->semantic;
     	
-    	$table = $semantic->htmlTable("table",0,3);
-    	$table->setHeaderValues(["#","nom","Action"]);
+    	$table = $semantic->htmlTable("table",0,4);
+    	$table->setHeaderValues(["#","nom","Installé sur","Action"]);
     	
     	$btnAdd = $semantic->htmlButton("btnAdd","Ajouter","fluid ui button blue");
     	$btnAdd->getOnClick($this->controller."/vAdd","#divAction");
@@ -21,15 +21,32 @@ class TypeServersController extends ControllerBase
     	
     	$i=0;
     	foreach ($typeServers as $typeServer){
+    		$id = $typeServer->getId();
+    		$nbServers = count(Server::find("idStype = ".$id));
+    		$label= $semantic->htmlLabel("nbProprietes",$this->correcteur($nbServers),false)->setColor("green");
+    		
     		$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$typeServer->getId(),"#divAction");
     		$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$typeServer->getId(),"#divAction");
-    		$table->addRow([/*$typeServer->getId()*/$i+1,$typeServer->getName(),$btnUpdate.$btnDelete]);
+    		$table->addRow([/*$typeServer->getId()*/$i+1,$typeServer->getName(),$label,$btnUpdate.$btnDelete]);
     		$i++;
     	}
-    	
+
     	$this->view->setVars(["typeServers"=>$typeServers]);
     	$this->jquery->compile($this->view);
     	
+    }
+    
+    private function correcteur($nb){
+    	$mot = "";
+    	if($nb == 0){
+    		$mot = " Aucun serveur";
+    	}elseif ($nb == 1){
+    		$mot = $nb." serveur";
+    	}else{
+    		$mot = $nb." serveurs";
+    	}
+    	return $mot;
+    	 
     }
     
     public function vAddAction($nom=NULL){

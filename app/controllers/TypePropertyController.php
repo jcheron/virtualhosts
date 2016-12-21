@@ -17,27 +17,26 @@ class TypePropertyController extends ControllerBase
     	$btnAdd = $semantic->htmlButton("btnAdd","Ajouter","fluid ui button blue");
     	$btnAdd->getOnClick($this->controller."/vAdd","#divAction");
     	 
-    	$typeProperties = Stypeproperty::find();
+    	$typeProperties = Stypeproperty::find(["group" => "idStype"]);
     	 
     	$i=0;
     	foreach ($typeProperties as $Stypeproperty){
     		$id = $Stypeproperty->getStypes()->getId();
     		$nbProperties = count(Stypeproperty::find("idStype = ".$id));
-    		$label= $semantic->htmlLabel("nbProprietes",$this->properties($nbProperties),false)->setColor("green");
+    		$label= $semantic->htmlLabel("nbProprietes",$this->correcteur($nbProperties),false)->setColor("green");
     		
     		$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
     		//$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Stypeproperty->getIdStype()."/".$Stypeproperty->getIdProperty(),"#divAction");
     		$table->addRow([$i+1,$Stypeproperty->getStypes()->getName(),$label,$btnUpdate]);
     		$i++;
     	}
-    	$table->addColVariations(1,"collapsing");
     	$this->view->setVars(["typeProperty"=>$Stypeproperty]);
     	$this->jquery->compile($this->view);
     }
-    private function properties($nb){
+    private function correcteur($nb){
     	$mot = "";
     	if($nb == 0){
-    		$mot = $nb." Aucune propriété";
+    		$mot = " Aucune propriété";
     	}elseif ($nb == 1){
     		$mot = $nb." Propriété";
     	}else{

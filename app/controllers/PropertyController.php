@@ -12,8 +12,8 @@ class PropertyController extends ControllerBase
 		$this->tools($this->controller,$this->action);
 		$semantic=$this->semantic;
 	
-		$table = $semantic->htmlTable("table",0,3);
-		$table->setHeaderValues(["#","nom","Action"]);
+		$table = $semantic->htmlTable("table",0,4);
+		$table->setHeaderValues(["#","nom","Propriétés virtuelle","Action"]);
 	
 		$btnAdd = $semantic->htmlButton("btnAdd","Ajouter","fluid ui button blue");
 		$btnAdd->getOnClick($this->controller."/vAdd","#divAction");
@@ -22,17 +22,35 @@ class PropertyController extends ControllerBase
 	
 		$i=0;
 		foreach ($Properties as $Property){
+			$id = $Property->getId();
+			$nbProperties = count(Virtualhostproperty::find("idProperty = ".$id));
+			$label= $semantic->htmlLabel("nbProprietes",$this->correcteur($nbProperties),false)->setColor("green");
+						
 			$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Property->getId(),"#divAction");
 			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Property->getId(),"#divAction");
 			
 			
-			$table->addRow([$i+1,$Property->getName(),$btnUpdate.$btnDelete]);
+			$table->addRow([$i+1,$Property->getName(),$label,$btnUpdate.$btnDelete]);
 			$i++;
 		}
 	
 		$this->view->setVars(["Property"=>$Property]);
 		$this->jquery->compile($this->view);
 	}
+	
+	private function correcteur($nb){
+		$mot = "";
+		if($nb == 0){
+			$mot = " Aucune propriété";
+		}elseif ($nb == 1){
+			$mot = $nb." propriété";
+		}else{
+			$mot = $nb." propriétés";
+		}
+		return $mot;
+	
+	}
+	
 	public function vAddAction(){
 		$this->tools($this->controller,$this->action);
 		
