@@ -1,4 +1,4 @@
-(Fichier envoyé via l'importeur)
+(FFichier envoyé via l'importeur)
 # Apache doit écouter sur le port 80
 Listen 80
 <VirtualHost *:80>

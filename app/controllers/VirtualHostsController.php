@@ -188,7 +188,7 @@ class VirtualHostsController extends ControllerBase
 						$_resultat=str_replace("'", "\'", $resultat);
 						$db->query("UPDATE virtualhost SET config ='$_resultat' WHERE id='$idVH'");
 						fclose($fichier);						
-						$semantic->htmlMessage("state","La configuration de l'hôte virtuel a été mis à jour avec succès.")->addHeader("Envoi réussi")->setIcon("checkmark");
+						$semantic->htmlMessage("state","La configuration de l'hôte virtuel a été mis à jour avec succès. <a href='/VirtualHosts/VirtualHosts'>Cliquez ici pour revenir à l'accueil de la configuration</a>")->addHeader("Envoi réussi")->setIcon("checkmark");
 					} else {
 						$semantic->htmlMessage("state","Une erreur est survenue lors de l'envoi du fichier. Seuls les fichiers .txt & .htaccess sont acceptés.")->addHeader("Echec lors de l'envoi")->setIcon("question");
 					}
