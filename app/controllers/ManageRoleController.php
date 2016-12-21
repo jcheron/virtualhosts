@@ -1,11 +1,8 @@
 <?php
 
-
-use Ajax\semantic\html\elements\HtmlList;
-use Ajax\semantic\html\modules\checkbox\HtmlCheckbox;
 use Ajax\semantic\html\elements\HtmlButton;
-use Ajax\semantic\html\elements\HtmlInput;
 use Ajax\Semantic;
+use Phalcon\Forms\Element\Submit;
 
 class ManageRoleController extends ControllerBase
 {
@@ -24,7 +21,6 @@ class ManageRoleController extends ControllerBase
 		$nbrUser = 0;
 		foreach ($roles as $Role)
 		{
-			//sizeof($role->getUsers());
 			foreach ($users as $User){
 				if ($Role->getId() == $User->getIdrole()){
 					$nbrUser = $nbrUser +1;	
@@ -57,7 +53,7 @@ class ManageRoleController extends ControllerBase
 			$this->jquery->compile($this->view);
     }
 
-    public function majRoleAction(){    	
+    public function majRoleAction(){   
     	$nom=$_POST["name"];
     	$id=$_POST["id"];
     	
@@ -94,9 +90,6 @@ class ManageRoleController extends ControllerBase
     		$semantic=$this->semantic;
     	
 	    	$role=Role::findFirst("name='$a'");
-	    	
-	    	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
-	    	$btnCancel->getOnClick("TypeServers","#divAction");
 	    	
 	    	$form=$semantic->htmlForm("frmDelete");
 	    		

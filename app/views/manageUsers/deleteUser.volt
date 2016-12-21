@@ -1,1 +1,3 @@
-<h2>Confirmer la suppression de l'utilisateur "{{ id }}"</h2>
+{{ q["frmDelete"] }}
+<div id="result"></div>
+{{ script_foot }}
