@@ -10,6 +10,7 @@ class TypePropertyController extends ControllerBase
     	$this->secondaryMenu($this->controller,$this->action);
     	$this->tools($this->controller,$this->action);
     	$semantic=$this->semantic;
+    	$semantic->setLanguage("fr");
     	 
     	$table = $semantic->htmlTable("table",0,4);
     	$table->setHeaderValues(["#","nom","Propriétés","Action"]);
@@ -66,15 +67,19 @@ class TypePropertyController extends ControllerBase
     	$btnCancel->getOnClick($this->controller."/index","#index");
     	 
     	$form=$semantic->htmlForm("frmAdd");
+    	$form->setValidationParams(["on"=>"blur","inline"=>true]);
+    	$form->addErrorMessage();
+    	
     	$fields=$form->addFields();
-  
-    	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs","Selectionner un type de serveur...",false)->setWidth(8).
+      	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs","Selectionner un type de serveur...",false)->setWidth(8).
     	$fields->addDropdown("property",$itemsProperties,"Propriétés","Selectionner une propriété...",false)->setWidth(8);
     	
-    	$form->addInput("name","Nom * :","text",false,"Nom de la propriété");
-    	$form->addItem(new HtmlFormTextarea("template","Template * :",false,"Template"))->setRows(10);
+    	$form->addInput("name","Nom * :","text",false,"Nom de la propriété")->addRule("empty");;
+    	$form->addItem(new HtmlFormTextarea("template","Template * :",false,"Template",10))->addRule("empty");
 
-    	$form->addButton("submit", "Valider","ui blue button")->postFormOnClick($this->controller."/vAddSubmit", "frmAdd","#divAction");
+    	$form->addButton("submit", "Valider","ui blue button")->asSubmit();
+    	$form->submitOnClick("submit",$this->controller."/vAddSubmit","#divAction");
+    	
     	$form->addButton("btnCancel", "Annuler","ui red button");
     	 
     	 
@@ -83,7 +88,7 @@ class TypePropertyController extends ControllerBase
     }
     
     public function vAddSubmitAction(){
-    	var_dump($_POST);
+
     	if(!empty($_POST['name'] && $_POST['template'] && $_POST['stype'] && $_POST['property'])){
     		
     		$stype = Stype::findFirst("name = '".$_POST['stype']."'");
@@ -236,7 +241,7 @@ class TypePropertyController extends ControllerBase
     
     	}else{
     
-    		$this->flash->message("error","Le type de propriété '".$_POST['name']."' n'a pas été supprimé : le nom ne correspond pas ! ");
+    		$this->flash->message("error","Le type de propriété '".$typeProperty->getName()."' n'a pas été supprimé : le nom ne correspond pas ! ");
     		$this->jquery->get($this->controller,"#refresh");
     	}
     	 

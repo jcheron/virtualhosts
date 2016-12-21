@@ -55,21 +55,27 @@ class PropertyController extends ControllerBase
 		$this->tools($this->controller,$this->action);
 		
 		$semantic=$this->semantic;
+		$semantic->setLanguage("fr");
+		
 		$property = Property::findFirst(["order" => "prority DESC"]);
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 		$btnCancel->getOnClick($this->controller."/index","#index");
 		 
 		$form=$semantic->htmlForm("frmAdd");
+		$form->setValidationParams(["on"=>"blur","inline"=>true]);
+		$form->addErrorMessage();
 		
-		$form->addInput("name","Nom * :","text",false,"Nom de la propriété");
+		$form->addInput("name","Nom * :","text",false,"Nom de la propriété")->addRule("empty");
 		
-		$form->addItem(new HtmlFormTextarea("description","Description * :",false,"Description"));
+		$form->addItem(new HtmlFormTextarea("description","Description * :",false,"Description"))->addRule("empty");
 		
 		$form->addItem(new HtmlFormCheckbox("required","Requis ?","1","checkbox"));
 		
 		$form->addInput("prority",FALSE,"hidden",$property->getPrority()+1,"Saisir un chiffre ");
 		
-		$form->addButton("submit", "Valider","ui blue button")->postFormOnClick($this->controller."/vAddSubmit", "frmAdd","#divAction");
+		$form->addButton("submit", "Valider","ui blue button")->asSubmit();
+		$form->submitOnClick("submit",$this->controller."/vAddSubmit","#divAction");
+
 		$form->addButton("btnCancel", "Annuler","ui red button");
 		 
 		 

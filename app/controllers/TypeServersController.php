@@ -53,18 +53,25 @@ class TypeServersController extends ControllerBase
     	$this->tools($this->controller,$this->action);
  
     	$semantic=$this->semantic;
-
+    	$semantic->setLanguage("fr");
+    	
     	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
     	$btnCancel->getOnClick($this->controller."/index","#index");
     	
     	$form=$semantic->htmlForm("frmAdd");
+    	
     	$form->setValidationParams(["on"=>"blur","inline"=>true]);
-    	$form->addInput("name","Nom * :","text",false,"Nom du type de serveur")->addRule("empty");
-    	$form->addItem(new HtmlFormTextarea("configTemplate","Template * :",false,"Template"))->setRows(10);
-    	//$form->addButton("","Valider")->asSubmit();
-    	$form->addButton("submit", "Valider","ui blue button")->postFormOnClick($this->controller."/vAddSubmit", "frmAdd","#divAction");
-    	$form->addButton("btnCancel", "Annuler","ui red button");
     	$form->addErrorMessage();
+    	
+    	$form->addInput("name","Nom * :","text",false,"Nom du type de serveur")->addRule("empty");
+    	$form->addItem(new HtmlFormTextarea("configTemplate","Template * :",false,"Template",10))->addRule("empty");
+    	
+    	$form->addButton("submit", "Valider","ui blue button")->asSubmit();
+    	$form->submitOnClick("submit",$this->controller."/vAddSubmit","#divAction");
+    	
+    	$form->addButton("btnCancel", "Annuler","ui red button");
+    	
+    	
     	
     	
     	$this->jquery->compile($this->view);
