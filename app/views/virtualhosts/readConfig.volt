@@ -6,21 +6,4 @@ Séléctionnez un fichier de configuration :
     <input type="submit" value="Envoyer" name="submit">
 </form>
 
-<pre style="background-color:black; color:green">
-##DEBUGGER##
-{% if state1 is defined  %}
-{{ state1 }}
-{% endif %}
-
-{% if state2 is defined  %}
-{{ state2 }}
-{% endif %}
-
-{% if state3 is defined  %}
-{{ state3 }}
-{% endif %}
-
-{% if state4 is defined  %}
-{{ state4 }}
-{% endif %}
-</pre>
+{{ q["state"] }}

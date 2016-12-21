@@ -12,23 +12,6 @@ class VirtualHostsController extends ControllerBase
 	{
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
-		
-		if ($message=="uploadOK"){
-			$message=new \Ajax\semantic\html\collections\HtmlMessage("message","La nouvelle configuration est dès à présent utilisée. <br />Vous pouvez visualiser son contenu dans l'onglet \"Récapitulatif\" dans la configuration de l'hôte virtuel.");
-			$message->addHeader("Configuration mise à jour");
-			$message->setColor("green");
-			
-			$this->view->setVar("message", $message);
-		}
-		
-		if ($message=="uploadFailed"){
-			$message=new \Ajax\semantic\html\collections\HtmlMessage("message","L'une des causes peut-être :");
-			$message->addHeader("Erreur lors de l'envoi");
-			$message->addList(array("Vous n'avez pas envoyé un fichier de configuration valide, seul les fichiers de configuration *.txt sont acceptés.","Le fichier est trop gros.","Nous n'avons pas les droits d'écritures du dossier upload."),false);
-			$message->setColor("red");
-				
-			$this->view->setVar("message", $message);
-		}
 		$this->jquery->compile($this->view);
 	}
 	
@@ -164,6 +147,8 @@ class VirtualHostsController extends ControllerBase
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 
+		$semantic=$this->semantic;
+
 		$vh=Virtualhost::findFirst("id=$idVirtualHost");
 		$this->view->setVar("vh", $vh);
 		
@@ -172,6 +157,7 @@ class VirtualHostsController extends ControllerBase
 			mkdir($target_dir,077,true);
 		}
 		
+		if (isset($_FILES["fileToUpload"])){
 		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 		$uploadOk = 1;
 		$fileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -179,7 +165,6 @@ class VirtualHostsController extends ControllerBase
 		// Check file size
 		if ($_FILES["fileToUpload"]["size"] > 500000) {
 			$uploadOk = 0;
-			$this->view->setVar("state2", $state2);
 		}
 		
 		// Allow certain file formats
@@ -191,9 +176,7 @@ class VirtualHostsController extends ControllerBase
 				
 				// Check if $uploadOk is set to 0 by an error
 				if ($uploadOk == 0) {
-					$state4="Aucun fichier n'a pas été envoyé.";
-					$this->view->setVar("state4", $state4);
-					
+						$semantic->htmlMessage("state","Une erreur est survenue lors de l'envoi du fichier. Seuls les fichiers .txt & .htaccess sont acceptés.")->addHeader("Echec lors de l'envoi")->setIcon("question");
 					// if everything is ok, try to upload file
 				} else {
 					if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {						
@@ -205,15 +188,12 @@ class VirtualHostsController extends ControllerBase
 						$_resultat=str_replace("'", "\'", $resultat);
 						$db->query("UPDATE virtualhost SET config ='$_resultat' WHERE id='$idVH'");
 						fclose($fichier);						
-						$state4="Le fichier ". basename( $_FILES["fileToUpload"]["name"]). " a bien été envoyé.<a href='/VirtualHosts/VirtualHosts/'>Cliquez-ici pour revenir à la configuration</a>";
-
-						
-						$this->view->setVar("state4", $state4);
+						$semantic->htmlMessage("state","La configuration de l'hôte virtuel a été mis à jour avec succès.")->addHeader("Envoi réussi")->setIcon("checkmark");
 					} else {
-						$state4="Désolé, il y a eu une erreur lors de l'envoi.";
-						$this->view->setVar("state4", $state4);
+						$semantic->htmlMessage("state","Une erreur est survenue lors de l'envoi du fichier. Seuls les fichiers .txt & .htaccess sont acceptés.")->addHeader("Echec lors de l'envoi")->setIcon("question");
 					}
 				}
+		}else{}
 	$this->jquery->compile($this->view);
 	}
 		
@@ -240,6 +220,7 @@ class VirtualHostsController extends ControllerBase
 		// Fermer le fichier
 		fclose($fp);
 		
+		$semantic->htmlMessage("header","Cliquez sur le bouton ci-dessous afin d'obtenir une copie textuelle de la configuration actuelle de l'hôte virtuel.")->addHeader("Télécharger la configuration")->setIcon("download");		
 		$semantic->htmlButton("telecharger","Télécharger")->asLink("./downloadConfig/$id");
 		$this->jquery->compile($this->view);
 	}

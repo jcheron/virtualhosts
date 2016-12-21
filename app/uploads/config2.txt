@@ -1,0 +1,16 @@
+(FFichier envoyé via l'importeur)
+# Apache doit écouter sur le port 80
+Listen 80
+<VirtualHost *:80>
+    DocumentRoot "/www/example1"
+    ServerName www.example.com
+  
+    # Autres directives ici
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "/www/example2"
+    ServerName www.example.org
+
+    # Autres directives ici
+</VirtualHost>
