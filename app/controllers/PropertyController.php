@@ -28,9 +28,9 @@ class PropertyController extends ControllerBase
 						
 			$btnUpdate = $semantic->htmlButton("btnUpdate-".$i,"Modifier","small green basic")->asIcon("edit")->getOnClick($this->controller."/vUpdate/".$Property->getId(),"#divAction");
 			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red basic")->asIcon("remove")->getOnClick($this->controller."/vDelete/".$Property->getId(),"#divAction");
+			$btnVoir = $semantic->htmlButton("btnVoir-".$i,"Visualiser","small black basic")->asIcon("search")->getOnClick("Virtualhosts/editApache/".$Property->getId(),"#divAction");
 			
-			
-			$table->addRow([$i+1,$Property->getName(),$label,$btnUpdate.$btnDelete]);
+			$table->addRow([$i+1,$Property->getName(),$label,$btnUpdate.$btnDelete.$btnVoir]);
 			$i++;
 		}
 	
@@ -114,9 +114,11 @@ class PropertyController extends ControllerBase
 		 
 		$Property = Property::findFirst($idProperty);
 		if($Property->getRequired() == 1 ){
-			$requis = "Actuellement requis.";
+			$requis = $semantic->htmlLabel("labelRequis","Actuellement requis.")->setColor("blue");
+			$value = true;
 		}else{
-			$requis = "Actuellement non requis.";
+			$requis = $semantic->htmlLabel("labelRequis","Actuellement non requis.")->setColor("red");
+			$value = false;
 		}
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 		$btnCancel->getOnClick($this->controller."/index","#index");
@@ -126,7 +128,7 @@ class PropertyController extends ControllerBase
 		$form->addInput("name","Nom *:")->setValue($Property->getName());
 		$form->addInput("idProperty",NULL,"hidden",$Property->getId());
 		$form->addItem(new HtmlFormTextarea("description","Description * :",$Property->getDescription(),"Description"));
-		$form->addItem(new HtmlFormCheckbox("required","Requis ? ".$requis,"1","checkbox"));
+		$form->addItem(new HtmlFormCheckbox("required","Requis ? ".$requis,"1","checkbox"))->setChecked($value);
 		
 		$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit", "frmUpdate","#divAction");
 		$form->addButton("btnCancel", "Annuler","ui red button");	
@@ -139,9 +141,6 @@ class PropertyController extends ControllerBase
 	public function vUpdateSubmitAction(){
 		$Property = Property::findFirst($_POST['idProperty']);
 		
-		if(!isset($_POST['prority'])){
-			$Property->setPrority(0);
-		}
 		if (!isset($_POST['required'])){
 			$Property->setRequired(0);
 		}
