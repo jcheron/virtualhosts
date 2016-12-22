@@ -50,41 +50,34 @@ class ServeurController extends ControllerBase{
 	
 	public function serversAction($idHost=NULL){
 		
-		$virtualhosts=Virtualhost::find();
+		$virtualhosts=Virtualhost::find("$idHost = ".$idHost);
 		$servers=Server::find("idHost=".$idHost);
 		$list=$this->semantic->htmlList("lst-hosts");
-		
 		
 		$semantic=$this->semantic;
 		
 		$table=$semantic->htmlTable('table4',0,6);
 		$table->setHeaderValues([" ","Nom du Serveur","Configuration","Modifier","Supprimer","Nombre Virtualhost"]);
 		$i=0;
-		$nbrvirtual = 0;
+				
 		foreach ($servers as $server){
 			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/virtual/".$server->getId(),"#divAction");
-			
-				foreach ($virtualhosts as $virtualhost){
-					if ($virtualhost->getId() == $virtualhost->getId()){
-						$nbrvirtual = $nbrvirtual +1;
-					}}
-					if ($nbrvirtual == 0)
-					{$p="";}
-					else if ($nbrvirtual == 1)
-					{$p= $semantic->htmlLabel("",$nbrvirtual . " Virtualhost","virtualhost")->setColor("green");}
-					else
-					{$p= $semantic->htmlLabel("",$nbrvirtual . " Virtualhost","virtualhost")->setColor("green");};
-					$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/".$server->getId(),"#divAction");
-						
-					$table->addRow([" ",$server->getName(),
-							$server->getConfig(),$btnConfig,$btnDelete]);
-						
-					$nbrvirtual = 0;
-			
+			$id = $server->getId();
+			$nbrvirtual = count(Virtualhost::find("idServer = ".$id));
+				
+			$btnDelete = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDelete/".$server->getId(),"#divAction");
+		
+			$table->addRow([" ",$server->getName(),
+					$server->getConfig(),$btnConfig,$btnDelete,$nbrvirtual]);
+		
+				
+				
 			$table->setDefinition();
 			$i++;
-			
+				
 		}
+		
+		
 	
 		echo $table;
 		echo "<br/> <br/>";
@@ -94,6 +87,9 @@ class ServeurController extends ControllerBase{
 		$this->jquery->exec("$('#lst-hosts .item').removeClass('active');",true);
 		$this->jquery->exec("$('[data-ajax=".$idHost."]').addClass('active');",true);
 		$list->setInverted()->setDivided()->setRelaxed();
+	
+		
+		
 		echo $this->jquery->compile($this->view);
 	}
 	
@@ -340,9 +336,10 @@ class ServeurController extends ControllerBase{
 		$host = Host::findFirst();
 		
 		$stypes = Stype::find();
+		$servers = Server::find();
 		$itemsStypes = array();
-		foreach($stypes as $stype) {
-			$itemsStypes[] = $stype->getName();
+		foreach($servers as $server) {
+			$itemsStypes[] = $server->getId();
 		}
 		
 		
@@ -372,7 +369,7 @@ class ServeurController extends ControllerBase{
 			
 		
 		
-		$form->addDropdown("stype",$itemsStypes,"Type Serveurs : * ","Selectionner un type de serveur ...",false);
+		$form->addDropdown("stype",$itemsStypes,"Nom du Serveurs : * ","Selectionner un nom de serveur ...",false);
 		$form->addDropdown("host",$itemshost,"Host : *","Selectionner host ...",false);
 		
 		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmitvirtual", "frmUpdate","#divAction");
@@ -392,7 +389,7 @@ class ServeurController extends ControllerBase{
 			$idstype = Stype::findFirst("name = '".$_POST['stype']."'");
 				
 			$Virtualhost->setIdServer($idstype->getId());
-			$Virtualhost->setIdUser($idhost->getId());
+			$Virtualhost->setIdUser($idhost->getN());
 			$Virtualhost->save(
 					$this->request->getPost(),
 					[
