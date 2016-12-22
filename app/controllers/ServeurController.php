@@ -254,10 +254,10 @@ class ServeurController extends ControllerBase{
 		$i=0;
 		echo "<h3> Liste des virtualhosts : </h3>";
 		foreach ($virtualhosts as $virtualhost){
-			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/vUpdatevirtual","#test");
+			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/vChangevirtual/","#divAction");
+			
 	
-	
-			$btnDelete = $semantic->htmlButton("btnDeleteVirtual-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDeletevirtual/".$virtualhost->getId(),"#test");
+			$btnDelete = $semantic->htmlButton("btnDeleteVirtual-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDeletevirtual/".$virtualhost->getId(),"#divAction");
 			$table->addRow([" ",$virtualhost->getName(),
 					$virtualhost->getConfig(),$virtualhost->getIdServer(),$btnConfig,$btnDelete]);
 	
@@ -388,8 +388,9 @@ class ServeurController extends ControllerBase{
 			$idhost = Host::findFirst("name = '".$_POST['host']."'");
 			$idstype = Stype::findFirst("name = '".$_POST['stype']."'");
 				
-			$Virtualhost->setIdServer($idstype->getId());
-			$Virtualhost->setIdUser($idhost->getN());
+			
+			$Virtualhost->setIdServer($idhost->getId());
+			
 			$Virtualhost->save(
 					$this->request->getPost(),
 					[
@@ -413,6 +414,33 @@ class ServeurController extends ControllerBase{
 	
 		echo $this->jquery->compile();
 	
+	}
+	
+	/* modifier le virtualhost*/
+	
+	public function vChangevirtualAction(){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
+				 
+		$virtualhosts = Virtualhost::findFirst();
+					 
+		$semantic=$this->semantic;
+		
+		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
+		$btnCancel->getOnClick($this->controller."/index","#index");
+		 
+		$form=$semantic->htmlForm("frmUpdate");
+		$form->addInput("id",NULL,"hidden",$virtualhosts->getId());
+		$form->addInput("name","Nom *:")->setValue($virtualhosts->getName());		
+		$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit", "frmUpdate","#divAction");
+		$form->addButton("btnCancel", "Annuler","ui red button");
+		 
+		$form->addButton("button", "Gestion propriétés","ui green basic button")->getOnClick("Serveur/vUpdate/".$id,"#index");
+		 
+		
+		$this->jquery->compile($this->view);
+		
+		
 	}
 	
 	
