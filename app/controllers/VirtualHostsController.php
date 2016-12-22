@@ -15,13 +15,24 @@ class VirtualHostsController extends ControllerBase
 		$this->jquery->compile($this->view);
 	}
 	
-	public function configAction(){
+	public function configAction($idVirtualhost=NULL){
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 		
 		$semantic=$this->semantic;
 		
-		$virtualHosts = Virtualhost::findFirst();
+		if(!isset($idVirtualhost) || $idVirtualhost == "menu-8"){
+			$idVirtualhost=2;
+		}
+		
+		$virtualHosts = Virtualhost::findFirst("id=$idVirtualhost");
+		
+		
+		
+		if ($virtualHosts == NULL){
+			echo "Tentative d'accès à un hôte virtuel qui n'existe pas bloquée.";
+			$this->view->disable();
+		}else{
 		$server=$virtualHosts->getServer();
 		$host=$server->getHost();
 		
@@ -78,10 +89,15 @@ class VirtualHostsController extends ControllerBase
 		
 		$this->jquery->exec("Prism.highlightAll();",true);
 		$this->jquery->compile($this->view);
+		}
 	}
 	
 	public function editApacheAction($idVirtualhost=NULL){
-		$idVirtualhost=2;
+		
+		if(!isset($idVirtualhost)){
+			$idVirtualhost=2;
+		}
+		
 		$semantic=$this->semantic;
 		
 		$properties=Property::find();
