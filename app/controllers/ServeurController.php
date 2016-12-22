@@ -339,7 +339,7 @@ class ServeurController extends ControllerBase{
 		$servers = Server::find();
 		$itemsStypes = array();
 		foreach($servers as $server) {
-			$itemsStypes[] = $server->getId();
+			$itemsStypes[] = $server->getName();
 		}
 		
 		
