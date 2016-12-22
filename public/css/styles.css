@@ -39,3 +39,6 @@ footer {
     border-top: 1px solid #eee;
     margin-top: 10px;
 }
+#content-container{
+	min-height: 650px;
+}
