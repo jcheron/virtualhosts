@@ -178,7 +178,7 @@ class VirtualHostsController extends ControllerBase
 		$bt->setFloated("right")->setColor('blue');
 		$bt->postFormOnClick("VirtualHosts/updateConfig2/$idVirtualhost", "frmConfig2","#info");
 		$footer->getCell(0,1)->setValue([$bt]);
-		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
+		$semantic->htmlInput("idvh2","hidden",$idVirtualhost);
 		
 		$table->setSortable(2);		
 		
@@ -202,7 +202,7 @@ class VirtualHostsController extends ControllerBase
 		echo $this->jquery->compile();
 	}
 	
-	public function updateConfig2Action($idVH=NULL){
+	public function updateConfig2Action(){
 		$this->jquery->exec("$('#info').show();",true);
 		
 		echo "Mise à jour des propriétés effectuées !";
@@ -211,15 +211,19 @@ class VirtualHostsController extends ControllerBase
 			
 		$i = 0;
 		foreach($_POST["id"] as $property){
-			$property=Virtualhostproperty::findFirst("idVirtualhost=$idVH AND idProperty=$property");
-			$property->setValue($_POST["value"][$i]);
-			$property->save();
-			$i=$i+1;
-			
+			$property = new Virtualhostproperty();
+			$property->save(
+					$this->request->getPost(),
+					[
+							"idVirtualhost",
+							"idProperty",
+							"value"
+					]
+					);
+			$i=$i+1;	
 		}
 		
 		
-		$this->view->disable();
 		echo $this->jquery->compile();
 	}
 	
