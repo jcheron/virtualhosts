@@ -6,6 +6,13 @@
 <form id="frmConfig">
 {{ q["div-idvh"] }}
 {{ q["s-infos"] }}
+
+</form>
+
+<form id="frmConfig2">
+<br />
+<h2>Proprietés non attribuées</h2>
+{{ q["s-infos2"] }}
 </form>
 <br />
 {{ javascript_include("js/jquery.tablesort.min.js") }}

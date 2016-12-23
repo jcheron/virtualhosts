@@ -111,10 +111,14 @@ class VirtualHostsController extends ControllerBase
 		
 		$table=$semantic->htmlTable("s-infos",0,6);
 		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
-
+		
+		$i=0;
+		
+		$tableau1 = array();
 		foreach ($virtualHostProperties as $virtualHostProperty){
 			$property=$virtualHostProperty->getProperty();
-		
+
+			array_push($tableau1, $property->getName());
 			$value=$virtualHostProperty->getValue();
 			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
 			$input->setProperty("data-changed", "label$i");
@@ -138,6 +142,47 @@ class VirtualHostsController extends ControllerBase
 		$table->setSortable(2);
 		
 
+		////////////////////////////////////////////////
+		// TABLEAU 2 - PROPERTY PAS COMPRISES DE BASE //
+		////////////////////////////////////////////////
+		$table=$semantic->htmlTable("s-infos2",0,4);
+		$table->setHeaderValues(["","Nom","Description","Nouvelle valeur"]);
+		
+		$tableau2 = array();
+		
+		
+		foreach ($properties as $property){
+			array_push($tableau2,$property->getName());
+		}
+		
+		$differences = (array_diff($tableau2,$tableau1));
+		foreach ($differences as $difference){
+			$getProperty = Property::findFirst("name='$difference'");
+			
+			$input=new HtmlInput("value[]","text","Nouvelle valeur");
+			$input->setProperty("data-changed", "label$i");
+			$table->addRow([$semantic->htmlLabel("label$i","État"),
+					$getProperty->getName(), $getProperty->getDescription(),
+					($input)
+					.(new HtmlInput("id[]","hidden",$getProperty->getId())),
+			
+			]);
+			$i=$i+1;
+		}
+		
+		
+		
+		$footer=$table->getFooter()->setFullWidth();
+		$footer->mergeCol(0,1);
+		
+		$bt=HtmlButton::labeled("submit","Valider","settings");
+		$bt->setFloated("right")->setColor('blue');
+		$bt->postFormOnClick("VirtualHosts/updateConfig2", "frmConfig2","#info");
+		$footer->getCell(0,1)->setValue([$bt]);
+		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
+		
+		$table->setSortable(2);		
+		
 		$this->jquery->change("[data-changed]","$('#'+$(this).attr('data-changed')).html('Modifié');");
 		$this->jquery->compile($this->view);
 	}
@@ -155,6 +200,24 @@ class VirtualHostsController extends ControllerBase
 			$property->save();
 			$i=$i+1;			
 		}
+		echo $this->jquery->compile();
+	}
+	
+	public function updateConfig2Action(){
+		$this->jquery->exec("$('#info').show();",true);
+		
+		echo "Mise à jour des propriétés effectuées !";
+		
+		$i = 0;
+		$idVH=$_POST["idvh"];
+		foreach($_POST["id"] as $property){
+			$property=Virtualhostproperty::findFirst("idVirtualhost=$idVH AND idProperty=$property");
+			$property->setValue($_POST["value"][$i]);
+			$property->save();
+			$i=$i+1;
+		}
+		
+		$this->view->disable();
 		echo $this->jquery->compile();
 	}
 	
