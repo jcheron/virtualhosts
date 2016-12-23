@@ -1,5 +1,6 @@
 <?php
 use Ajax\semantic\html\base\constants\Direction;
+use Ajax\semantic\html\elements\HtmlButton;
 
 
 class ServerExchangeController extends \ControllerBase {
@@ -9,7 +10,11 @@ class ServerExchangeController extends \ControllerBase {
 		$this->loadMenus();
 		$mess=$this->semantic->htmlMessage("infoFrm","<p>Ce module permet de tester les échanges entre le(s) server(s) distant(s) et l'application virtualhosts, pour transférer des fichiers, recharger apache ou NginX...</p>");
 		$mess->addHeader("Interface de test Client/serveur");
-		$mess->addList(array("Copier le serveur java sur le(s) serveur(s) distant(s)","Démarrer le serveur par la commande : <b>java -jar vhServer.jar 9001</b>","Exécuter des commandes via le module : ping, sendfile..."),false);
+		$bt=(new HtmlButton("bt-download", "Télécharger"))->asLink("https://github.com/jcheron/vhServer/releases/download/1.0/vhServer.jar");
+		$bt->addIcon("download");
+		$bt->addLabel("vhServer v1.0")->asLink("https://github.com/jcheron/vhServer/releases/download/1.0/vhServer.jar")->setPointing("left");
+
+		$mess->addList(array($bt,"Copier le serveur java sur le(s) serveur(s) distant(s) ","Démarrer le serveur par la commande : <b>java -jar vhServer.jar 9001</b>","Exécuter des commandes via le module : ping, sendfile..."),false);
 		$mess->setIcon("info circle");
 
 		$frm=$this->semantic->htmlForm("frmPing");
