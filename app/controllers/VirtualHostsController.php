@@ -94,7 +94,7 @@ class VirtualHostsController extends ControllerBase
 	
 	public function editApacheAction($idVirtualhost=NULL){
 		
-		if(!isset($idVirtualhost)){
+		if(!isset($idVirtualhost) || $idVirtualhost == "modifier"){
 			$idVirtualhost=2;
 		}
 		
