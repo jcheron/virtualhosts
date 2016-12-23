@@ -174,10 +174,9 @@ class VirtualHostsController extends ControllerBase
 		
 		$footer=$table->getFooter()->setFullWidth();
 		$footer->mergeCol(0,1);
-		
-		$bt=HtmlButton::labeled("submit","Valider","settings");
+		$bt=HtmlButton::labeled("submit2","Valider","settings");
 		$bt->setFloated("right")->setColor('blue');
-		$bt->postFormOnClick("VirtualHosts/updateConfig2", "frmConfig2","#info");
+		$bt->postFormOnClick("VirtualHosts/updateConfig2/$idVirtualhost", "frmConfig2","#info");
 		$footer->getCell(0,1)->setValue([$bt]);
 		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
 		
@@ -203,19 +202,22 @@ class VirtualHostsController extends ControllerBase
 		echo $this->jquery->compile();
 	}
 	
-	public function updateConfig2Action(){
+	public function updateConfig2Action($idVH=NULL){
 		$this->jquery->exec("$('#info').show();",true);
 		
 		echo "Mise à jour des propriétés effectuées !";
 		
+		var_dump($_POST);
+			
 		$i = 0;
-		$idVH=$_POST["idvh"];
 		foreach($_POST["id"] as $property){
 			$property=Virtualhostproperty::findFirst("idVirtualhost=$idVH AND idProperty=$property");
 			$property->setValue($_POST["value"][$i]);
 			$property->save();
 			$i=$i+1;
+			
 		}
+		
 		
 		$this->view->disable();
 		echo $this->jquery->compile();
