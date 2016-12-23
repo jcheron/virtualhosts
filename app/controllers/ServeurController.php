@@ -57,7 +57,7 @@ class ServeurController extends ControllerBase{
 		$semantic=$this->semantic;
 		
 		$table=$semantic->htmlTable('table4',0,6);
-		$table->setHeaderValues([" ","Nom du Serveur","Configuration","Modifier","Supprimer","Nombre Virtualhost"]);
+		$table->setHeaderValues([" ","Nom du Serveur","Configuration","Modifier","Supprimer","Nombre Virtualhost(s)"]);
 		$i=0;
 				
 		foreach ($servers as $server){
@@ -252,14 +252,15 @@ class ServeurController extends ControllerBase{
 		$table=$semantic->htmlTable('table4',0,6);
 		$table->setHeaderValues([" ","Nom du Virtualhosts","Configuration","Serveur","Modifier","Supprimer"]);
 		$i=0;
+		
 		echo "<h3> Liste des virtualhosts : </h3>";
 		foreach ($virtualhosts as $virtualhost){
-			$btnConfig = $semantic->htmlButton("btnConfig-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/vChangevirtual/","#divAction");
+			$btnConfigvirtual= $semantic->htmlButton("btnConfigvirtual-".$i,"Configurer","small green basic")->asIcon("edit")->getOnClick("Serveur/vChangevirtual/".$virtualhost->getId(),"#divAction");
 			
 	
 			$btnDelete = $semantic->htmlButton("btnDeleteVirtual-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDeletevirtual/".$virtualhost->getId(),"#divAction");
 			$table->addRow([" ",$virtualhost->getName(),
-					$virtualhost->getConfig(),$virtualhost->getIdServer(),$btnConfig,$btnDelete]);
+					$virtualhost->getConfig(),$virtualhost->getIdServer(),$btnConfigvirtual,$btnDelete]);
 	
 			$table->setDefinition();
 			$i++;
@@ -300,7 +301,7 @@ class ServeurController extends ControllerBase{
 		$form->addInput("id",NULL,"hidden",$Virtualhost->getId());
 		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du virtualhost");
 	
-		$form->addButton("submit", "Supprimer","ui green button")->postFormOnClick("Serveur/confirmDeletevirtual", "frmDelete","#test");
+		$form->addButton("submit", "Supprimer","ui green button")->postFormOnClick("Serveur/confirmDeletevirtual", "frmDelete","#divAction");
 		$form->addButton("cancel", "Annuler","ui red button");
 	
 	
@@ -316,12 +317,13 @@ class ServeurController extends ControllerBase{
 			$Virtualhost->delete();
 	
 			$this->flash->message("success","Le virtualhost a été supprimé avec succès");
-			$this->jquery->get("Virtualhost","#refresh");
+			$this->jquery->get("Serveur/hosts/","#tab");
+			
 	
 		}else{
 	
 			$this->flash->message("error","Le virtualhost n'a pas été supprimé : le nom ne correspond pas ! ");
-			$this->jquery->get("typeServers/index","#refresh");
+			$this->jquery->get("Serveur/index","#test");
 		}
 			
 		echo $this->jquery->compile();
@@ -333,22 +335,13 @@ class ServeurController extends ControllerBase{
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 			
-		$host = Host::findFirst();
-		
 		$stypes = Stype::find();
 		$servers = Server::find();
-		$itemsStypes = array();
+		
+		$itemservers = array();
 		foreach($servers as $server) {
-			$itemsStypes[] = $server->getName();
+			$itemservers[] = $server->getName();
 		}
-		
-		
-		$hosts = Host::find();
-		$itemshost = array();
-		foreach($hosts as $host) {
-			$itemshost[] = $host->getName();
-		}
-		
 		
 		$semantic=$this->semantic;
 		
@@ -369,27 +362,27 @@ class ServeurController extends ControllerBase{
 			
 		
 		
-		$form->addDropdown("stype",$itemsStypes,"Nom du Serveurs : * ","Selectionner un nom de serveur ...",false);
-		$form->addDropdown("host",$itemshost,"Host : *","Selectionner host ...",false);
+		$form->addDropdown("server",$itemservers,"Nom du Serveurs : * ","Selectionner un nom de serveur ...",false);
 		
 		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmitvirtual", "frmUpdate","#divAction");
 		
 		
 		$form->addButton("cancel", "Annuler","ui red button");
+		
 			
 		$this->jquery->compile($this->view);
 		
 		
 	}
 	public function vAddSubmitvirtualAction(){
-		if(!empty($_POST['name'] && $_POST['config'] && $_POST['stype'] && $_POST['host'])){
+		if(!empty($_POST['name'] && $_POST['config'] && $_POST['server'])){
 			$Virtualhost = new Virtualhost();
 	
-			$idhost = Host::findFirst("name = '".$_POST['host']."'");
-			$idstype = Stype::findFirst("name = '".$_POST['stype']."'");
+			$idserver = Server::findFirst("name = '".$_POST['server']."'");
+			
 				
 			
-			$Virtualhost->setIdServer($idhost->getId());
+			$Virtualhost->setIdServer($idserver->getId());
 			
 			$Virtualhost->save(
 					$this->request->getPost(),
@@ -400,10 +393,16 @@ class ServeurController extends ControllerBase{
 					]
 					);
 	
+		
+			$this->jquery->get("Serveur/hosts/","#tab");
+			
 			$this->flash->message("success", "Le serveur a été inseré avec succès");
-			//$this->jquery->get("Serveur","#refresh");
-	
-			$this->jquery->get("Serveur/servers/".$idhost,"#servers");
+			
+			
+			
+			
+			
+			
 	
 		}else{
 			$this->flash->message("error", "Veuillez remplir tous les champs");
@@ -418,11 +417,28 @@ class ServeurController extends ControllerBase{
 	
 	/* modifier le virtualhost*/
 	
-	public function vChangevirtualAction(){
+	public function vChangevirtualAction($idvirtualhost){
 		$this->secondaryMenu($this->controller,$this->action);
 		$this->tools($this->controller,$this->action);
 				 
-		$virtualhosts = Virtualhost::findFirst();
+		$virtualhosts = Virtualhost::findFirst($idvirtualhost);
+	
+		
+		$hosts = Host::find();
+		
+		$itemhost = array();
+		foreach($hosts as $host) {
+			$itemhost[] = $host->getName();
+		}
+		
+		$servers = Server::find();
+		
+		$itemservers = array();
+		foreach($servers as $server) {
+			$itemservers[] = $server->getName();
+		}
+		
+		
 					 
 		$semantic=$this->semantic;
 		
@@ -431,11 +447,18 @@ class ServeurController extends ControllerBase{
 		 
 		$form=$semantic->htmlForm("frmUpdate");
 		$form->addInput("id",NULL,"hidden",$virtualhosts->getId());
-		$form->addInput("name","Nom *:")->setValue($virtualhosts->getName());		
-		$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit", "frmUpdate","#divAction");
+		$form->addInput("name","Changer de Nom *:")->setValue($virtualhosts->getName());	
+		$form->addInput("config","Changer sa configuration :")->setValue($virtualhosts->getConfig());
+		
+		
+		$form->addDropdown("host",$itemhost,"Nom du nouveau Host :  ","Nouveau host ...",false);
+
+		$form->addDropdown("server",$itemservers,"Nom du Serveurs : * ","Selectionner un nom de serveur ...",false);
+		
+		
+		
+		$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vAddSubmitvirtual", "frmUpdate","#divAction");
 		$form->addButton("btnCancel", "Annuler","ui red button");
-		 
-		$form->addButton("button", "Gestion propriétés","ui green basic button")->getOnClick("Serveur/vUpdate/".$id,"#index");
 		 
 		
 		$this->jquery->compile($this->view);
