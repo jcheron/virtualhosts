@@ -95,6 +95,8 @@ class VirtualHostsController extends ControllerBase
 	}
 	
 	public function editApacheAction($idVirtualhost=NULL){
+		$this->secondaryMenu($this->controller,$this->action);
+		$this->tools($this->controller,$this->action);
 		
 		if(!isset($idVirtualhost) || $idVirtualhost == "modifier"){
 			$idVirtualhost=2;
