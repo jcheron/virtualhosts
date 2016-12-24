@@ -159,9 +159,10 @@ class ServeurController extends ControllerBase{
 		
 		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmit", "frmUpdate","#divAction");
 		
+
+		$form->addButton("cancel", "Annuler","ui red button")->postFormOnClick("Serveur/hosts", "frmDelete","#tab");
 		
-		$form->addButton("cancel", "Annuler","ui red button");
-		 
+		
 		$this->jquery->compile($this->view);
 		
 		
@@ -225,7 +226,10 @@ class ServeurController extends ControllerBase{
 		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du type de serveur");
 		
 		$form->addButton("submit", "Supprimer","ui green button")->postFormOnClick("Serveur/confirmDelete", "frmDelete","#divAction");
-		$form->addButton("cancel", "Annuler","ui red button");
+		
+		
+		
+		$form->addButton("cancel", "Annuler","ui red button")->postFormOnClick("Serveur/hosts", "frmDelete","#tab");
 
 		
 		$this->view->setVars(["element"=>$Server]);
@@ -266,10 +270,11 @@ class ServeurController extends ControllerBase{
 	public function virtualAction($idServer=NULL,$idhost=NULL){
 	
 		$virtualhosts=Virtualhost::find("idServer=".$idServer."");
+
 		
 		if($virtualhosts->count() == 0 ){
 			$semantic=$this->semantic;
-				
+			
 			$ajoutervirtual=$semantic->htmlButton("ajoutervirtual","Ajouter","black")->getOnClick("Serveur/vUpdatevirtual","#divAction")->setNegative();
 			
 		}
@@ -280,8 +285,10 @@ class ServeurController extends ControllerBase{
 			
 			$semantic=$this->semantic;
 			
+		
+			
 			$table=$semantic->htmlTable('table4',0,6);
-			$table->setHeaderValues([" ","Nom du Virtualhosts","Configuration","Serveur","Modifier","Supprimer"]);
+			$table->setHeaderValues([" ","Nom du Virtualhosts","Configuration","Modifier","Supprimer"]);
 			$i=0;
 			
 			echo "<h3> Liste des virtualhosts : </h3>";
@@ -293,7 +300,7 @@ class ServeurController extends ControllerBase{
 				$btnDelete = $semantic->htmlButton("btnDeleteVirtual-".$i,"Supprimer","small red")->asIcon("remove")->getOnClick("Serveur/vDeletevirtual/".$virtualhost->getId(),"#divAction");
 					
 				$table->addRow([" ",$virtualhost->getName(),
-						$virtualhost->getConfig(),$virtualhost->getIdServer(),$btnConfigvirtual,$btnDelete]);
+						$virtualhost->getConfig(),$btnConfigvirtual,$btnDelete]);
 			
 				$table->setDefinition();
 				$i++;
@@ -331,9 +338,11 @@ class ServeurController extends ControllerBase{
 		$form->addInput("name","Nom","text",NULL,"Confirmer le nom du virtualhost");
 	
 		$form->addButton("submit", "Supprimer","ui green button")->postFormOnClick("Serveur/confirmDeletevirtual", "frmDelete","#divAction");
-		$form->addButton("cancel", "Annuler","ui red button");
-	
-	
+
+
+		$form->addButton("cancel", "Annuler","ui red button")->postFormOnClick("Serveur/hosts", "frmDelete","#tab");
+		
+		
 		$this->view->setVars(["element"=>$Virtualhost]);
 	
 		$this->jquery->compile($this->view);
@@ -397,7 +406,8 @@ class ServeurController extends ControllerBase{
 		$form->addButton("submit", "Valider","ui green button")->postFormOnClick("Serveur/vAddSubmitvirtual", "frmUpdate","#divAction");
 		
 		
-		$form->addButton("cancel", "Annuler","ui red button");
+
+		$form->addButton("cancel", "Annuler","ui red button")->postFormOnClick("Serveur/hosts", "frmDelete","#tab");
 		
 			
 		$this->jquery->compile($this->view);
@@ -486,42 +496,7 @@ class ServeurController extends ControllerBase{
 			$idVirtualhost=2;
 		}
 		
-		$virtualHostProperties=Virtualhostproperty::find(
-				[
-						"idVirtualhost = {$idVirtualhost}",
-						"order"=>"idProperty ASC",
-						]
-				);
-		
-		
-		$table=$semantic->htmlTable("s-infos",0,6);
-		$table->setHeaderValues(["","Nom","Description","Valeur actuelle","Nouvelle valeur"]);
-		
-		foreach ($virtualHostProperties as $virtualHostProperty){
-			$property=$virtualHostProperty->getProperty();
-		
-			$value=$virtualHostProperty->getValue();
-			$input=new HtmlInput("value[]","text",$value,"Nouvelle valeur");
-			$input->setProperty("data-changed", "label$i");
-			$table->addRow([$semantic->htmlLabel("label$i","État"),
-					$property->getName(), $property->getDescription(),
-					$value,($input)
-					.(new HtmlInput("id[]","hidden",$property->getId())),
-						
-			]);
-			$i=$i+1;
-		}
-		
-		$footer=$table->getFooter()->setFullWidth();
-		$footer->mergeCol(0,1);
-		$bt=HtmlButton::labeled("submit","Valider","settings");
-		$bt->setFloated("right")->setColor('blue');
-		$bt->postFormOnClick("VirtualHosts/updateConfig", "frmConfig","#info");
-		$footer->getCell(0,1)->setValue([$bt]);
-		$semantic->htmlInput("idvh","hidden",$idVirtualhost);
-		
-		$table->setSortable(2);
-		
+	
 		
 		
 		
