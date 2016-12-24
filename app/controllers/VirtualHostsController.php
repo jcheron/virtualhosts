@@ -6,11 +6,13 @@ use Ajax\Semantic;
 use Ajax\semantic\html\elements\HtmlIcon;
 use Phalcon\Db;
 use Phalcon\Db\Adapter\Pdo;
+use Ajax\semantic\html\collections\form\HtmlFormDropdown;
 class VirtualHostsController extends ControllerBase
 {
-	public function indexAction($message=NULL)
+	public function indexAction()
 	{
 		$this->secondaryMenu($this->controller,$this->action);
+		
 		$this->tools($this->controller,$this->action);
 		$this->jquery->compile($this->view);
 	}
@@ -147,6 +149,13 @@ class VirtualHostsController extends ControllerBase
 		////////////////////////////////////////////////
 		$table=$semantic->htmlTable("s-infos2",0,4);
 		$table->setHeaderValues(["","Nom","Description","Nouvelle valeur"]);
+		$virtualHosts = Virtualhost::find();
+		
+		
+		$itemVirtualHosts = array();
+		foreach ($virtualHosts as $virtualHost){
+			$itemsVirtualHosts[] = $virtualHost->getName();
+		}
 		
 		$tableau2 = array();
 		
@@ -156,18 +165,21 @@ class VirtualHostsController extends ControllerBase
 		}
 		
 		$differences = (array_diff($tableau2,$tableau1));
+		$this->view->setVar("differences", $differences);
+		$j=0;
 		foreach ($differences as $difference){
 			$getProperty = Property::findFirst("name='$difference'");
 			
 			$input=new HtmlInput("value[]","text","Nouvelle valeur");
-			$input->setProperty("data-changed", "label$i");
-			$table->addRow([$semantic->htmlLabel("label$i","État"),
-					$getProperty->getName(), $getProperty->getDescription(),
+			$input->setProperty("data-changed", "label$j");
+			$table->addRow([$semantic->htmlLabel("label$j","État"),
+					$getProperty->getName(), 
+					$getProperty->getDescription(),
 					($input)
-					.(new HtmlInput("id[]","hidden",$getProperty->getId())),
+					.(new HtmlInput("id[]","hidden",$getProperty->getId()))
 			
 			]);
-			$i=$i+1;
+			$j=$j+1;
 		}
 		
 		
@@ -177,8 +189,9 @@ class VirtualHostsController extends ControllerBase
 		$bt=HtmlButton::labeled("submit2","Valider","settings");
 		$bt->setFloated("right")->setColor('blue');
 		$bt->postFormOnClick("VirtualHosts/updateConfig2/$idVirtualhost", "frmConfig2","#info");
-		$footer->getCell(0,1)->setValue([$bt]);
-		$semantic->htmlInput("idvh2","hidden",$idVirtualhost);
+		$idvh = $semantic->htmlInput("idVirtualhost","hidden",$idVirtualhost);
+		$footer->getCell(0,1)->setValue([$bt,$idvh]);
+		
 		
 		$table->setSortable(2);		
 		
@@ -206,21 +219,18 @@ class VirtualHostsController extends ControllerBase
 		$this->jquery->exec("$('#info').show();",true);
 		
 		echo "Mise à jour des propriétés effectuées !";
-		
-		var_dump($_POST);
+
+	//	var_dump($_POST).
 			
 		$i = 0;
 		foreach($_POST["id"] as $property){
-			$property = new Virtualhostproperty();
-			$property->save(
-					$this->request->getPost(),
-					[
-							"idVirtualhost",
-							"idProperty",
-							"value"
-					]
-					);
-			$i=$i+1;	
+			$vhostp = new Virtualhostproperty();
+			
+			$vhostp->setIdVirtualhost($_POST['idVirtualhost']);
+			$vhostp->setIdProperty($property);
+			$vhostp->setValue($_POST["value"][$i]);
+			$vhostp->save();
+			$i=$i+1;		
 		}
 		
 		

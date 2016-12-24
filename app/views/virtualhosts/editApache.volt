@@ -9,11 +9,13 @@
 
 </form>
 
+{% if differences is not null %}
 <form id="frmConfig2">
 <br />
 <h2>Proprietés non attribuées</h2>
 {{ q["s-infos2"] }}
 </form>
+{% endif %}
 <br />
 {{ javascript_include("js/jquery.tablesort.min.js") }}
 {{ script_foot }}
