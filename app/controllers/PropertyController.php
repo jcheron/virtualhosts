@@ -65,8 +65,8 @@ class PropertyController extends ControllerBase
 		$form->setValidationParams(["on"=>"blur","inline"=>true]);
 		$form->addErrorMessage();
 		
-		$form->addInput("name","Nom * :","text",false,"Nom de la propriété")->addRule("empty");
-		
+		$nom = $form->addInput("name","Nom * :","text",false,"Nom de la propriété")->addRule("empty");
+		$nom->getField()->labeledToCorner("asterisk","right");
 		$form->addItem(new HtmlFormTextarea("description","Description * :",false,"Description"))->addRule("empty");
 		
 		$form->addItem(new HtmlFormCheckbox("required","Requis ?","1","checkbox"));
@@ -131,7 +131,8 @@ class PropertyController extends ControllerBase
 	
 		$form=$semantic->htmlForm("frmUpdate");
 
-		$form->addInput("name","Nom *:")->setValue($Property->getName());
+		$nom=$form->addInput("name","Nom *:")->setValue($Property->getName());
+		$nom->getField()->labeledToCorner("asterisk","right");
 		$form->addInput("idProperty",NULL,"hidden",$Property->getId());
 		$form->addItem(new HtmlFormTextarea("description","Description * :",$Property->getDescription(),"Description"));
 		$form->addItem(new HtmlFormCheckbox("required","Requis ? ".$requis,"1","checkbox"))->setChecked($value);
@@ -176,18 +177,25 @@ class PropertyController extends ControllerBase
 		$Property = Property::findFirst($idProperty);
 	
 		$semantic=$this->semantic;
-	
+		$semantic->setLanguage("fr");
+		
 		$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
 		$btnCancel->getOnClick($this->controller."/index","#index");
 	
 		$form=$semantic->htmlForm("frmDelete");
-	
+		$form->setValidationParams(["on"=>"blur","inline"=>true]);
+		$form->addErrorMessage();
+		
 		$form->addHeader("Voulez-vous vraiment supprimer l'élément : ". $Property->getName()." ? ",3);
 	
 		$form->addInput("idProperty",NULL,"hidden",$Property->getId());
 		 
-		$form->addInput("name","Nom *:","text",NULL,"Confirmer le nom de la propriété");
-		$form->addButton("submit", "Supprimer","ui negative button")->postFormOnClick($this->controller."/confirmDelete", "frmDelete","#divAction");
+		$nom=$form->addInput("name","Nom *:","text",NULL,"Confirmer le nom de la propriété")->addRule("empty");
+		$nom->getField()->labeledToCorner("asterisk","right");
+		
+		$form->addButton("submit", "Supprimer","ui negative button")->asSubmit();
+		$form->submitOnClick("submit",$this->controller."/confirmDelete","#divAction");
+		
 		$form->addButton("btnCancel", "Annuler","ui positive button");
 	
 	
@@ -203,12 +211,12 @@ class PropertyController extends ControllerBase
 		if($Property->getName() == $_POST['name']){
 			$Property->delete();
 	
-			$this->flash->message("success","Le type de propriété '".$_POST['name']."' a été supprimé avec succès");
+			$this->flash->message("success","Le propriété '".$_POST['name']."' a été supprimé avec succès");
 			$this->jquery->get($this->controller,"#refresh");
 	
 		}else{
 	
-			$this->flash->message("error","Le type de propriété '".$_POST['name']."' n'a pas été supprimé : le nom ne correspond pas ! ");
+			$this->flash->message("error","Le propriété '".$Property->getName()."' n'a pas été supprimé : Le nom ne correspond pas ! ");
 			$this->jquery->get($this->controller,"#refresh");
 		}
 	

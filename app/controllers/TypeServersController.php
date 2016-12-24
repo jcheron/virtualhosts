@@ -49,7 +49,7 @@ class TypeServersController extends ControllerBase
     	 
     }
     
-    public function vAddAction($nom=NULL){
+    public function vAddAction(){
     	$this->tools($this->controller,$this->action);
  
     	$semantic=$this->semantic;
@@ -63,7 +63,8 @@ class TypeServersController extends ControllerBase
     	$form->setValidationParams(["on"=>"blur","inline"=>true]);
     	$form->addErrorMessage();
     	
-    	$form->addInput("name","Nom * :","text",false,"Nom du type de serveur")->addRule("empty");
+    	$nom = $form->addInput("name","Nom * :","text",false,"Nom du type de serveur")->addRule("empty");
+    	$nom->getField()->labeledToCorner("asterisk","right");
     	$form->addItem(new HtmlFormTextarea("configTemplate","Template * :",false,"Template",10))->addRule("empty");
     	
     	$form->addButton("submit", "Valider","ui blue button")->asSubmit();
@@ -113,7 +114,8 @@ class TypeServersController extends ControllerBase
     	
     	$form=$semantic->htmlForm("frmUpdate");
     	$form->addInput("id",NULL,"hidden",$typeServer->getId());
-    	$form->addInput("name","Nom *:")->setValue($typeServer->getName());
+    	$nom = $form->addInput("name","Nom *:")->setValue($typeServer->getName());
+    	$nom->getField()->labeledToCorner("asterisk","right");
     	$form->addItem(new HtmlFormTextarea("configTemplate","Template *:"))->setValue($typeServer->getConfigTemplate())->setRows(10);
 
     	$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vUpdateSubmit", "frmUpdate","#divAction");
@@ -153,16 +155,23 @@ class TypeServersController extends ControllerBase
     	$typeServer = Stype::findFirst($id);
     	
     	$semantic=$this->semantic;
+    	$semantic->setLanguage("fr");
     	
     	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
     	$btnCancel->getOnClick($this->controller."/index","#index");
     	 
     	$form=$semantic->htmlForm("frmDelete");
+    	$form->setValidationParams(["on"=>"blur","inline"=>true]);
+    	$form->addErrorMessage();
     	
     	$form->addHeader("Voulez-vous vraiment supprimer l'élément : ". $typeServer->getName()." ? ",3);
     	$form->addInput("id",NULL,"hidden",$typeServer->getId());
-    	$form->addInput("name","Nom *:","text",NULL,"Confirmer le nom du type de serveur");
-    	$form->addButton("submit", "Supprimer","ui negative button")->postFormOnClick($this->controller."/confirmDelete", "frmDelete","#divAction");
+    	$nom = $form->addInput("name","Nom *:","text",NULL,"Confirmer le nom du type de serveur")->addRule("empty");
+    	$nom->getField()->labeledToCorner("asterisk","right");
+    	
+    	$form->addButton("submit", "Supprimer","ui negative button")->asSubmit();
+    	$form->submitOnClick("submit",$this->controller."/confirmDelete","#divAction");
+    	
     	$form->addButton("btnCancel", "Annuler","ui positive button");
     	
       	 
@@ -182,7 +191,7 @@ class TypeServersController extends ControllerBase
     		
     	}else{
     		
-    		$this->flash->message("error","Le type de serveur '".$_POST['name']."' n'a pas été supprimé : le nom ne correspond pas ! ");
+    		$this->flash->message("error","Le type de serveur '".$Stype->getName()."' n'a pas été supprimé : Le nom ne correspond pas ! ");
     		$this->jquery->get($this->controller,"#refresh");
     	}
     	

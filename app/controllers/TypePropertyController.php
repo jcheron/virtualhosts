@@ -71,10 +71,11 @@ class TypePropertyController extends ControllerBase
     	$form->addErrorMessage();
     	
     	$fields=$form->addFields();
-      	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs","Selectionner un type de serveur...",false)->setWidth(8).
-    	$fields->addDropdown("property",$itemsProperties,"Propriétés","Selectionner une propriété...",false)->setWidth(8);
+      	$fields->addDropdown("stype",$itemsStypes,"Type Serveurs *","Selectionner un type de serveur...",false)->setWidth(8).
+    	$fields->addDropdown("property",$itemsProperties,"Propriétés *","Selectionner une propriété...",false)->setWidth(8);
     	
-    	$form->addInput("name","Nom * :","text",false,"Nom de la propriété")->addRule("empty");;
+    	$nom = $form->addInput("name","Nom * :","text",false,"Nom de la propriété")->addRule("empty");;
+    	$nom->getField()->labeledToCorner("asterisk","right");
     	$form->addItem(new HtmlFormTextarea("template","Template * :",false,"Template",10))->addRule("empty");
 
     	$form->addButton("submit", "Valider","ui blue button")->asSubmit();
@@ -142,8 +143,9 @@ class TypePropertyController extends ControllerBase
     		
     		$hiddenPrprty = $form->addInput("idProperty[]",NULL,"hidden",$Stypeproperty->getIdProperty());
     		$inputName = $form->addInput("name[]",false)->setValue($Stypeproperty->getName());
+    		$inputName->getField()->labeledToCorner("asterisk","right");
     		$inputTemplate = $form->addInput("template[]",false)->setValue($Stypeproperty->getTemplate());
-    		
+    		$inputTemplate->getField()->labeledToCorner("asterisk","right");
     		$table->addRow(
     				[
     						$i+1,//col1
@@ -210,17 +212,24 @@ class TypePropertyController extends ControllerBase
     	$typeProperty = Stypeproperty::findFirst("idStype = ".$idStype." and idProperty = ".$idProperty);
     	 
     	$semantic=$this->semantic;
-    	 
+    	$semantic->setLanguage("fr");
+    	
     	$btnCancel = $semantic->htmlButton("btnCancel","Annuler","red");
     	$btnCancel->getOnClick($this->controller."/index","#index");
     
     	$form=$semantic->htmlForm("frmDelete");
-    	 
+    	$form->setValidationParams(["on"=>"blur","inline"=>true]);
+    	$form->addErrorMessage();
+    	
     	$form->addHeader("Voulez-vous vraiment supprimer l'élément : ". $typeProperty->getName()." ? ",3);
     	$form->addInput("idProperty",NULL,"hidden",$typeProperty->getIdProperty());
     	
-    	$form->addInput("name","Nom *:","text",NULL,"Confirmer le nom du type de propriété");
-    	$form->addButton("submit", "Supprimer","ui negative button")->postFormOnClick($this->controller."/confirmDelete", "frmDelete","#divAction");
+    	$nom = $form->addInput("name","Nom *:","text",NULL,"Confirmer le nom du type de propriété")->addRule("empty");
+    	$nom->getField()->labeledToCorner("asterisk","right");
+    	
+    	$form->addButton("submit", "Supprimer","ui negative button")->asSubmit();
+    	$form->submitOnClick("submit",$this->controller."/confirmDelete","#divAction");
+    	
     	$form->addButton("btnCancel", "Annuler","ui positive button");
     	$form->addInput("idStype",NULL,"hidden",$typeProperty->getIdStype());
     
@@ -241,7 +250,7 @@ class TypePropertyController extends ControllerBase
     
     	}else{
     
-    		$this->flash->message("error","Le type de propriété '".$typeProperty->getName()."' n'a pas été supprimé : le nom ne correspond pas ! ");
+    		$this->flash->message("error","Le type de propriété '".$typeProperty->getName()."' n'a pas été supprimé : Le nom ne correspond pas ! ");
     		$this->jquery->get($this->controller,"#refresh");
     	}
     	 
