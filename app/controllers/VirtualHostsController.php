@@ -168,20 +168,20 @@ class VirtualHostsController extends ControllerBase
 		
 		$differences = (array_diff($tableau2,$tableau1));
 		$this->view->setVar("differences", $differences);
-		$j=0;
+	
 		foreach ($differences as $difference){
 			$getProperty = Property::findFirst("name='$difference'");
 			
 			$input=new HtmlInput("value[]","text","Nouvelle valeur");
-			$input->setProperty("data-changed", "label$j");
-			$table->addRow([$semantic->htmlLabel("label$j","État"),
+			$input->setProperty("data-changed", "label$i");
+			$table->addRow([$semantic->htmlLabel("label$i","État"),
 					$getProperty->getName(), 
 					$getProperty->getDescription(),
 					($input)
 					.(new HtmlInput("id[]","hidden",$getProperty->getId()))
 			
 			]);
-			$j=$j+1;
+			$i=$i+1;
 		}
 		
 		
