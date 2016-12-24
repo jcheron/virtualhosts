@@ -84,8 +84,10 @@ class ServeurController extends ControllerBase{
 			}
 		
 			else {
+				$btngrey = $semantic->htmlButton("btnDelete-".$i,"Supprimer","small grey")->asIcon("remove");
+				
 						$table->addRow([" ",$server->getName(),
-						$server->getConfig(),$btnConfig," ",$nbrvirtual]);
+						$server->getConfig(),$btnConfig,$btngrey,$nbrvirtual]);
 				
 			}
 			
@@ -482,31 +484,48 @@ class ServeurController extends ControllerBase{
 		 
 		$form=$semantic->htmlForm("frmUpdate");
 		$form->addInput("id",NULL,"hidden",$virtualhosts->getId());
+		
+		
 		$form->addInput("name","Changer de Nom *:")->setValue($virtualhosts->getName());	
 		$form->addInput("config","Changer sa configuration :")->setValue($virtualhosts->getConfig());
 		
-		
-		$form->addDropdown("host",$itemhost,"Nom du nouveau Host :  ","Nouveau host ...",false);
+		$form->addDropdown("host",$itemhost,"Nom du nouveau host :  ","Nouveau host...",false);
 
-		$form->addDropdown("server",$itemservers,"Nom du Serveurs : * ","Selectionner un nom de serveur ...",false);
+		$form->addDropdown("server",$itemservers,"Nom du serveur :  ","Selectionner un nom de serveur...",false);
 		
 		
-
-		if(!isset($idVirtualhost) || $idVirtualhost == "modifier"){
-			$idVirtualhost=2;
-		}
-		
+		$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/Ajouter", "frmUpdate","#divAction");
 	
-		
-		
-		
-		$form->addButton("submit", "Valider","ui positive button")->postFormOnClick($this->controller."/vAddSubmitvirtual", "frmUpdate","#divAction");
-		$form->addButton("btnCancel", "Annuler","ui red button");
-		 
+		$form->addButton("cancel", "Annuler","ui red button")->postFormOnClick("Serveur/hosts", "frmDelete","#tab");
 		
 		$this->jquery->compile($this->view);
 		
+	}
+	
+	
+	/* modification du virtualhost */
+	
+	public function AjouterAction(){
 		
+		
+		$idVH=$_POST["id"];
+		$virtualhost= Virtualhost::findFirst("id='$idVH'");
+		$server= Server::findFirst("name = '".$_POST['server']."'");
+		
+		$host= Host::findFirst("name = '".$_POST['host']."'");
+		
+		
+		
+			$virtualhost->setName($_POST["name"]);
+			$virtualhost->setConfig($_POST["config"]);
+			$server->setIdHost($host->getId());
+			
+			$virtualhost->setIdServer($server->getId());
+		
+			$virtualhost->save();
+			$server->save();
+		echo $this->jquery->compile();
+	
 	}
 	
 	
