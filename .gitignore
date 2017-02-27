@@ -4,3 +4,4 @@
 app/vendor
 cache/
 app/composer.lock
+vhServer.jar

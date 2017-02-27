@@ -24,7 +24,6 @@ class ServerExchangeController extends \ControllerBase {
 		$fields->addFieldRule(1, "integer");
 		$input=$frm->addInput("message","Action","text","public/robots.txt","Message à envoyer...");
 		$input->getDataField()->addProperties(["data-run"=>"c:\windows\system32\calc.exe","data-sendfile"=>"public/robots.txt","data-message"=>"","data-ping"=>""]);
-		$input->getField()->addDropdown("sendfile",["run","ping","sendFile","message","stop","restart"],Direction::LEFT);
 		$frm->addInput("params","Paramètres","text","","Paramètres séparés par une virgule");
 		$this->jquery->execOn("change", "#select-div-message", "var self=this;$('['+'data-'+$(self).val()+']').each(function(){ if($(this).is('[value]')) $(this).val($(this).attr('data-'+$(self).val())); else $(this).html($(this).attr('data-'+$(self).val()));});");
 		$bt=$frm->addButton("btPing", "Envoyer données vers le serveur")->asSubmit();
