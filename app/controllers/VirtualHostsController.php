@@ -54,7 +54,7 @@ class VirtualHostsController extends ControllerBase
 		}
 		
 		$title=$semantic->htmlHeader("header1",2);
-		$title->asTitle("Informations générales","Permet de vérifier l'état actuel de machine");
+		$title->asTitle("Informations générales","Permet de vérifier l'état actuel de la machine");
 		$this->view->setVar("title1", $title);
 		
 
