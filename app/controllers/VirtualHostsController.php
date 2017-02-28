@@ -68,11 +68,11 @@ class VirtualHostsController extends ControllerBase
 		
 		$table=$semantic->htmlTable('infos',5,3);
 		$table->setHeaderValues(["","Valeur","Description"]);
-		$table->setValues([["Etat global : ",$check,"<i>Vérifie si la machine dispose d'une configuration suffisante</i>"],
+		$table->setValues([["Etat global",$check,"<i>Vérifie si la machine dispose d'une configuration suffisante</i>"],
 				["Serveur",$server->getName(),"<i>Nom du serveur sur lequel est hebergé la machine</i>"],
 				["Machine",$host->getName(),"<i>Nom de l'hôte hebergeant l'hôte virtuel</i>"],
 				["Adresse IPv4",$host->getIpv4(),"<i>Adresse IPv4 affectée à l'hôte virtuel</i>"],
-				["Adresse IPv4",$IPv6,"<i>Adresse IPv6 affectée à l'hôte virtuel</i>"],
+				["Adresse IPv6",$IPv6,"<i>Adresse IPv6 affectée à l'hôte virtuel</i>"],
 				
 		]);
 		$table->setDefinition();
