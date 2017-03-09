@@ -18,6 +18,8 @@ class TmpController extends ControllerBase{
 		$grid->addRow(2)->setValues(["Romain",$this->createBts("romain",[" ☠ Infos compte ☠"=>"InfoCompte/ModifInfo"],"black")]);
 		$grid->addRow(2)->setValues(["Anthony",$this->createBts("anthony",[" ☠ S'enregistrer ☠"=>"Sign/Signin","☠ Liste hosts & virtualhost ☠"=>"☠ Listhostvirtual/listhv ☠ ","☠ Liste vh/server☠ "=>"ListVirtualhostParServ/listServer"],"black")]);
 		$grid->addRow(2)->setValues(["Aboudou",$this->createBts("aboudou",["Gest. types servers"=>"TypeServers/index","Gest. types propriétés"=>"TypeProperty/index","Gest. propriétés"=>"Property/index"],"green")]);
+		$grid->setColWidth(0,4);
+		$grid->setColWidth(1,12);
 		$this->jquery->getOnClick(".clickable", "","#content-container",["attr"=>"data-ajax"]);
 		$this->jquery->compile($this->view);
 	}
@@ -91,6 +93,17 @@ class TmpController extends ControllerBase{
 			echo "<li>".$server->getName()."</li>";
 		}
 		echo "</ul>";
+	}
+	
+	public function parseAction($id=2){
+		$this->loadMenus();
+		$list=$this->semantic->htmlList("lst-hosts");
+		
+		$vh=Virtualhost::findFirst($id);
+		$generator=new ConfGenerator($vh);
+		echo(nl2br(htmlentities($generator->run())));
+		$this->jquery->compile($this->view);
+		
 	}
 }
 

@@ -1,7 +1,9 @@
 <?php
 
-class Virtualhost extends \Phalcon\Mvc\Model
-{
+/**
+ * @author heronj
+ */
+class Virtualhost extends \Phalcon\Mvc\Model{
 
     /**
      *

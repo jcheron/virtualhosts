@@ -160,8 +160,8 @@ class Property extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Stypeproperty', 'idProperty', ['alias' => 'Stypeproperty']);
-        $this->hasMany('id', 'Virtualhostproperty', 'idProperty', ['alias' => 'Virtualhostproperty']);
+        $this->hasMany('id', 'Stypeproperty', 'idProperty', ['alias' => 'Stypeproperties']);
+        $this->hasMany('id', 'Virtualhostproperty', 'idProperty', ['alias' => 'Virtualhostproperties']);
     }
 
     /**

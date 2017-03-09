@@ -10,7 +10,8 @@ require APP_PATH . "/vendor/autoload.php";
 $loader->registerDirs(
     [
         $config->application->controllersDir,
-        $config->application->modelsDir
+        $config->application->modelsDir,
+		$config->application->libraryDir
     ]
 );
 

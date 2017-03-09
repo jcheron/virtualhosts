@@ -131,7 +131,7 @@ class Stypeproperty extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->belongsTo('idProperty', 'Property', 'id', ['alias' => 'Properties']);
-        $this->belongsTo('idStype', 'Stype', 'id', ['alias' => 'Stypes']);
+        $this->belongsTo('idStype', 'Stype', 'id', ['alias' => 'Stype']);
     }
 
     /**
