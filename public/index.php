@@ -13,7 +13,6 @@ try {
      * the services that provide a full stack framework.
      */
     $di = new FactoryDefault();
-
     /**
      * Read services
      */

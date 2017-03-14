@@ -2,7 +2,6 @@
 
 class Stypeproperty extends \Phalcon\Mvc\Model
 {
-
     /**
      *
      * @var integer
@@ -130,7 +129,7 @@ class Stypeproperty extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->belongsTo('idProperty', 'Property', 'id', ['alias' => 'Properties']);
+        $this->belongsTo('idProperty', 'Property', 'id', ['alias' => 'Property']);
         $this->belongsTo('idStype', 'Stype', 'id', ['alias' => 'Stype']);
     }
 
@@ -166,4 +165,7 @@ class Stypeproperty extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
+    public function setProperty($property){
+    	$this->property=$property;
+    }
 }
